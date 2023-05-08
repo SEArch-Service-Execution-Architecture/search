@@ -3,13 +3,19 @@ package contract
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"crypto/sha512"
+	_ "embed"
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/tetratelabs/wazero"
+	"github.com/tetratelabs/wazero/imports/wasi_snapshot_preview1"
 
 	"github.com/pmontepagano/cfsm"
 
@@ -289,4 +295,29 @@ func ParseFSAFile(reader io.Reader) (*cfsm.System, error) {
 	}
 
 	return sys, nil
+}
+
+//go:embed gc2fsa.wasm
+var gc2fsa []byte
+
+func ParseGCFile(reader io.Reader) {
+	// scanner := bufio.NewScanner(reader)
+	// for scanner.Scan() {}
+	ctx := context.TODO()
+	r := wazero.NewRuntime(ctx)
+	defer r.Close(ctx)
+
+	// Instantiate WASI.
+	wasi_snapshot_preview1.MustInstantiate(ctx, r)
+
+	mod, err := r.Instantiate(ctx, gc2fsa)
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	res, err := mod.ExportedFunction("_start").Call(ctx)
+	if err != nil {
+		log.Panicln(err)
+	}
+	log.Println(res)
 }

@@ -115,3 +115,33 @@ func TestPingPongFSAParser(t *testing.T) {
 	}
 
 }
+
+func TestPingPongGCParser(t *testing.T) {
+	const exampleGCContent = `
+.. A simple example based on a sort of ping-pong protocol
+
+repeat Ping {                                   ... after a few ping-pong exchanges
+	Ping -> Pong: ping ;
+	Pong -> Ping: pong
+};
+sel {                                                           ... the client closes the session
+	Ping -> Pong: finished;  ... either without requiring an acknowlegdgement from the server
+	(o)
+	+
+	Ping -> Pong: bye ;           ... or requiring an ack from the server
+	Pong -> Ping: bye
+}
+`
+	fs := fstest.MapFS{
+		"pingpong.gc": {Data: []byte(exampleGCContent)},
+	}
+
+	exampleFile, err := fs.Open("pingpong.gc")
+	if err != nil {
+		t.Error("failed reading pingpong.gc")
+	}
+	defer exampleFile.Close()
+
+	ParseGCFile(exampleFile)
+
+}
