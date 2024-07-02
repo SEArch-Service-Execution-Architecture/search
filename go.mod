@@ -11,7 +11,7 @@ require (
 	github.com/vishalkuo/bimap v0.0.0-20230830142743-a9fb9b52066c
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231106174013-bbf56f31fb17
 	google.golang.org/grpc v1.59.0
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
