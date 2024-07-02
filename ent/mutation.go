@@ -13,11 +13,11 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
-	"github.com/pmontepagano/search/ent/compatibilityresult"
-	"github.com/pmontepagano/search/ent/predicate"
-	"github.com/pmontepagano/search/ent/registeredcontract"
-	"github.com/pmontepagano/search/ent/registeredprovider"
-	"github.com/pmontepagano/search/ent/schema"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/compatibilityresult"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/predicate"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/schema"
 )
 
 const (

@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	pb "github.com/pmontepagano/search/gen/go/search/v1"
+	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
 )
 
 var middlewareURL = flag.String("middleware-url", "middleware-payments-service:11000", "The URL for the middleware")

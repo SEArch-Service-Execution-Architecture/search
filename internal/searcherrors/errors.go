@@ -18,7 +18,7 @@ func BrokerageFailedError(failedParticipants []string) error {
 	st := status.New(codes.NotFound, "CHANNEL_BROKERAGE_FAILED")
 	ei := &errdetails.ErrorInfo{
 		Reason: "CHANNEL_BROKERAGE_FAILED",
-		Domain: "github.com/pmontepagano/search", // TODO: is this valid?
+		Domain: "github.com/SEArch-Service-Execution-Architecture/search", // TODO: is this valid?
 		Metadata: map[string]string{
 			"failed_participants": strings.Join(failedParticipants[:], ","),
 		},

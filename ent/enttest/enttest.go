@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/pmontepagano/search/ent"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent"
 	// required by schema hooks.
-	_ "github.com/pmontepagano/search/ent/runtime"
+	_ "github.com/SEArch-Service-Execution-Architecture/search/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/pmontepagano/search/ent/migrate"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/migrate"
 )
 
 type (

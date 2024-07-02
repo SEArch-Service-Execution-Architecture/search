@@ -10,15 +10,15 @@ import (
 	"reflect"
 
 	"github.com/google/uuid"
-	"github.com/pmontepagano/search/ent/migrate"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/pmontepagano/search/ent/compatibilityresult"
-	"github.com/pmontepagano/search/ent/registeredcontract"
-	"github.com/pmontepagano/search/ent/registeredprovider"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/compatibilityresult"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
 )
 
 // Client is the client that holds all ent builders.

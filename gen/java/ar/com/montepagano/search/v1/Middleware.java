@@ -10045,7 +10045,7 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
       "ange\022!.search.v1.MessageExchangeRequest\032" +
       "\".search.v1.MessageExchangeResponse\"\000(\001B" +
       "H\n\034ar.com.montepagano.search.v1Z(github." +
-      "com/pmontepagano/search/gen/go/v1b\006proto" +
+      "com/SEArch-Service-Execution-Architecturece-Execution-Architecture/search/gen/go/v1b\006proto" +
       "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor

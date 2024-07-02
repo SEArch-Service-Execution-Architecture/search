@@ -1,4 +1,4 @@
-module github.com/pmontepagano/search
+module github.com/SEArch-Service-Execution-Architecture/search
 
 go 1.21
 

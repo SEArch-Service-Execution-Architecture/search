@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/pmontepagano/search/ent/compatibilityresult"
-	"github.com/pmontepagano/search/ent/predicate"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/compatibilityresult"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/predicate"
 )
 
 // CompatibilityResultDelete is the builder for deleting a CompatibilityResult entity.

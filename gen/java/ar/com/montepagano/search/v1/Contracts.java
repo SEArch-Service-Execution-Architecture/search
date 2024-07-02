@@ -1570,7 +1570,7 @@ public final class Contracts {
       "L_CONTRACT_FORMAT_FSA\020\001\0222\n.LOCAL_CONTRAC" +
       "T_FORMAT_PYTHON_BISIMULATION_CODE\020\002BH\n\034a" +
       "r.com.montepagano.search.v1Z(github.com/" +
-      "pmontepagano/search/gen/go/v1b\006proto3"
+      "SEArch-Service-Execution-Architecturece-Execution-Architecture/search/gen/go/v1b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

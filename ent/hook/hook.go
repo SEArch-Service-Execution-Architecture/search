@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pmontepagano/search/ent"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent"
 )
 
 // The CompatibilityResultFunc type is an adapter to allow the use of ordinary

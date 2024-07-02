@@ -13,9 +13,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/sourcegraph/conc/pool"
 
-	"github.com/pmontepagano/search/contract"
-	pb "github.com/pmontepagano/search/gen/go/search/v1"
-	"github.com/pmontepagano/search/internal/searcherrors"
+	"github.com/SEArch-Service-Execution-Architecture/search/contract"
+	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
+	"github.com/SEArch-Service-Execution-Architecture/search/internal/searcherrors"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 

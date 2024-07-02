@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/pmontepagano/search/ent/compatibilityresult"
-	"github.com/pmontepagano/search/ent/registeredcontract"
-	"github.com/pmontepagano/search/ent/registeredprovider"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/compatibilityresult"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
 )
 
 // ent aliases to avoid import conflicts in user's code.

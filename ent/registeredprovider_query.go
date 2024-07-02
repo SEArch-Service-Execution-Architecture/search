@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
-	"github.com/pmontepagano/search/ent/predicate"
-	"github.com/pmontepagano/search/ent/registeredcontract"
-	"github.com/pmontepagano/search/ent/registeredprovider"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/predicate"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
 )
 
 // RegisteredProviderQuery is the builder for querying RegisteredProvider entities.

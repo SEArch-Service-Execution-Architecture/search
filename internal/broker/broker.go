@@ -25,15 +25,15 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	"github.com/pmontepagano/search/contract"
-	"github.com/pmontepagano/search/ent"
-	"github.com/pmontepagano/search/ent/compatibilityresult"
-	"github.com/pmontepagano/search/ent/registeredcontract"
-	"github.com/pmontepagano/search/ent/registeredprovider"
-	"github.com/pmontepagano/search/internal/searcherrors"
+	"github.com/SEArch-Service-Execution-Architecture/search/contract"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/compatibilityresult"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
+	"github.com/SEArch-Service-Execution-Architecture/search/internal/searcherrors"
 
 	_ "github.com/mattn/go-sqlite3"
-	pb "github.com/pmontepagano/search/gen/go/search/v1"
+	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
 )
 
 type brokerServer struct {

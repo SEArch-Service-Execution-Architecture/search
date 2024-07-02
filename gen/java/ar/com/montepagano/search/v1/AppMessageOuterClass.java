@@ -3621,7 +3621,7 @@ public final class AppMessageOuterClass {
       "v1.AppMessageR\007message\"4\n\nAppMessage\022\022\n\004" +
       "type\030\001 \001(\tR\004type\022\022\n\004body\030\002 \001(\014R\004bodyBH\n\034" +
       "ar.com.montepagano.search.v1Z(github.com" +
-      "/pmontepagano/search/gen/go/v1b\006proto3"
+      "/SEArch-Service-Execution-Architecturece-Execution-Architecture/search/gen/go/v1b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

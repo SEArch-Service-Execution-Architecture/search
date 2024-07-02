@@ -7,10 +7,10 @@ import (
 	"sync"
 	"text/template"
 
-	"github.com/pmontepagano/search/cfsm"
+	"github.com/SEArch-Service-Execution-Architecture/search/cfsm"
 	"github.com/vishalkuo/bimap"
 
-	pb "github.com/pmontepagano/search/gen/go/search/v1"
+	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
 )
 
 type Contract interface {

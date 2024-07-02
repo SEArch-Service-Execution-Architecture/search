@@ -3,7 +3,7 @@ package middleware
 import (
 	"testing"
 
-	"github.com/pmontepagano/search/cfsm"
+	"github.com/SEArch-Service-Execution-Architecture/search/cfsm"
 )
 
 func TestTravelClient(t *testing.T) {

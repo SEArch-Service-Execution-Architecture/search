@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/pmontepagano/search/internal/broker"
+	"github.com/SEArch-Service-Execution-Architecture/search/internal/broker"
 )
 
 var (

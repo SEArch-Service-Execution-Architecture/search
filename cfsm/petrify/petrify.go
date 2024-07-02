@@ -1,6 +1,6 @@
 // Package petrify contains encoding for ordinary string into petrify-accepted
 // format. The encoding is incomplete.
-package petrify // import "github.com/pmontepagano/search/cfsm/petrify"
+package petrify // import "github.com/SEArch-Service-Execution-Architecture/search/cfsm/petrify"
 
 import "strings"
 

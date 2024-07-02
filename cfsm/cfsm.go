@@ -9,7 +9,7 @@ import (
 	"sync"
 	"text/template"
 
-	"github.com/pmontepagano/search/cfsm/petrify"
+	"github.com/SEArch-Service-Execution-Architecture/search/cfsm/petrify"
 )
 
 const (

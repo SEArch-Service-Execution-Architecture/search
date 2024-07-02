@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/pmontepagano/search/internal/middleware"
+	"github.com/SEArch-Service-Execution-Architecture/search/internal/middleware"
 )
 
 var (

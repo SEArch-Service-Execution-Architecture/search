@@ -1,4 +1,4 @@
-## `pmontepagano/search/cfsm` is a CFSMs library in Go.
+## `SEArch-Service-Execution-Architecture/search/cfsm` is a CFSMs library in Go.
 
 This library was forked from [`nickng/cfsm`](https://github.com/nickng/cfsm).
 

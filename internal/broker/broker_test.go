@@ -8,10 +8,10 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/pmontepagano/search/contract"
-	"github.com/pmontepagano/search/ent"
-	pb "github.com/pmontepagano/search/gen/go/search/v1"
-	"github.com/pmontepagano/search/mocks"
+	"github.com/SEArch-Service-Execution-Architecture/search/contract"
+	"github.com/SEArch-Service-Execution-Architecture/search/ent"
+	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
+	"github.com/SEArch-Service-Execution-Architecture/search/mocks"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"

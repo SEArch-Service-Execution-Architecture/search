@@ -4069,7 +4069,7 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
       "vider\022\".search.v1.RegisterProviderReques" +
       "t\032#.search.v1.RegisterProviderResponse\"\000" +
       "BH\n\034ar.com.montepagano.search.v1Z(github" +
-      ".com/pmontepagano/search/gen/go/v1b\006prot" +
+      ".com/SEArch-Service-Execution-Architecturece-Execution-Architecture/search/gen/go/v1b\006prot" +
       "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
