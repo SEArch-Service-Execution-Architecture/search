@@ -26,7 +26,6 @@ service PrivateMiddlewareService {
     // initiated or registered channel
     rpc AppSend(AppSendRequest) returns (AppSendResponse) {}
     rpc AppRecv(AppRecvRequest) returns (AppRecvResponse) {}
-
     
 }
 
@@ -53,6 +52,8 @@ message RegisterChannelResponse {
     string channel_id = 1;
 }
 
+// The middleware sends this to the broker to register a provider to
+//   be added to the registry.
 message RegisterAppRequest {
     LocalContract provider_contract = 1;
 }

@@ -11,6 +11,7 @@ service BrokerService {
     rpc RegisterProvider (RegisterProviderRequest) returns (RegisterProviderResponse) {}
 }
 
+// Sent by client middleware to the broker to register a new channel.
 message BrokerChannelRequest {
     GlobalContract contract = 1;  // requirements contract
     // subset of contract's participants that are already decided. This should at least
@@ -22,6 +23,9 @@ message BrokerChannelRequest {
 message BrokerChannelResponse {
     string channel_id = 2;  // uuidv4
     map<string, RemoteParticipant> participants = 3;  // preset + brokered participants
+    // mapping of each message name: keys are the message names in the requirement contract,
+    // values are the message names on each provider with which this participant iteracts.
+    map<string, string> messageTranslations = 4;
 }
 
 message RegisterProviderRequest {
