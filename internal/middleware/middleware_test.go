@@ -443,7 +443,7 @@ func TestCircle(t *testing.T) {
 }
 
 // Mock function for checking contracts in TestCircle.
-func circleContractCompatChecker(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
+func circleContractCompatChecker(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
 	log.Printf("[TestCircle] - Checking req ID: %s, prov ID: %s, req participants: %v, prov participants: %v", req.GetContractID(), prov.GetContractID(), req.GetRemoteParticipantNames(), prov.GetRemoteParticipantNames())
 	mapping := make(map[string]string)
 	if req.GetContractID() == "c6c64de47a8ca6293d5bfc108b47c8982c6ebc178b7d6cb5bcd22581685b1ce7b512c62e78ea8badaff14df89075d06186da982ae0a0719b651174f7031bcb92" && prov.GetContractID() == "bc15e8c84c7ef522602bafb1da221735198067c825dc5ee2d2af2ba5d3f5e87d5b0c3385b65fd49752d0c18025177db1cdc13d831909ae0b6a59aa3b84df9ee2" {
@@ -460,9 +460,9 @@ func circleContractCompatChecker(ctx context.Context, req contract.LocalContract
 	}
 	_, ok := mapping["receiver"]
 	if !ok {
-		return false, nil, nil
+		return false, nil, nil, nil
 	}
-	return true, mapping, nil
+	return true, mapping, nil, nil
 }
 
 func TestPingPongFullExample(t *testing.T) {
@@ -535,13 +535,13 @@ const pingContractFSA = `
 `
 
 // Mock function for checking contracts in TestPingPongFullExample.
-func pingPongContractCompatChecker(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
+func pingPongContractCompatChecker(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
 	log.Printf("Checking with pingPongContractCompatChecker...")
 	mapping := map[string]string{
 		"Other": "Ping",
 		"Pong":  "Pong",
 	}
-	return true, mapping, nil
+	return true, mapping, nil, nil
 }
 
 // Auxiliary function for TestPingPongFullExample.

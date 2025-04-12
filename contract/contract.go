@@ -274,3 +274,11 @@ func (lc *LocalPyCFSMContract) GetOriginalParticipantName(translated string) (st
 	}
 	return original, nil
 }
+
+func (lc *LocalPyCFSMContract) GetOriginalMessageName(translated string) (string, error) {
+	original, ok := lc.messageTranslations.GetInverse(translated)
+	if !ok {
+		return "", fmt.Errorf("translated message name not found")
+	}
+	return original, nil
+}

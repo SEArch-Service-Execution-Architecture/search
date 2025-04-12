@@ -377,11 +377,11 @@ func TestGetBestCandidate_NoCompatibleResultsWithRegisteredProviders(t *testing.
 	// Set broker's compatibility function to a mock that returns false. We later want to assert how many times the function was called.
 	numberOfCallsToCompatFunc := 0
 	counterLock := sync.Mutex{}
-	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
+	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
 		counterLock.Lock()
 		numberOfCallsToCompatFunc++
 		counterLock.Unlock()
-		return false, nil, nil
+		return false, nil, nil, nil
 	})
 
 	// Act
@@ -466,15 +466,15 @@ func TestGetBestCandidate_OnlyOneCompatibleResult(t *testing.T) {
 	// Set broker's compatibility function to a mock that returns true for provider 3. We later want to assert how many times the function was called.
 	numberOfCallsToCompatFunc := 0
 	counterLock := sync.Mutex{}
-	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
+	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
 		counterLock.Lock()
 		numberOfCallsToCompatFunc++
 		counterLock.Unlock()
 		t.Logf("provID: %v, prov data: %s", prov.GetContractID(), prov.GetBytesRepr())
 		if prov.GetContractID() == "a62c6b1ee8a142d1086ffa68acc298705a293fcb09cf58784c0e390e44feafd8457d199b2bd239ac01f42f4939658927b68a43214f38d7a5e7a703da437374b8" {
-			return true, map[string]string{"serviceClient": "dunno"}, nil
+			return true, map[string]string{"serviceClient": "dunno"}, nil, nil
 		}
-		return false, nil, nil
+		return false, nil, nil, nil
 	})
 
 	// Act
@@ -556,12 +556,12 @@ func TestGetBestCandidate_CachedResult(t *testing.T) {
 	// Set broker's compatibility function to a mock that returns true for both providers. We later want to assert how many times the function was called.
 	numberOfCallsToCompatFunc := 0
 	counterLock := sync.Mutex{}
-	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
+	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
 		counterLock.Lock()
 		numberOfCallsToCompatFunc++
 		counterLock.Unlock()
 		t.Logf("provID: %v, prov data: %s", prov.GetContractID(), prov.GetBytesRepr())
-		return true, map[string]string{"serviceClient": "dunno"}, nil
+		return true, map[string]string{"serviceClient": "dunno"}, nil, nil
 	})
 
 	// Act
@@ -584,8 +584,8 @@ func TestBisimulationPython(t *testing.T) {
 	q0 ClientApp ? CardDetailsWithTotalAmount q1
 	q1 ClientApp ! PaymentNonce q2
 	q2 Srv ? RequestChargeWithNonce q3
-	q3 Srv ! ChargeOK q4
-	q3 Srv ! ChargeFail q5
+	q3 Srv ! OK q4
+	q3 Srv ! ERROR q5
 	.marking q0
 	.end`
 
@@ -619,7 +619,7 @@ func TestBisimulationPython(t *testing.T) {
 		t.Fatalf("error converting contract: %v", err)
 	}
 
-	res, participantMapping, err := BisimilarityAlgorithm(context.Background(), reqContract, provContract)
+	res, participantMapping, messageMapping, err := BisimilarityAlgorithm(context.Background(), reqContract, provContract)
 	if err != nil {
 		t.Fatalf("error running bisimilarity algorithm: %v", err)
 	}
@@ -643,4 +643,18 @@ func TestBisimulationPython(t *testing.T) {
 		t.Fatalf("participant mapping for Srv is not backend")
 	}
 
+	m, ok := messageMapping["CardDetailsWithTotalAmount"]
+	if !ok {
+		t.Fatalf("message mapping does not contain CardDetailsWithTotalAmount")
+	}
+	if m != "CardDetailsWithTotalAmount" {
+		t.Fatalf("message mapping for CardDetailsWithTotalAmount is not CardDetailsWithTotalAmount")
+	}
+	m, ok = messageMapping["OK"]
+	if !ok {
+		t.Fatalf("message mapping does not contain OK")
+	}
+	if m != "ChargeOK" {
+		t.Fatalf("message mapping for OK is not ChargeOK")
+	}
 }
