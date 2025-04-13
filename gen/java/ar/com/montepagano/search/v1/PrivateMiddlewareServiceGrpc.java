@@ -9,7 +9,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.62.2)",
+    value = "by gRPC proto compiler (version 1.71.0)",
     comments = "Source: search/v1/middleware.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class PrivateMiddlewareServiceGrpc {
@@ -186,6 +186,21 @@ public final class PrivateMiddlewareServiceGrpc {
         }
       };
     return PrivateMiddlewareServiceStub.newStub(factory, channel);
+  }
+
+  /**
+   * Creates a new blocking-style stub that supports all types of calls on the service
+   */
+  public static PrivateMiddlewareServiceBlockingV2Stub newBlockingV2Stub(
+      io.grpc.Channel channel) {
+    io.grpc.stub.AbstractStub.StubFactory<PrivateMiddlewareServiceBlockingV2Stub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<PrivateMiddlewareServiceBlockingV2Stub>() {
+        @java.lang.Override
+        public PrivateMiddlewareServiceBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new PrivateMiddlewareServiceBlockingV2Stub(channel, callOptions);
+        }
+      };
+    return PrivateMiddlewareServiceBlockingV2Stub.newStub(factory, channel);
   }
 
   /**
@@ -366,6 +381,77 @@ public final class PrivateMiddlewareServiceGrpc {
 
   /**
    * A stub to allow clients to do synchronous rpc calls to service PrivateMiddlewareService.
+   * <pre>
+   * 
+   *This service is what a Middleware exposes to its local users (not on the internet.)
+   * </pre>
+   */
+  public static final class PrivateMiddlewareServiceBlockingV2Stub
+      extends io.grpc.stub.AbstractBlockingStub<PrivateMiddlewareServiceBlockingV2Stub> {
+    private PrivateMiddlewareServiceBlockingV2Stub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
+    }
+
+    @java.lang.Override
+    protected PrivateMiddlewareServiceBlockingV2Stub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      return new PrivateMiddlewareServiceBlockingV2Stub(channel, callOptions);
+    }
+
+    /**
+     * <pre>
+     * This is used by a requires point to start a new channel with a requirement contract.
+     * </pre>
+     */
+    public ar.com.montepagano.search.v1.Middleware.RegisterChannelResponse registerChannel(ar.com.montepagano.search.v1.Middleware.RegisterChannelRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getRegisterChannelMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * This is used by provider services to register their provision contract with the Registry/Broker.
+     * </pre>
+     */
+    @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/10918")
+    public io.grpc.stub.BlockingClientCall<?, ar.com.montepagano.search.v1.Middleware.RegisterAppResponse>
+        registerApp(ar.com.montepagano.search.v1.Middleware.RegisterAppRequest request) {
+      return io.grpc.stub.ClientCalls.blockingV2ServerStreamingCall(
+          getChannel(), getRegisterAppMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * This is used by local app (be it a Service Client or a Service Provider) to close a channel.
+     * </pre>
+     */
+    public ar.com.montepagano.search.v1.Middleware.CloseChannelResponse closeChannel(ar.com.montepagano.search.v1.Middleware.CloseChannelRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCloseChannelMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * This is used by the local app to communicate with other participants in an already
+     * initiated or registered channel
+     * </pre>
+     */
+    public ar.com.montepagano.search.v1.Middleware.AppSendResponse appSend(ar.com.montepagano.search.v1.AppMessageOuterClass.AppSendRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getAppSendMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public ar.com.montepagano.search.v1.AppMessageOuterClass.AppRecvResponse appRecv(ar.com.montepagano.search.v1.Middleware.AppRecvRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getAppRecvMethod(), getCallOptions(), request);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do limited synchronous rpc calls to service PrivateMiddlewareService.
    * <pre>
    * 
    *This service is what a Middleware exposes to its local users (not on the internet.)

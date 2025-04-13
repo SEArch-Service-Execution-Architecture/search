@@ -5,7 +5,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.62.2)",
+    value = "by gRPC proto compiler (version 1.71.0)",
     comments = "Source: search/v1/broker.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class BrokerServiceGrpc {
@@ -89,6 +89,21 @@ public final class BrokerServiceGrpc {
         }
       };
     return BrokerServiceStub.newStub(factory, channel);
+  }
+
+  /**
+   * Creates a new blocking-style stub that supports all types of calls on the service
+   */
+  public static BrokerServiceBlockingV2Stub newBlockingV2Stub(
+      io.grpc.Channel channel) {
+    io.grpc.stub.AbstractStub.StubFactory<BrokerServiceBlockingV2Stub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<BrokerServiceBlockingV2Stub>() {
+        @java.lang.Override
+        public BrokerServiceBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new BrokerServiceBlockingV2Stub(channel, callOptions);
+        }
+      };
+    return BrokerServiceBlockingV2Stub.newStub(factory, channel);
   }
 
   /**
@@ -186,6 +201,37 @@ public final class BrokerServiceGrpc {
 
   /**
    * A stub to allow clients to do synchronous rpc calls to service BrokerService.
+   */
+  public static final class BrokerServiceBlockingV2Stub
+      extends io.grpc.stub.AbstractBlockingStub<BrokerServiceBlockingV2Stub> {
+    private BrokerServiceBlockingV2Stub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
+    }
+
+    @java.lang.Override
+    protected BrokerServiceBlockingV2Stub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      return new BrokerServiceBlockingV2Stub(channel, callOptions);
+    }
+
+    /**
+     */
+    public ar.com.montepagano.search.v1.Broker.BrokerChannelResponse brokerChannel(ar.com.montepagano.search.v1.Broker.BrokerChannelRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getBrokerChannelMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public ar.com.montepagano.search.v1.Broker.RegisterProviderResponse registerProvider(ar.com.montepagano.search.v1.Broker.RegisterProviderRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getRegisterProviderMethod(), getCallOptions(), request);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do limited synchronous rpc calls to service BrokerService.
    */
   public static final class BrokerServiceBlockingStub
       extends io.grpc.stub.AbstractBlockingStub<BrokerServiceBlockingStub> {

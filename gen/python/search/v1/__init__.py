@@ -27,15 +27,15 @@ if TYPE_CHECKING:
 
 
 class GlobalContractFormat(betterproto.Enum):
-    GLOBAL_CONTRACT_FORMAT_UNSPECIFIED = 0
-    GLOBAL_CONTRACT_FORMAT_FSA = 1
-    GLOBAL_CONTRACT_FORMAT_GC = 2
+    UNSPECIFIED = 0
+    FSA = 1
+    GC = 2
 
 
 class LocalContractFormat(betterproto.Enum):
-    LOCAL_CONTRACT_FORMAT_UNSPECIFIED = 0
-    LOCAL_CONTRACT_FORMAT_FSA = 1
-    LOCAL_CONTRACT_FORMAT_PYTHON_BISIMULATION_CODE = 2
+    UNSPECIFIED = 0
+    FSA = 1
+    PYTHON_BISIMULATION_CODE = 2
 
 
 class AppSendResponseResult(betterproto.Enum):
@@ -76,9 +76,8 @@ class MessageExchangeRequest(betterproto.Message):
     channel_id: str = betterproto.string_field(1)
     sender_id: str = betterproto.string_field(2)
     """
-    This is necessary because URLs don't univocally determine apps. There can
-    be multiple applications behind the same middleware (there is a 1:1 mapping
-    between URLs and middlewares)
+    This is necessary because URLs don't univocally determine apps. There can be multiple applications
+     behind the same middleware (there is a 1:1 mapping between URLs and middlewares)
     """
 
     recipient_id: str = betterproto.string_field(3)
@@ -106,10 +105,9 @@ class AppRecvResponse(betterproto.Message):
 @dataclass(eq=False, repr=False)
 class AppMessage(betterproto.Message):
     """
-    This is the message content that is sent by the app (this is copied as-is
-    by the middlewares) TODO: we may want to use self-describing messages to
-    have a rich type system for messages! https://protobuf.dev/programming-
-    guides/techniques/#self-description
+    This is the message content that is sent by the app (this is copied as-is by the middlewares)
+     TODO: we may want to use self-describing messages to have a rich type system for messages!
+     https://protobuf.dev/programming-guides/techniques/#self-description
     """
 
     type: str = betterproto.string_field(1)
@@ -136,8 +134,8 @@ class BrokerChannelRequest(betterproto.Message):
         2, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
     )
     """
-    subset of contract's participants that are already decided. This should at
-    least include the initiator's RemoteParticpant data
+    subset of contract's participants that are already decided. This should at least
+     include the initiator's RemoteParticpant data
     """
 
 
@@ -200,8 +198,7 @@ class RegisterAppRequest(betterproto.Message):
 @dataclass(eq=False, repr=False)
 class RegisterAppResponse(betterproto.Message):
     """
-    whenever a new channel that involves this app is started, the middleware
-    needs to notify the local app
+    whenever a new channel that involves this app is started, the middleware needs to notify the local app
     """
 
     app_id: str = betterproto.string_field(1, group="ack_or_new")
@@ -213,9 +210,8 @@ class RegisterAppResponse(betterproto.Message):
 @dataclass(eq=False, repr=False)
 class InitChannelNotification(betterproto.Message):
     """
-    this is what a registered app receives whenever a new channel is initiated
-    for that app the app has to communicate with the middleware using
-    UseChannel with this new channel_id
+    this is what a registered app receives whenever a new channel is initiated for that app
+     the app has to communicate with the middleware using UseChannel with this new channel_id
     """
 
     channel_id: str = betterproto.string_field(1)
@@ -224,8 +220,7 @@ class InitChannelNotification(betterproto.Message):
 @dataclass(eq=False, repr=False)
 class InitChannelRequest(betterproto.Message):
     """
-    This is something that is sent by the Broker to providers to notify that a
-    new channel is starting
+    This is something that is sent by the Broker to providers to notify that a new channel is starting
     """
 
     channel_id: str = betterproto.string_field(1)
@@ -330,7 +325,7 @@ class PrivateMiddlewareServiceStub(betterproto.ServiceStub):
         timeout: Optional[float] = None,
         deadline: Optional["Deadline"] = None,
         metadata: Optional["MetadataLike"] = None
-    ) -> AsyncIterator["RegisterAppResponse"]:
+    ) -> AsyncIterator[RegisterAppResponse]:
         async for response in self._unary_stream(
             "/search.v1.PrivateMiddlewareService/RegisterApp",
             register_app_request,
@@ -431,7 +426,7 @@ class PublicMiddlewareServiceStub(betterproto.ServiceStub):
     async def message_exchange(
         self,
         message_exchange_request_iterator: Union[
-            AsyncIterable["MessageExchangeRequest"], Iterable["MessageExchangeRequest"]
+            AsyncIterable[MessageExchangeRequest], Iterable[MessageExchangeRequest]
         ],
         *,
         timeout: Optional[float] = None,
@@ -503,7 +498,7 @@ class PrivateMiddlewareServiceBase(ServiceBase):
 
     async def register_app(
         self, register_app_request: "RegisterAppRequest"
-    ) -> AsyncIterator["RegisterAppResponse"]:
+    ) -> AsyncIterator[RegisterAppResponse]:
         raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
         yield RegisterAppResponse()
 
@@ -605,7 +600,7 @@ class PublicMiddlewareServiceBase(ServiceBase):
         raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
 
     async def message_exchange(
-        self, message_exchange_request_iterator: AsyncIterator["MessageExchangeRequest"]
+        self, message_exchange_request_iterator: AsyncIterator[MessageExchangeRequest]
     ) -> "MessageExchangeResponse":
         raise grpclib.GRPCError(grpclib.const.Status.UNIMPLEMENTED)
 
