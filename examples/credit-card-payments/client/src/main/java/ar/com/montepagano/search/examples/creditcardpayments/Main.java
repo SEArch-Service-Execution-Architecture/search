@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
+import io.grpc.Channel;
+import io.grpc.Grpc;
+import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import com.google.protobuf.ByteString;
@@ -16,11 +19,33 @@ import ar.com.montepagano.search.v1.Middleware.RegisterChannelRequest;
 import ar.com.montepagano.search.v1.Middleware.RegisterChannelResponse;
 import ar.com.montepagano.search.v1.AppMessageOuterClass.AppSendRequest;
 import ar.com.montepagano.search.v1.AppMessageOuterClass.AppMessage;
+import ar.com.montepagano.search.v1.AppMessageOuterClass.AppRecvResponse;
 import ar.com.montepagano.search.v1.Contracts.GlobalContract;
 import ar.com.montepagano.search.v1.Contracts.GlobalContractFormat;
 import ar.com.montepagano.search.v1.Broker.RemoteParticipant;
 
 public class Main {
+    private PrivateMiddlewareServiceGrpc.PrivateMiddlewareServiceBlockingStub blockingStub;
+    public Main(Channel channel) {
+        blockingStub = PrivateMiddlewareServiceGrpc.newBlockingStub(channel);
+    }
+
+    public String RegisterChannel(GlobalContract contract) {
+        RegisterChannelRequest request = RegisterChannelRequest.newBuilder().setRequirementsContract(contract).build();
+        RegisterChannelResponse response = blockingStub.registerChannel(request);
+        return response.getChannelId();
+    }
+
+    public Middleware.AppSendResponse SendMessage(String channelId, String recipient, AppMessage message) {
+        var sendreq = AppSendRequest.newBuilder().setChannelId(channelId).setRecipient(recipient).setMessage(message).build();
+        return blockingStub.appSend(sendreq);
+    }
+
+    public AppRecvResponse AppRecv(String channelId, String participant) {
+        var recvreq = Middleware.AppRecvRequest.newBuilder().setChannelId(channelId).setParticipant(participant).build();
+        return blockingStub.appRecv(recvreq);
+    }
+
     public static void main(String[] args) {
         String middlewareURL = args.length > 0 ? args[0] : "middleware-client:11000";
         Scanner scanner = new Scanner(System.in);
@@ -77,36 +102,12 @@ public class Main {
                 GlobalContractFormat.GLOBAL_CONTRACT_FORMAT_FSA).setInitiatorName("ClientApp").build();
 
         // Get the stub to communicate with the middleware
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(
-                middlewareURL).usePlaintext().build();
-        PrivateMiddlewareServiceGrpc.PrivateMiddlewareServiceBlockingStub stub =
-                PrivateMiddlewareServiceGrpc.newBlockingStub(channel);
+        ManagedChannel channel = ManagedChannelBuilder.forTarget("dns:///" + middlewareURL)
+            .usePlaintext()
+            .build();
+        Main stub = new Main(channel);
 
-        // Prompt the user to input hostname for the PPS and Srv apps. Both should have a default value of "middleware-payments-service:10000" and "middleware-backend:10000" respectively.
-        // System.out.print("Enter the hostname for the PPS app (default: middleware-payments-service:10000): ");
-        // String ppsHostname = scanner.nextLine();
-        // if (ppsHostname.isEmpty()) {
-        //     ppsHostname = "middleware-payments-service:10000";
-        // }
-        // System.out.print("Enter the hostname for the Srv app (default: middleware-backend:10000): ");
-        // String srvHostname = scanner.nextLine();
-        // if (srvHostname.isEmpty()) {
-        //     srvHostname = "middleware-backend:10000";
-        // }
-        // Prompt the user to input AppId for the PPS and Srv apps. They don't have default values and must be provided by the user.
-        // System.out.print("Enter the AppId for the PPS app: ");
-        // String ppsAppId = scanner.nextLine();
-        // System.out.print("Enter the AppId for the Srv app: ");
-        // String srvAppId = scanner.nextLine();
-
-        // Register channel with middleware using GlobalContract.
-        // Add preset participants to the RegisterChannelRequest. We do this because we don't have an algorithm for compatibility checking in the broker.
-        // RemoteParticipant pps = RemoteParticipant.newBuilder().setUrl(ppsHostname).setAppId(ppsAppId).build();
-        // RemoteParticipant srv = RemoteParticipant.newBuilder().setUrl(srvHostname).setAppId(srvAppId).build();
-        // RegisterChannelRequest request = RegisterChannelRequest.newBuilder().setRequirementsContract(contract).putPresetParticipants("PPS", pps).putPresetParticipants("Srv", srv).build();
-        RegisterChannelRequest request = RegisterChannelRequest.newBuilder().setRequirementsContract(contract).build();
-        RegisterChannelResponse response = stub.registerChannel(request);
-        var channelId = response.getChannelId();
+        var channelId = stub.RegisterChannel(contract);
 
         // Send PurchaseRequest with each item quantities and the shipping address
         Map<String, Integer> items = new HashMap<>();
@@ -123,16 +124,14 @@ public class Main {
                 "{\"items\": %s, \"shippingAddress\": \"%s\"}",
                 gson.toJson(items), shippingAddress));
         var msg = AppMessage.newBuilder().setType("PurchaseRequest").setBody(body).build();
-        var sendreq = AppSendRequest.newBuilder().setChannelId(channelId).setRecipient("Srv").setMessage(msg).build();
-        var sendresp = stub.appSend(sendreq);
+        var sendresp = stub.SendMessage(channelId, "Srv", msg);
         if (sendresp.getResult() != Middleware.AppSendResponse.Result.RESULT_OK) {
             System.out.println("Error sending PurchaseRequest. Exiting...");
             System.exit(1);
         }
 
         // Receive TotalAmount from Srv
-        var recvreq = Middleware.AppRecvRequest.newBuilder().setChannelId(channelId).setParticipant("Srv").build();
-        var recvresp = stub.appRecv(recvreq);
+        var recvresp = stub.AppRecv(channelId, "Srv");
         if (!recvresp.getMessage().getType().equals("TotalAmount")) {
             System.out.println("Error receiving TotalAmount. Exiting...");
             System.exit(1);
@@ -151,16 +150,14 @@ public class Main {
         // Send CardDetailsWithTotalAmount to PPS.
         body = ByteString.copyFromUtf8(String.format("{\"card_number\": \"%s\", \"card_expirationDate\": \"%s\", \"card_cvv\": \"%s\", \"total_amount\": %s}", cardNumber, cardExpirationDate, cardSecurityCode, total_amount));
         msg = AppMessage.newBuilder().setType("CardDetailsWithTotalAmount").setBody(body).build();
-        sendreq = AppSendRequest.newBuilder().setChannelId(channelId).setRecipient("PPS").setMessage(msg).build();
-        sendresp = stub.appSend(sendreq);
+        sendresp = stub.SendMessage(channelId, "PPS", msg);
         if (sendresp.getResult() != Middleware.AppSendResponse.Result.RESULT_OK) {
             System.out.println("Error sending CardDetailsWithTotalAmount. Exiting...");
             System.exit(1);
         }
 
         // Receive PaymentNonce from PPS.
-        recvreq = Middleware.AppRecvRequest.newBuilder().setChannelId(channelId).setParticipant("PPS").build();
-        recvresp = stub.appRecv(recvreq);
+        recvresp = stub.AppRecv(channelId, "PPS");
         if (!recvresp.getMessage().getType().equals("PaymentNonce")) {
             System.out.println("Error receiving PaymentNonce. Exiting...");
             System.exit(1);
@@ -171,16 +168,14 @@ public class Main {
         // Send PurchaseWithPaymentNonce to Srv.
         body = ByteString.copyFromUtf8(String.format("{\"items\": %s, \"shippingAddress\": \"%s\", \"nonce\": \"%s\"}", gson.toJson(items), shippingAddress, payment_nonce));
         msg = AppMessage.newBuilder().setType("PurchaseWithPaymentNonce").setBody(body).build();
-        sendreq = AppSendRequest.newBuilder().setChannelId(channelId).setRecipient("Srv").setMessage(msg).build();
-        sendresp = stub.appSend(sendreq);
+        sendresp = stub.SendMessage(channelId, "Srv", msg);
         if (sendresp.getResult() != Middleware.AppSendResponse.Result.RESULT_OK) {
             System.out.println("Error sending PurchaseWithPaymentNonce. Exiting...");
             System.exit(1);
         }
 
         // Receive either PurchaseOK or PurchaseFail from Srv
-        recvreq = Middleware.AppRecvRequest.newBuilder().setChannelId(channelId).setParticipant("Srv").build();
-        recvresp = stub.appRecv(recvreq);
+        recvresp = stub.AppRecv(channelId, "Srv");
         if (recvresp.getMessage().getType().equals("PurchaseOK")) {
             System.out.println("Purchase successful!");
         } else if (recvresp.getMessage().getType().equals("PurchaseFail")) {

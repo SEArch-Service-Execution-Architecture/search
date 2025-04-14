@@ -58,23 +58,23 @@
     <build>
         <sourceDirectory>./</sourceDirectory>
         <plugins>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <addClasspath>true</addClasspath>-->
-<!--                            <mainClass>ar.com.montepagano.search.examples.creditcardpayments.Main</mainClass>-->
-<!--                        </manifest>-->
-<!--                    </archive>-->
-<!--                </configuration>-->
-<!--                <version>3.0.2</version>-->
-<!--            </plugin>-->
+           <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>ar.com.montepagano.search.examples.creditcardpayments.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <version>3.0.2</version>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
-            </plugin>
+            </plugin> -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
@@ -95,8 +95,37 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <containerDescriptorHandlers>
+                        <containerDescriptorHandler>
+                            <handlerName>metaInf-services</handlerName>
+                        </containerDescriptorHandler>
+                        <containerDescriptorHandler>
+                            <handlerName>metaInf-spring</handlerName>
+                        </containerDescriptorHandler>
+                        <containerDescriptorHandler>
+                            <handlerName>plexus</handlerName>
+                        </containerDescriptorHandler>
+                    </containerDescriptorHandlers>
                 </configuration>
             </plugin>
+            <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                <execution>
+                    <id>enforce</id>
+                    <goals>
+                    <goal>enforce</goal>
+                    </goals>
+                    <configuration>
+                    <rules>
+                        <requireUpperBoundDeps/>
+                    </rules>
+                    </configuration>
+                </execution>
+                </executions>
+            </plugin> -->
         </plugins>
     </build>
 
