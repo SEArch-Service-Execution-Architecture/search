@@ -302,6 +302,8 @@ func (s *brokerServer) getBestCandidate(ctx context.Context, req contract.Global
 						return
 					}
 					isCompatible, participantMapping, _, err := s.compatFunc(ctx, reqProjection, provContract)
+					// TODO: we will also need to send message mapping
+					// TODO: we will also need to run the algorithm between each pair of providers to get the message mappings between them?
 					if err != nil {
 						s.logger.Printf("error calculating compatibility: %v", err)
 						// TODO: proper error handler
