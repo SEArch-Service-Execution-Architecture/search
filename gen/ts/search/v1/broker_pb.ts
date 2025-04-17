@@ -5,9 +5,11 @@
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
-import { GlobalContract, LocalContract } from "./contracts_pb.js";
+import { GlobalContract, LocalContract, MessageTranslations } from "./contracts_pb.js";
 
 /**
+ * Sent by client middleware to the broker to register a new channel.
+ *
  * @generated from message search.v1.BrokerChannelRequest
  */
 export class BrokerChannelRequest extends Message<BrokerChannelRequest> {
@@ -73,6 +75,13 @@ export class BrokerChannelResponse extends Message<BrokerChannelResponse> {
    */
   participants: { [key: string]: RemoteParticipant } = {};
 
+  /**
+   * message name translations for each participant
+   *
+   * @generated from field: repeated search.v1.MessageTranslations messagetranslations = 4;
+   */
+  messagetranslations: MessageTranslations[] = [];
+
   constructor(data?: PartialMessage<BrokerChannelResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -83,6 +92,7 @@ export class BrokerChannelResponse extends Message<BrokerChannelResponse> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 2, name: "channel_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "participants", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "message", T: RemoteParticipant} },
+    { no: 4, name: "messagetranslations", kind: "message", T: MessageTranslations, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): BrokerChannelResponse {

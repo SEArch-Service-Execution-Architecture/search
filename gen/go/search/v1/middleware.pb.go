@@ -461,6 +461,9 @@ func (x *RegisterChannelResponse) GetChannelId() string {
 	return ""
 }
 
+// The middleware sends this to the broker to register a provider to
+//
+//	be added to the registry.
 type RegisterAppRequest struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	ProviderContract *LocalContract         `protobuf:"bytes,1,opt,name=provider_contract,json=providerContract,proto3" json:"provider_contract,omitempty"`
@@ -636,12 +639,13 @@ func (x *InitChannelNotification) GetChannelId() string {
 
 // This is something that is sent by the Broker to providers to notify that a new channel is starting
 type InitChannelRequest struct {
-	state         protoimpl.MessageState        `protogen:"open.v1"`
-	ChannelId     string                        `protobuf:"bytes,1,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
-	AppId         string                        `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`                                                                            // which app behind the middleware is being notified
-	Participants  map[string]*RemoteParticipant `protobuf:"bytes,3,rep,name=participants,proto3" json:"participants,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state               protoimpl.MessageState        `protogen:"open.v1"`
+	ChannelId           string                        `protobuf:"bytes,1,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
+	AppId               string                        `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"` // which app behind the middleware is being notified
+	Participants        map[string]*RemoteParticipant `protobuf:"bytes,3,rep,name=participants,proto3" json:"participants,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Messagetranslations []*MessageTranslations        `protobuf:"bytes,4,rep,name=messagetranslations,proto3" json:"messagetranslations,omitempty"` // message name translations for each participant
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *InitChannelRequest) Reset() {
@@ -691,6 +695,13 @@ func (x *InitChannelRequest) GetAppId() string {
 func (x *InitChannelRequest) GetParticipants() map[string]*RemoteParticipant {
 	if x != nil {
 		return x.Participants
+	}
+	return nil
+}
+
+func (x *InitChannelRequest) GetMessagetranslations() []*MessageTranslations {
+	if x != nil {
+		return x.Messagetranslations
 	}
 	return nil
 }
@@ -1025,12 +1036,13 @@ const file_search_v1_middleware_proto_rawDesc = "" +
 	"ack_or_new\"8\n" +
 	"\x17InitChannelNotification\x12\x1d\n" +
 	"\n" +
-	"channel_id\x18\x01 \x01(\tR\tchannelId\"\xfe\x01\n" +
+	"channel_id\x18\x01 \x01(\tR\tchannelId\"\xd0\x02\n" +
 	"\x12InitChannelRequest\x12\x1d\n" +
 	"\n" +
 	"channel_id\x18\x01 \x01(\tR\tchannelId\x12\x15\n" +
 	"\x06app_id\x18\x02 \x01(\tR\x05appId\x12S\n" +
-	"\fparticipants\x18\x03 \x03(\v2/.search.v1.InitChannelRequest.ParticipantsEntryR\fparticipants\x1a]\n" +
+	"\fparticipants\x18\x03 \x03(\v2/.search.v1.InitChannelRequest.ParticipantsEntryR\fparticipants\x12P\n" +
+	"\x13messagetranslations\x18\x04 \x03(\v2\x1e.search.v1.MessageTranslationsR\x13messagetranslations\x1a]\n" +
 	"\x11ParticipantsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x122\n" +
 	"\x05value\x18\x02 \x01(\v2\x1c.search.v1.RemoteParticipantR\x05value:\x028\x01\"\x96\x01\n" +
@@ -1123,10 +1135,11 @@ var file_search_v1_middleware_proto_goTypes = []any{
 	nil,                                 // 20: search.v1.InitChannelRequest.ParticipantsEntry
 	(*GlobalContract)(nil),              // 21: search.v1.GlobalContract
 	(*LocalContract)(nil),               // 22: search.v1.LocalContract
-	(*RemoteParticipant)(nil),           // 23: search.v1.RemoteParticipant
-	(*AppSendRequest)(nil),              // 24: search.v1.AppSendRequest
-	(*MessageExchangeRequest)(nil),      // 25: search.v1.MessageExchangeRequest
-	(*AppRecvResponse)(nil),             // 26: search.v1.AppRecvResponse
+	(*MessageTranslations)(nil),         // 23: search.v1.MessageTranslations
+	(*RemoteParticipant)(nil),           // 24: search.v1.RemoteParticipant
+	(*AppSendRequest)(nil),              // 25: search.v1.AppSendRequest
+	(*MessageExchangeRequest)(nil),      // 26: search.v1.MessageExchangeRequest
+	(*AppRecvResponse)(nil),             // 27: search.v1.AppRecvResponse
 }
 var file_search_v1_middleware_proto_depIdxs = []int32{
 	0,  // 0: search.v1.AppSendResponse.result:type_name -> search.v1.AppSendResponse.Result
@@ -1135,33 +1148,34 @@ var file_search_v1_middleware_proto_depIdxs = []int32{
 	22, // 3: search.v1.RegisterAppRequest.provider_contract:type_name -> search.v1.LocalContract
 	11, // 4: search.v1.RegisterAppResponse.notification:type_name -> search.v1.InitChannelNotification
 	20, // 5: search.v1.InitChannelRequest.participants:type_name -> search.v1.InitChannelRequest.ParticipantsEntry
-	1,  // 6: search.v1.InitChannelResponse.result:type_name -> search.v1.InitChannelResponse.Result
-	2,  // 7: search.v1.StartChannelResponse.result:type_name -> search.v1.StartChannelResponse.Result
-	3,  // 8: search.v1.CloseChannelResponse.result:type_name -> search.v1.CloseChannelResponse.Result
-	4,  // 9: search.v1.MessageExchangeResponse.result:type_name -> search.v1.MessageExchangeResponse.Result
-	23, // 10: search.v1.RegisterChannelRequest.PresetParticipantsEntry.value:type_name -> search.v1.RemoteParticipant
-	23, // 11: search.v1.InitChannelRequest.ParticipantsEntry.value:type_name -> search.v1.RemoteParticipant
-	7,  // 12: search.v1.PrivateMiddlewareService.RegisterChannel:input_type -> search.v1.RegisterChannelRequest
-	9,  // 13: search.v1.PrivateMiddlewareService.RegisterApp:input_type -> search.v1.RegisterAppRequest
-	16, // 14: search.v1.PrivateMiddlewareService.CloseChannel:input_type -> search.v1.CloseChannelRequest
-	24, // 15: search.v1.PrivateMiddlewareService.AppSend:input_type -> search.v1.AppSendRequest
-	6,  // 16: search.v1.PrivateMiddlewareService.AppRecv:input_type -> search.v1.AppRecvRequest
-	12, // 17: search.v1.PublicMiddlewareService.InitChannel:input_type -> search.v1.InitChannelRequest
-	14, // 18: search.v1.PublicMiddlewareService.StartChannel:input_type -> search.v1.StartChannelRequest
-	25, // 19: search.v1.PublicMiddlewareService.MessageExchange:input_type -> search.v1.MessageExchangeRequest
-	8,  // 20: search.v1.PrivateMiddlewareService.RegisterChannel:output_type -> search.v1.RegisterChannelResponse
-	10, // 21: search.v1.PrivateMiddlewareService.RegisterApp:output_type -> search.v1.RegisterAppResponse
-	17, // 22: search.v1.PrivateMiddlewareService.CloseChannel:output_type -> search.v1.CloseChannelResponse
-	5,  // 23: search.v1.PrivateMiddlewareService.AppSend:output_type -> search.v1.AppSendResponse
-	26, // 24: search.v1.PrivateMiddlewareService.AppRecv:output_type -> search.v1.AppRecvResponse
-	13, // 25: search.v1.PublicMiddlewareService.InitChannel:output_type -> search.v1.InitChannelResponse
-	15, // 26: search.v1.PublicMiddlewareService.StartChannel:output_type -> search.v1.StartChannelResponse
-	18, // 27: search.v1.PublicMiddlewareService.MessageExchange:output_type -> search.v1.MessageExchangeResponse
-	20, // [20:28] is the sub-list for method output_type
-	12, // [12:20] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	23, // 6: search.v1.InitChannelRequest.messagetranslations:type_name -> search.v1.MessageTranslations
+	1,  // 7: search.v1.InitChannelResponse.result:type_name -> search.v1.InitChannelResponse.Result
+	2,  // 8: search.v1.StartChannelResponse.result:type_name -> search.v1.StartChannelResponse.Result
+	3,  // 9: search.v1.CloseChannelResponse.result:type_name -> search.v1.CloseChannelResponse.Result
+	4,  // 10: search.v1.MessageExchangeResponse.result:type_name -> search.v1.MessageExchangeResponse.Result
+	24, // 11: search.v1.RegisterChannelRequest.PresetParticipantsEntry.value:type_name -> search.v1.RemoteParticipant
+	24, // 12: search.v1.InitChannelRequest.ParticipantsEntry.value:type_name -> search.v1.RemoteParticipant
+	7,  // 13: search.v1.PrivateMiddlewareService.RegisterChannel:input_type -> search.v1.RegisterChannelRequest
+	9,  // 14: search.v1.PrivateMiddlewareService.RegisterApp:input_type -> search.v1.RegisterAppRequest
+	16, // 15: search.v1.PrivateMiddlewareService.CloseChannel:input_type -> search.v1.CloseChannelRequest
+	25, // 16: search.v1.PrivateMiddlewareService.AppSend:input_type -> search.v1.AppSendRequest
+	6,  // 17: search.v1.PrivateMiddlewareService.AppRecv:input_type -> search.v1.AppRecvRequest
+	12, // 18: search.v1.PublicMiddlewareService.InitChannel:input_type -> search.v1.InitChannelRequest
+	14, // 19: search.v1.PublicMiddlewareService.StartChannel:input_type -> search.v1.StartChannelRequest
+	26, // 20: search.v1.PublicMiddlewareService.MessageExchange:input_type -> search.v1.MessageExchangeRequest
+	8,  // 21: search.v1.PrivateMiddlewareService.RegisterChannel:output_type -> search.v1.RegisterChannelResponse
+	10, // 22: search.v1.PrivateMiddlewareService.RegisterApp:output_type -> search.v1.RegisterAppResponse
+	17, // 23: search.v1.PrivateMiddlewareService.CloseChannel:output_type -> search.v1.CloseChannelResponse
+	5,  // 24: search.v1.PrivateMiddlewareService.AppSend:output_type -> search.v1.AppSendResponse
+	27, // 25: search.v1.PrivateMiddlewareService.AppRecv:output_type -> search.v1.AppRecvResponse
+	13, // 26: search.v1.PublicMiddlewareService.InitChannel:output_type -> search.v1.InitChannelResponse
+	15, // 27: search.v1.PublicMiddlewareService.StartChannel:output_type -> search.v1.StartChannelResponse
+	18, // 28: search.v1.PublicMiddlewareService.MessageExchange:output_type -> search.v1.MessageExchangeResponse
+	21, // [21:29] is the sub-list for method output_type
+	13, // [13:21] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_search_v1_middleware_proto_init() }

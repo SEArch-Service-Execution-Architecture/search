@@ -23,9 +23,7 @@ message BrokerChannelRequest {
 message BrokerChannelResponse {
     string channel_id = 2;  // uuidv4
     map<string, RemoteParticipant> participants = 3;  // preset + brokered participants
-    // mapping of each message name: keys are the message names in the requirement contract,
-    // values are the message names on each provider with which this participant iteracts.
-    map<string, string> messageTranslations = 4;
+    repeated MessageTranslations messagetranslations = 4; // message name translations for each participant
 }
 
 message RegisterProviderRequest {

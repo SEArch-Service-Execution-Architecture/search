@@ -89,9 +89,7 @@ message InitChannelRequest {
     string channel_id = 1;
     string app_id = 2; // which app behind the middleware is being notified
     map<string, RemoteParticipant> participants = 3;
-    // mapping of each message name: keys are the message names in the provider contract,
-    // values are the message names in the other participant's contract.
-    map<string, string> messageTranslations = 4;
+    repeated MessageTranslations messagetranslations = 4; // message name translations for each participant
 }
 
 message InitChannelResponse {
