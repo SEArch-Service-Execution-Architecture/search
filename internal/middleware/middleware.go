@@ -147,13 +147,12 @@ func (mw *MiddlewareServer) newSEARCHChannel(c contract.Contract, pbContract *pb
 	return &r, nil
 }
 
-func (s *MiddlewareServer) connectBroker(ctx context.Context) (pb.BrokerServiceClient, *grpc.ClientConn) {
+func (s *MiddlewareServer) connectBroker() (pb.BrokerServiceClient, *grpc.ClientConn) {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials())) // TODO: use tls
-	opts = append(opts, grpc.WithBlock())
-	conn, err := grpc.DialContext(ctx, s.brokerAddr, opts...)
+	conn, err := grpc.NewClient(s.brokerAddr, opts...)
 	if err != nil {
-		s.logger.Fatalf("fail to dial to broker addr %s: %v", s.brokerAddr, err)
+		s.logger.Fatalf("fail to create connection to broker addr %s: %v", s.brokerAddr, err)
 	}
 	client := pb.NewBrokerServiceClient(conn)
 
@@ -163,7 +162,7 @@ func (s *MiddlewareServer) connectBroker(ctx context.Context) (pb.BrokerServiceC
 // connect to the broker, send contract, wait for result and save data in the channel
 func (r *SEARCHChannel) broker(ctx context.Context) error {
 	r.mw.logger.Printf("Requesting brokerage of contract: '%v'", r.Contract)
-	client, conn := r.mw.connectBroker(ctx)
+	client, conn := r.mw.connectBroker()
 	defer conn.Close()
 	presetParticipants := make(map[string]*pb.RemoteParticipant)
 	for k, v := range r.presetParticipants {
@@ -215,8 +214,7 @@ func (r *SEARCHChannel) broker(ctx context.Context) error {
 // to notify it of new channels being initiated for it.
 func (s *MiddlewareServer) RegisterApp(req *pb.RegisterAppRequest, stream pb.PrivateMiddlewareService_RegisterAppServer) error {
 	// Connect to broker.
-	client, conn := s.connectBroker(context.TODO())
-	defer conn.Close()
+	client, conn := s.connectBroker()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -229,7 +227,7 @@ func (s *MiddlewareServer) RegisterApp(req *pb.RegisterAppRequest, stream pb.Pri
 		Contract: req.ProviderContract,
 		Url:      s.PublicURL,
 	})
-	conn.Close()
+	conn.Close() // disconnect from the broker.
 	if err != nil {
 		return status.Error(codes.Unavailable, "error registering provider with broker")
 	}
@@ -306,9 +304,8 @@ func (r *SEARCHChannel) sender(ctx context.Context, participant string) error {
 	}
 	// connect and save stream in r.outStreams
 	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithBlock())
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials())) // TODO: use tls
-	provconn, err := grpc.Dial(r.addresses[participant].GetUrl(), opts...)
+	provconn, err := grpc.NewClient(r.addresses[participant].GetUrl(), opts...)
 	if err != nil {
 		return fmt.Errorf("fail to dial: %v", err)
 	}
