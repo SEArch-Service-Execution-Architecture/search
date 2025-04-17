@@ -29,7 +29,7 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 	lineCommentRe := regexp.MustCompile(`^--.*`)
 	machineStartRe := regexp.MustCompile(`^\.outputs(\s+(\S+))?$`)
 	startStateRe := regexp.MustCompile(`^\.marking\s+(\S+)$`)
-	messageRe := regexp.MustCompile(`^(\S+)\s(\S+)\s([\?!])\s(\S+)\s(\S+)$`)
+	messageRe := regexp.MustCompile(`^(\S+)\s(\S+)\s([\?!])\s((?:\S+\([^)]*\)|\S+))\s(\S+)$`)
 
 	// Possible states of the parser while consuming input.
 	type FSAParserStatus byte

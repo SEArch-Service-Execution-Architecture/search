@@ -1,0 +1,6 @@
+.outputs Calc1
+.state graph
+q0 User ? add(int x, int y) q1
+q1 User ! sumdone(int z) q2
+.marking q0
+.end
