@@ -136,7 +136,8 @@ print(json.dumps({
 	}
 
 	// Execute the Python code using exec.Command
-	cmd := exec.Command("/Users/pmontepagano/.pyenv/versions/search/bin/python", tempFile.Name())
+	// cmd := exec.Command("/Users/pmontepagano/.pyenv/versions/search/bin/python", tempFile.Name())
+	cmd := exec.Command("python", tempFile.Name())
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return false, nil, nil, fmt.Errorf("error executing Python code: %w", err)
