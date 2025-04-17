@@ -30,8 +30,7 @@ func TestRegisterChannel(t *testing.T) {
 
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	opts = append(opts, grpc.WithBlock())
-	conn, err := grpc.Dial("localhost:5555", opts...)
+	conn, err := grpc.NewClient("localhost:5555", opts...)
 	if err != nil {
 		t.Error("Could not contact local private middleware server.")
 	}
@@ -207,8 +206,7 @@ func TestNoCompatibleProviders(t *testing.T) {
 			// Connect to Service Client's middleware.
 			var opts []grpc.DialOption
 			opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-			opts = append(opts, grpc.WithBlock())
-			conn, err := grpc.Dial(serviceClientMw.PrivateURL, opts...)
+			conn, err := grpc.NewClient(serviceClientMw.PrivateURL, opts...)
 			if err != nil {
 				t.Error("Could not contact local private middleware server.")
 			}
@@ -263,7 +261,6 @@ func TestCircle(t *testing.T) {
 	// common grpc.DialOption
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	opts = append(opts, grpc.WithBlock())
 
 	// launch 3 provider apps that simply pass the message to next member adding their name...?
 	for idx, mw := range []*MiddlewareServer{p1Mw, p2Mw, p3Mw} {
@@ -271,7 +268,7 @@ func TestCircle(t *testing.T) {
 			// this function is for provider app
 			defer mw.Stop()
 			// connect to provider middleware
-			conn, err := grpc.Dial(mw.PrivateURL, opts...)
+			conn, err := grpc.NewClient(mw.PrivateURL, opts...)
 			if err != nil {
 				t.Error("Could not contact local private middleware server.")
 			}
@@ -360,7 +357,7 @@ func TestCircle(t *testing.T) {
 	time.Sleep(100 * time.Millisecond)
 
 	// connect to initiator's middleware and register channel
-	conn, err := grpc.Dial(initiatorMw.PrivateURL, opts...)
+	conn, err := grpc.NewClient(initiatorMw.PrivateURL, opts...)
 	if err != nil {
 		t.Error("Could not contact local private middleware server.")
 	}
@@ -549,7 +546,7 @@ func pongProgram(t *testing.T, middlewareURL string, registeredNotify chan bool,
 	// Connect to the middleware and instantiate client.
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	conn, err := grpc.Dial(middlewareURL, opts...)
+	conn, err := grpc.NewClient(middlewareURL, opts...)
 	if err != nil {
 		t.Errorf("Error in pongProgram connecting to middleware URL %s", middlewareURL)
 	}
@@ -690,7 +687,7 @@ func pingProgram(t *testing.T, middlewareURL string, registeredPong chan bool) {
 	// Connect to the middleware and instantiate client.
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	conn, err := grpc.Dial(middlewareURL, opts...)
+	conn, err := grpc.NewClient(middlewareURL, opts...)
 	if err != nil {
 		t.Errorf("Error in pingProgram connecting to middleware URL %s", middlewareURL)
 	}

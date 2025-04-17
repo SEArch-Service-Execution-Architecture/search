@@ -15,5 +15,6 @@ __pycache__/
 # Binaries
 /broker
 /middleware
+/payments-service
 
 node_modules

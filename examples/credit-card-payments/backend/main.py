@@ -45,7 +45,7 @@ async def main(grpc_channel):
     async for r in stub.register_app(
         search.RegisterAppRequest(
             provider_contract=search.LocalContract(
-                format=search.LocalContractFormat.LOCAL_CONTRACT_FORMAT_FSA,
+                format=search.LocalContractFormat.FSA,
                 contract=PROVIDER_CONTRACT,
             )
         )

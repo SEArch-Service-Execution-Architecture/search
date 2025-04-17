@@ -8,7 +8,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.62.2)",
+    value = "by gRPC proto compiler (version 1.71.0)",
     comments = "Source: search/v1/middleware.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class PublicMiddlewareServiceGrpc {
@@ -123,6 +123,21 @@ public final class PublicMiddlewareServiceGrpc {
         }
       };
     return PublicMiddlewareServiceStub.newStub(factory, channel);
+  }
+
+  /**
+   * Creates a new blocking-style stub that supports all types of calls on the service
+   */
+  public static PublicMiddlewareServiceBlockingV2Stub newBlockingV2Stub(
+      io.grpc.Channel channel) {
+    io.grpc.stub.AbstractStub.StubFactory<PublicMiddlewareServiceBlockingV2Stub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<PublicMiddlewareServiceBlockingV2Stub>() {
+        @java.lang.Override
+        public PublicMiddlewareServiceBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new PublicMiddlewareServiceBlockingV2Stub(channel, callOptions);
+        }
+      };
+    return PublicMiddlewareServiceBlockingV2Stub.newStub(factory, channel);
   }
 
   /**
@@ -250,6 +265,52 @@ public final class PublicMiddlewareServiceGrpc {
 
   /**
    * A stub to allow clients to do synchronous rpc calls to service PublicMiddlewareService.
+   * <pre>
+   *This service is what a Middleware exposes to external components (other participants and the broker)
+   * </pre>
+   */
+  public static final class PublicMiddlewareServiceBlockingV2Stub
+      extends io.grpc.stub.AbstractBlockingStub<PublicMiddlewareServiceBlockingV2Stub> {
+    private PublicMiddlewareServiceBlockingV2Stub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
+    }
+
+    @java.lang.Override
+    protected PublicMiddlewareServiceBlockingV2Stub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      return new PublicMiddlewareServiceBlockingV2Stub(channel, callOptions);
+    }
+
+    /**
+     * <pre>
+     * The Broker, when a new channel is registered, signals all providers with this
+     * </pre>
+     */
+    public ar.com.montepagano.search.v1.Middleware.InitChannelResponse initChannel(ar.com.montepagano.search.v1.Middleware.InitChannelRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getInitChannelMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public ar.com.montepagano.search.v1.Middleware.StartChannelResponse startChannel(ar.com.montepagano.search.v1.Middleware.StartChannelRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getStartChannelMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/10918")
+    public io.grpc.stub.BlockingClientCall<ar.com.montepagano.search.v1.AppMessageOuterClass.MessageExchangeRequest, ar.com.montepagano.search.v1.Middleware.MessageExchangeResponse>
+        messageExchange() {
+      return io.grpc.stub.ClientCalls.blockingClientStreamingCall(
+          getChannel(), getMessageExchangeMethod(), getCallOptions());
+    }
+  }
+
+  /**
+   * A stub to allow clients to do limited synchronous rpc calls to service PublicMiddlewareService.
    * <pre>
    *This service is what a Middleware exposes to external components (other participants and the broker)
    * </pre>
