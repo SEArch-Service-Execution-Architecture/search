@@ -10,7 +10,7 @@ Please follow the instructions below to run the SEArch example:
 - Open a terminal, navigate to this directory and run:
 
 
-    docker compose run client
+    docker compose run --rm client-go
 
 You will be prompted by the Service Client for different questions. The output should look like this:
 

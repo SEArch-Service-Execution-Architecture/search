@@ -32,8 +32,8 @@ import (
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
 	"github.com/SEArch-Service-Execution-Architecture/search/internal/searcherrors"
 
-	_ "github.com/mattn/go-sqlite3"
 	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type brokerServer struct {
@@ -465,12 +465,9 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 			s.logger.Printf("Connecting to participant %s during brokerage. Provider AppId: %s, URL: %s", pname, p.AppId, p.Url)
 
 			// Connect to the provider's middleware.
-			conn, err := grpc.DialContext(
-				ctx,
+			conn, err := grpc.NewClient(
 				p.Url,
 				grpc.WithTransportCredentials(insecure.NewCredentials()), // TODO: use tls
-				grpc.WithBlock(),
-				grpc.FailOnNonTempDialError(true),
 			)
 			result.conn = conn
 			if err != nil {
@@ -488,7 +485,7 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 				participantsMapping, err = s.getParticipantMapping(reqContract, allParticipants, pname, candidates[pname])
 			}
 			if err != nil {
-				s.logger.Printf(err.Error())
+				s.logger.Print(err.Error())
 				unresponsiveParticipants <- pname
 				return result, fmt.Errorf("internal error calculating participant mapping: %w", err)
 			}
@@ -567,7 +564,7 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 			if res.Result != pb.StartChannelResponse_RESULT_ACK {
 				msg := fmt.Sprintf("Non-ACK response while sending StartChannel to participant %s, with URL %s", pname, p.Url)
 				s.logger.Print(msg)
-				return fmt.Errorf(msg)
+				return errors.New(msg)
 			}
 			return nil
 		})

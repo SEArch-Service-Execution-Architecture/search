@@ -7,7 +7,7 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.4.22 && \
     chmod +x /bin/grpc_health_probe
 
 WORKDIR /src
-# ENV CGO_ENABLED=0
+
 COPY go.* .
 RUN go mod download
 COPY cfsm ./cfsm
@@ -17,8 +17,9 @@ COPY mocks ./mocks
 COPY gen/go ./gen/go
 COPY cmd ./cmd
 COPY internal ./internal
-COPY examples/credit-card-payments/payments-service ./
+COPY examples/credit-card-payments/client-go ./
 
-RUN go build -v -o /usr/local/bin/payments-service main.go
+RUN go build -v -o /usr/local/bin/client-go main.go
+COPY examples/credit-card-payments/contract.fsa .
 
-CMD ["/usr/local/bin/payments-service"]
+CMD ["/usr/local/bin/client-go"]

@@ -1,6 +1,6 @@
-ARG GOVERSION="1.21"
+ARG GOVERSION="1.24"
 ARG USERNAME=search
-FROM golang:${GOVERSION} as dev
+FROM golang:${GOVERSION} AS dev
 
 RUN GRPC_HEALTH_PROBE_VERSION=v0.4.22 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
@@ -30,8 +30,8 @@ RUN --mount=type=cache,target=/home/$USERNAME/.cache/go-build \
 # COPY --from=dev /usr/local/bin/broker /
 
 
-# Use Python 3.12 as base image
-FROM python:3.12 as with-python-vfsm-bisimulation
+# Use Python 3.13 as base image
+FROM python:3.13 AS with-python-vfsm-bisimulation
 ENV PYTHONUNBUFFERED=1
 
 # Set working directory to /app
