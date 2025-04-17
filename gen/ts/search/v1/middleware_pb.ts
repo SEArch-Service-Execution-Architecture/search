@@ -5,7 +5,7 @@
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3 } from "@bufbuild/protobuf";
-import { GlobalContract, LocalContract } from "./contracts_pb.js";
+import { GlobalContract, LocalContract, MessageTranslations } from "./contracts_pb.js";
 import { RemoteParticipant } from "./broker_pb.js";
 
 /**
@@ -197,6 +197,9 @@ export class RegisterChannelResponse extends Message<RegisterChannelResponse> {
 }
 
 /**
+ * The middleware sends this to the broker to register a provider to
+ *   be added to the registry.
+ *
  * @generated from message search.v1.RegisterAppRequest
  */
 export class RegisterAppRequest extends Message<RegisterAppRequest> {
@@ -344,11 +347,16 @@ export class InitChannelRequest extends Message<InitChannelRequest> {
   appId = "";
 
   /**
-   * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-   *
    * @generated from field: map<string, search.v1.RemoteParticipant> participants = 3;
    */
   participants: { [key: string]: RemoteParticipant } = {};
+
+  /**
+   * message name translations for each participant
+   *
+   * @generated from field: repeated search.v1.MessageTranslations messagetranslations = 4;
+   */
+  messagetranslations: MessageTranslations[] = [];
 
   constructor(data?: PartialMessage<InitChannelRequest>) {
     super();
@@ -361,6 +369,7 @@ export class InitChannelRequest extends Message<InitChannelRequest> {
     { no: 1, name: "channel_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "app_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "participants", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "message", T: RemoteParticipant} },
+    { no: 4, name: "messagetranslations", kind: "message", T: MessageTranslations, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): InitChannelRequest {

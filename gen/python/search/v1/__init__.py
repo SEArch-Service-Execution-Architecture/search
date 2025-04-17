@@ -128,7 +128,24 @@ class LocalContract(betterproto.Message):
 
 
 @dataclass(eq=False, repr=False)
+class MessageTranslations(betterproto.Message):
+    participant: str = betterproto.string_field(1)
+    """
+    Different contracts can be compatible while using different names for messages that are equivalent.
+     This data structure contains the mapping of each message name to the name used by the other participant.
+     The keys are the message names in the contract of who receives this message, and the values are the message
+     names according to the other participant's contract.
+    """
+
+    translations: Dict[str, str] = betterproto.map_field(
+        2, betterproto.TYPE_STRING, betterproto.TYPE_STRING
+    )
+
+
+@dataclass(eq=False, repr=False)
 class BrokerChannelRequest(betterproto.Message):
+    """Sent by client middleware to the broker to register a new channel."""
+
     contract: "GlobalContract" = betterproto.message_field(1)
     preset_participants: Dict[str, "RemoteParticipant"] = betterproto.map_field(
         2, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
@@ -145,6 +162,7 @@ class BrokerChannelResponse(betterproto.Message):
     participants: Dict[str, "RemoteParticipant"] = betterproto.map_field(
         3, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
     )
+    messagetranslations: List["MessageTranslations"] = betterproto.message_field(4)
 
 
 @dataclass(eq=False, repr=False)
@@ -192,6 +210,11 @@ class RegisterChannelResponse(betterproto.Message):
 
 @dataclass(eq=False, repr=False)
 class RegisterAppRequest(betterproto.Message):
+    """
+    The middleware sends this to the broker to register a provider to
+       be added to the registry.
+    """
+
     provider_contract: "LocalContract" = betterproto.message_field(1)
 
 
@@ -228,6 +251,7 @@ class InitChannelRequest(betterproto.Message):
     participants: Dict[str, "RemoteParticipant"] = betterproto.map_field(
         3, betterproto.TYPE_STRING, betterproto.TYPE_MESSAGE
     )
+    messagetranslations: List["MessageTranslations"] = betterproto.message_field(4)
 
 
 @dataclass(eq=False, repr=False)

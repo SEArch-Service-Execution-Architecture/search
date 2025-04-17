@@ -26,3 +26,13 @@ enum LocalContractFormat {
     LOCAL_CONTRACT_FORMAT_FSA = 1; // Single CFSM in FSA file format (for Service Providers).
     LOCAL_CONTRACT_FORMAT_PYTHON_BISIMULATION_CODE = 2;  // Python code to construct CFSM for https://github.com/diegosenarruzza/bisimulation/
 }
+
+
+message MessageTranslations {
+    // Different contracts can be compatible while using different names for messages that are equivalent.
+    // This data structure contains the mapping of each message name to the name used by the other participant.
+    // The keys are the message names in the contract of who receives this message, and the values are the message
+    // names according to the other participant's contract.
+    string participant = 1;
+    map<string, string> translations = 2;
+}

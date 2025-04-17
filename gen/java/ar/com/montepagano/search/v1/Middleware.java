@@ -2784,6 +2784,11 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
     ar.com.montepagano.search.v1.Contracts.LocalContractOrBuilder getProviderContractOrBuilder();
   }
   /**
+   * <pre>
+   * The middleware sends this to the broker to register a provider to
+   * be added to the registry.
+   * </pre>
+   *
    * Protobuf type {@code search.v1.RegisterAppRequest}
    */
   public static final class RegisterAppRequest extends
@@ -3010,6 +3015,11 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
       return builder;
     }
     /**
+     * <pre>
+     * The middleware sends this to the broker to register a provider to
+     * be added to the registry.
+     * </pre>
+     *
      * Protobuf type {@code search.v1.RegisterAppRequest}
      */
     public static final class Builder extends
@@ -4751,18 +4761,10 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         getAppIdBytes();
 
     /**
-     * <pre>
-     * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-     * </pre>
-     *
      * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
      */
     int getParticipantsCount();
     /**
-     * <pre>
-     * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-     * </pre>
-     *
      * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
      */
     boolean containsParticipants(
@@ -4774,19 +4776,11 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
     java.util.Map<java.lang.String, ar.com.montepagano.search.v1.Broker.RemoteParticipant>
     getParticipants();
     /**
-     * <pre>
-     * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-     * </pre>
-     *
      * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
      */
     java.util.Map<java.lang.String, ar.com.montepagano.search.v1.Broker.RemoteParticipant>
     getParticipantsMap();
     /**
-     * <pre>
-     * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-     * </pre>
-     *
      * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
      */
     /* nullable */
@@ -4795,14 +4789,54 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant getParticipantsOrDefault(
         /* nullable */
 ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue);
     /**
-     * <pre>
-     * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-     * </pre>
-     *
      * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
      */
     ar.com.montepagano.search.v1.Broker.RemoteParticipant getParticipantsOrThrow(
         java.lang.String key);
+
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    java.util.List<ar.com.montepagano.search.v1.Contracts.MessageTranslations> 
+        getMessagetranslationsList();
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    ar.com.montepagano.search.v1.Contracts.MessageTranslations getMessagetranslations(int index);
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    int getMessagetranslationsCount();
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    java.util.List<? extends ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder> 
+        getMessagetranslationsOrBuilderList();
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder getMessagetranslationsOrBuilder(
+        int index);
   }
   /**
    * <pre>
@@ -4832,6 +4866,7 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue);
     private InitChannelRequest() {
       channelId_ = "";
       appId_ = "";
+      messagetranslations_ = java.util.Collections.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -4972,10 +5007,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue);
       return internalGetParticipants().getMap().size();
     }
     /**
-     * <pre>
-     * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-     * </pre>
-     *
      * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
      */
     @java.lang.Override
@@ -4993,10 +5024,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue);
       return getParticipantsMap();
     }
     /**
-     * <pre>
-     * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-     * </pre>
-     *
      * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
      */
     @java.lang.Override
@@ -5004,10 +5031,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue);
       return internalGetParticipants().getMap();
     }
     /**
-     * <pre>
-     * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-     * </pre>
-     *
      * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
      */
     @java.lang.Override
@@ -5022,10 +5045,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
       return map.containsKey(key) ? map.get(key) : defaultValue;
     }
     /**
-     * <pre>
-     * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-     * </pre>
-     *
      * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
      */
     @java.lang.Override
@@ -5038,6 +5057,67 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
+    }
+
+    public static final int MESSAGETRANSLATIONS_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private java.util.List<ar.com.montepagano.search.v1.Contracts.MessageTranslations> messagetranslations_;
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<ar.com.montepagano.search.v1.Contracts.MessageTranslations> getMessagetranslationsList() {
+      return messagetranslations_;
+    }
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder> 
+        getMessagetranslationsOrBuilderList() {
+      return messagetranslations_;
+    }
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    @java.lang.Override
+    public int getMessagetranslationsCount() {
+      return messagetranslations_.size();
+    }
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    @java.lang.Override
+    public ar.com.montepagano.search.v1.Contracts.MessageTranslations getMessagetranslations(int index) {
+      return messagetranslations_.get(index);
+    }
+    /**
+     * <pre>
+     * message name translations for each participant
+     * </pre>
+     *
+     * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+     */
+    @java.lang.Override
+    public ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder getMessagetranslationsOrBuilder(
+        int index) {
+      return messagetranslations_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -5066,6 +5146,9 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
           internalGetParticipants(),
           ParticipantsDefaultEntryHolder.defaultEntry,
           3);
+      for (int i = 0; i < messagetranslations_.size(); i++) {
+        output.writeMessage(4, messagetranslations_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -5091,6 +5174,10 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(3, participants__);
       }
+      for (int i = 0; i < messagetranslations_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, messagetranslations_.get(i));
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -5112,6 +5199,8 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
           .equals(other.getAppId())) return false;
       if (!internalGetParticipants().equals(
           other.internalGetParticipants())) return false;
+      if (!getMessagetranslationsList()
+          .equals(other.getMessagetranslationsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -5130,6 +5219,10 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
       if (!internalGetParticipants().getMap().isEmpty()) {
         hash = (37 * hash) + PARTICIPANTS_FIELD_NUMBER;
         hash = (53 * hash) + internalGetParticipants().hashCode();
+      }
+      if (getMessagetranslationsCount() > 0) {
+        hash = (37 * hash) + MESSAGETRANSLATIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getMessagetranslationsList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -5291,6 +5384,13 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         channelId_ = "";
         appId_ = "";
         internalGetMutableParticipants().clear();
+        if (messagetranslationsBuilder_ == null) {
+          messagetranslations_ = java.util.Collections.emptyList();
+        } else {
+          messagetranslations_ = null;
+          messagetranslationsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -5317,9 +5417,22 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
       @java.lang.Override
       public ar.com.montepagano.search.v1.Middleware.InitChannelRequest buildPartial() {
         ar.com.montepagano.search.v1.Middleware.InitChannelRequest result = new ar.com.montepagano.search.v1.Middleware.InitChannelRequest(this);
+        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartialRepeatedFields(ar.com.montepagano.search.v1.Middleware.InitChannelRequest result) {
+        if (messagetranslationsBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0)) {
+            messagetranslations_ = java.util.Collections.unmodifiableList(messagetranslations_);
+            bitField0_ = (bitField0_ & ~0x00000008);
+          }
+          result.messagetranslations_ = messagetranslations_;
+        } else {
+          result.messagetranslations_ = messagetranslationsBuilder_.build();
+        }
       }
 
       private void buildPartial0(ar.com.montepagano.search.v1.Middleware.InitChannelRequest result) {
@@ -5360,6 +5473,32 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         internalGetMutableParticipants().mergeFrom(
             other.internalGetParticipants());
         bitField0_ |= 0x00000004;
+        if (messagetranslationsBuilder_ == null) {
+          if (!other.messagetranslations_.isEmpty()) {
+            if (messagetranslations_.isEmpty()) {
+              messagetranslations_ = other.messagetranslations_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+            } else {
+              ensureMessagetranslationsIsMutable();
+              messagetranslations_.addAll(other.messagetranslations_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.messagetranslations_.isEmpty()) {
+            if (messagetranslationsBuilder_.isEmpty()) {
+              messagetranslationsBuilder_.dispose();
+              messagetranslationsBuilder_ = null;
+              messagetranslations_ = other.messagetranslations_;
+              bitField0_ = (bitField0_ & ~0x00000008);
+              messagetranslationsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetMessagetranslationsFieldBuilder() : null;
+            } else {
+              messagetranslationsBuilder_.addAllMessages(other.messagetranslations_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -5405,6 +5544,19 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
                 bitField0_ |= 0x00000004;
                 break;
               } // case 26
+              case 34: {
+                ar.com.montepagano.search.v1.Contracts.MessageTranslations m =
+                    input.readMessage(
+                        ar.com.montepagano.search.v1.Contracts.MessageTranslations.parser(),
+                        extensionRegistry);
+                if (messagetranslationsBuilder_ == null) {
+                  ensureMessagetranslationsIsMutable();
+                  messagetranslations_.add(m);
+                } else {
+                  messagetranslationsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 34
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -5622,10 +5774,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         return internalGetParticipants().ensureBuilderMap().size();
       }
       /**
-       * <pre>
-       * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-       * </pre>
-       *
        * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
        */
       @java.lang.Override
@@ -5643,10 +5791,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         return getParticipantsMap();
       }
       /**
-       * <pre>
-       * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-       * </pre>
-       *
        * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
        */
       @java.lang.Override
@@ -5654,10 +5798,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         return internalGetParticipants().getImmutableMap();
       }
       /**
-       * <pre>
-       * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-       * </pre>
-       *
        * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
        */
       @java.lang.Override
@@ -5671,10 +5811,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         return map.containsKey(key) ? participantsConverter.build(map.get(key)) : defaultValue;
       }
       /**
-       * <pre>
-       * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-       * </pre>
-       *
        * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
        */
       @java.lang.Override
@@ -5693,10 +5829,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         return this;
       }
       /**
-       * <pre>
-       * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-       * </pre>
-       *
        * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
        */
       public Builder removeParticipants(
@@ -5716,10 +5848,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         return internalGetMutableParticipants().ensureMessageMap();
       }
       /**
-       * <pre>
-       * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-       * </pre>
-       *
        * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
        */
       public Builder putParticipants(
@@ -5733,10 +5861,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         return this;
       }
       /**
-       * <pre>
-       * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-       * </pre>
-       *
        * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
        */
       public Builder putAllParticipants(
@@ -5752,10 +5876,6 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         return this;
       }
       /**
-       * <pre>
-       * int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
-       * </pre>
-       *
        * <code>map&lt;string, .search.v1.RemoteParticipant&gt; participants = 3 [json_name = "participants"];</code>
        */
       public ar.com.montepagano.search.v1.Broker.RemoteParticipant.Builder putParticipantsBuilderIfAbsent(
@@ -5771,6 +5891,318 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
           builderMap.put(key, entry);
         }
         return (ar.com.montepagano.search.v1.Broker.RemoteParticipant.Builder) entry;
+      }
+
+      private java.util.List<ar.com.montepagano.search.v1.Contracts.MessageTranslations> messagetranslations_ =
+        java.util.Collections.emptyList();
+      private void ensureMessagetranslationsIsMutable() {
+        if (!((bitField0_ & 0x00000008) != 0)) {
+          messagetranslations_ = new java.util.ArrayList<ar.com.montepagano.search.v1.Contracts.MessageTranslations>(messagetranslations_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          ar.com.montepagano.search.v1.Contracts.MessageTranslations, ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder, ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder> messagetranslationsBuilder_;
+
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public java.util.List<ar.com.montepagano.search.v1.Contracts.MessageTranslations> getMessagetranslationsList() {
+        if (messagetranslationsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(messagetranslations_);
+        } else {
+          return messagetranslationsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public int getMessagetranslationsCount() {
+        if (messagetranslationsBuilder_ == null) {
+          return messagetranslations_.size();
+        } else {
+          return messagetranslationsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public ar.com.montepagano.search.v1.Contracts.MessageTranslations getMessagetranslations(int index) {
+        if (messagetranslationsBuilder_ == null) {
+          return messagetranslations_.get(index);
+        } else {
+          return messagetranslationsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public Builder setMessagetranslations(
+          int index, ar.com.montepagano.search.v1.Contracts.MessageTranslations value) {
+        if (messagetranslationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureMessagetranslationsIsMutable();
+          messagetranslations_.set(index, value);
+          onChanged();
+        } else {
+          messagetranslationsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public Builder setMessagetranslations(
+          int index, ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder builderForValue) {
+        if (messagetranslationsBuilder_ == null) {
+          ensureMessagetranslationsIsMutable();
+          messagetranslations_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          messagetranslationsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public Builder addMessagetranslations(ar.com.montepagano.search.v1.Contracts.MessageTranslations value) {
+        if (messagetranslationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureMessagetranslationsIsMutable();
+          messagetranslations_.add(value);
+          onChanged();
+        } else {
+          messagetranslationsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public Builder addMessagetranslations(
+          int index, ar.com.montepagano.search.v1.Contracts.MessageTranslations value) {
+        if (messagetranslationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureMessagetranslationsIsMutable();
+          messagetranslations_.add(index, value);
+          onChanged();
+        } else {
+          messagetranslationsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public Builder addMessagetranslations(
+          ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder builderForValue) {
+        if (messagetranslationsBuilder_ == null) {
+          ensureMessagetranslationsIsMutable();
+          messagetranslations_.add(builderForValue.build());
+          onChanged();
+        } else {
+          messagetranslationsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public Builder addMessagetranslations(
+          int index, ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder builderForValue) {
+        if (messagetranslationsBuilder_ == null) {
+          ensureMessagetranslationsIsMutable();
+          messagetranslations_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          messagetranslationsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public Builder addAllMessagetranslations(
+          java.lang.Iterable<? extends ar.com.montepagano.search.v1.Contracts.MessageTranslations> values) {
+        if (messagetranslationsBuilder_ == null) {
+          ensureMessagetranslationsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, messagetranslations_);
+          onChanged();
+        } else {
+          messagetranslationsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public Builder clearMessagetranslations() {
+        if (messagetranslationsBuilder_ == null) {
+          messagetranslations_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000008);
+          onChanged();
+        } else {
+          messagetranslationsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public Builder removeMessagetranslations(int index) {
+        if (messagetranslationsBuilder_ == null) {
+          ensureMessagetranslationsIsMutable();
+          messagetranslations_.remove(index);
+          onChanged();
+        } else {
+          messagetranslationsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder getMessagetranslationsBuilder(
+          int index) {
+        return internalGetMessagetranslationsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder getMessagetranslationsOrBuilder(
+          int index) {
+        if (messagetranslationsBuilder_ == null) {
+          return messagetranslations_.get(index);  } else {
+          return messagetranslationsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public java.util.List<? extends ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder> 
+           getMessagetranslationsOrBuilderList() {
+        if (messagetranslationsBuilder_ != null) {
+          return messagetranslationsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(messagetranslations_);
+        }
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder addMessagetranslationsBuilder() {
+        return internalGetMessagetranslationsFieldBuilder().addBuilder(
+            ar.com.montepagano.search.v1.Contracts.MessageTranslations.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder addMessagetranslationsBuilder(
+          int index) {
+        return internalGetMessagetranslationsFieldBuilder().addBuilder(
+            index, ar.com.montepagano.search.v1.Contracts.MessageTranslations.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * message name translations for each participant
+       * </pre>
+       *
+       * <code>repeated .search.v1.MessageTranslations messagetranslations = 4 [json_name = "messagetranslations"];</code>
+       */
+      public java.util.List<ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder> 
+           getMessagetranslationsBuilderList() {
+        return internalGetMessagetranslationsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          ar.com.montepagano.search.v1.Contracts.MessageTranslations, ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder, ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder> 
+          internalGetMessagetranslationsFieldBuilder() {
+        if (messagetranslationsBuilder_ == null) {
+          messagetranslationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              ar.com.montepagano.search.v1.Contracts.MessageTranslations, ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder, ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder>(
+                  messagetranslations_,
+                  ((bitField0_ & 0x00000008) != 0),
+                  getParentForChildren(),
+                  isClean());
+          messagetranslations_ = null;
+        }
+        return messagetranslationsBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:search.v1.InitChannelRequest)
@@ -9997,57 +10429,59 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
       " \001(\0132\".search.v1.InitChannelNotification" +
       "H\000R\014notificationB\014\n\nack_or_new\"8\n\027InitCh" +
       "annelNotification\022\035\n\nchannel_id\030\001 \001(\tR\tc" +
-      "hannelId\"\376\001\n\022InitChannelRequest\022\035\n\nchann" +
+      "hannelId\"\320\002\n\022InitChannelRequest\022\035\n\nchann" +
       "el_id\030\001 \001(\tR\tchannelId\022\025\n\006app_id\030\002 \001(\tR\005" +
       "appId\022S\n\014participants\030\003 \003(\0132/.search.v1." +
       "InitChannelRequest.ParticipantsEntryR\014pa" +
-      "rticipants\032]\n\021ParticipantsEntry\022\020\n\003key\030\001" +
-      " \001(\tR\003key\0222\n\005value\030\002 \001(\0132\034.search.v1.Rem" +
-      "oteParticipantR\005value:\0028\001\"\226\001\n\023InitChanne" +
-      "lResponse\022=\n\006result\030\001 \001(\0162%.search.v1.In" +
-      "itChannelResponse.ResultR\006result\"@\n\006Resu" +
-      "lt\022\026\n\022RESULT_UNSPECIFIED\020\000\022\016\n\nRESULT_ACK" +
-      "\020\001\022\016\n\nRESULT_ERR\020\002\"K\n\023StartChannelReques" +
-      "t\022\035\n\nchannel_id\030\001 \001(\tR\tchannelId\022\025\n\006app_" +
-      "id\030\002 \001(\tR\005appId\"\230\001\n\024StartChannelResponse" +
-      "\022>\n\006result\030\001 \001(\0162&.search.v1.StartChanne" +
-      "lResponse.ResultR\006result\"@\n\006Result\022\026\n\022RE" +
-      "SULT_UNSPECIFIED\020\000\022\016\n\nRESULT_ACK\020\001\022\016\n\nRE" +
-      "SULT_ERR\020\002\"4\n\023CloseChannelRequest\022\035\n\ncha" +
-      "nnel_id\030\001 \001(\tR\tchannelId\"\264\002\n\024CloseChanne" +
-      "lResponse\022>\n\006result\030\001 \001(\0162&.search.v1.Cl" +
-      "oseChannelResponse.ResultR\006result\022#\n\rerr" +
-      "or_message\030\002 \001(\tR\014errorMessage\022I\n!partic" +
-      "ipants_with_pending_inbound\030\003 \003(\tR\036parti" +
-      "cipantsWithPendingInbound\"l\n\006Result\022\026\n\022R" +
-      "ESULT_UNSPECIFIED\020\000\022\021\n\rRESULT_CLOSED\020\001\022\032" +
-      "\n\026RESULT_PENDING_INBOUND\020\002\022\033\n\027RESULT_PEN" +
-      "DING_OUTBOUND\020\003\"\304\001\n\027MessageExchangeRespo" +
-      "nse\022A\n\006result\030\001 \001(\0162).search.v1.MessageE" +
-      "xchangeResponse.ResultR\006result\022#\n\rerror_" +
-      "message\030\002 \001(\tR\014errorMessage\"A\n\006Result\022\026\n" +
-      "\022RESULT_UNSPECIFIED\020\000\022\r\n\tRESULT_OK\020\001\022\020\n\014" +
-      "RESULT_ERROR\020\0022\241\003\n\030PrivateMiddlewareServ" +
-      "ice\022Z\n\017RegisterChannel\022!.search.v1.Regis" +
-      "terChannelRequest\032\".search.v1.RegisterCh" +
-      "annelResponse\"\000\022P\n\013RegisterApp\022\035.search." +
-      "v1.RegisterAppRequest\032\036.search.v1.Regist" +
-      "erAppResponse\"\0000\001\022O\n\014CloseChannel\022\036.sear" +
-      "ch.v1.CloseChannelRequest\032\037.search.v1.Cl" +
-      "oseChannelResponse\022B\n\007AppSend\022\031.search.v" +
-      "1.AppSendRequest\032\032.search.v1.AppSendResp" +
-      "onse\"\000\022B\n\007AppRecv\022\031.search.v1.AppRecvReq" +
-      "uest\032\032.search.v1.AppRecvResponse\"\0002\232\002\n\027P" +
-      "ublicMiddlewareService\022N\n\013InitChannel\022\035." +
-      "search.v1.InitChannelRequest\032\036.search.v1" +
-      ".InitChannelResponse\"\000\022Q\n\014StartChannel\022\036" +
-      ".search.v1.StartChannelRequest\032\037.search." +
-      "v1.StartChannelResponse\"\000\022\\\n\017MessageExch" +
-      "ange\022!.search.v1.MessageExchangeRequest\032" +
-      "\".search.v1.MessageExchangeResponse\"\000(\001B" +
-      "a\n\034ar.com.montepagano.search.v1ZAgithub." +
-      "com/SEArch-Service-Execution-Architectur" +
-      "e/search/gen/go/v1b\006proto3"
+      "rticipants\022P\n\023messagetranslations\030\004 \003(\0132" +
+      "\036.search.v1.MessageTranslationsR\023message" +
+      "translations\032]\n\021ParticipantsEntry\022\020\n\003key" +
+      "\030\001 \001(\tR\003key\0222\n\005value\030\002 \001(\0132\034.search.v1.R" +
+      "emoteParticipantR\005value:\0028\001\"\226\001\n\023InitChan" +
+      "nelResponse\022=\n\006result\030\001 \001(\0162%.search.v1." +
+      "InitChannelResponse.ResultR\006result\"@\n\006Re" +
+      "sult\022\026\n\022RESULT_UNSPECIFIED\020\000\022\016\n\nRESULT_A" +
+      "CK\020\001\022\016\n\nRESULT_ERR\020\002\"K\n\023StartChannelRequ" +
+      "est\022\035\n\nchannel_id\030\001 \001(\tR\tchannelId\022\025\n\006ap" +
+      "p_id\030\002 \001(\tR\005appId\"\230\001\n\024StartChannelRespon" +
+      "se\022>\n\006result\030\001 \001(\0162&.search.v1.StartChan" +
+      "nelResponse.ResultR\006result\"@\n\006Result\022\026\n\022" +
+      "RESULT_UNSPECIFIED\020\000\022\016\n\nRESULT_ACK\020\001\022\016\n\n" +
+      "RESULT_ERR\020\002\"4\n\023CloseChannelRequest\022\035\n\nc" +
+      "hannel_id\030\001 \001(\tR\tchannelId\"\264\002\n\024CloseChan" +
+      "nelResponse\022>\n\006result\030\001 \001(\0162&.search.v1." +
+      "CloseChannelResponse.ResultR\006result\022#\n\re" +
+      "rror_message\030\002 \001(\tR\014errorMessage\022I\n!part" +
+      "icipants_with_pending_inbound\030\003 \003(\tR\036par" +
+      "ticipantsWithPendingInbound\"l\n\006Result\022\026\n" +
+      "\022RESULT_UNSPECIFIED\020\000\022\021\n\rRESULT_CLOSED\020\001" +
+      "\022\032\n\026RESULT_PENDING_INBOUND\020\002\022\033\n\027RESULT_P" +
+      "ENDING_OUTBOUND\020\003\"\304\001\n\027MessageExchangeRes" +
+      "ponse\022A\n\006result\030\001 \001(\0162).search.v1.Messag" +
+      "eExchangeResponse.ResultR\006result\022#\n\rerro" +
+      "r_message\030\002 \001(\tR\014errorMessage\"A\n\006Result\022" +
+      "\026\n\022RESULT_UNSPECIFIED\020\000\022\r\n\tRESULT_OK\020\001\022\020" +
+      "\n\014RESULT_ERROR\020\0022\241\003\n\030PrivateMiddlewareSe" +
+      "rvice\022Z\n\017RegisterChannel\022!.search.v1.Reg" +
+      "isterChannelRequest\032\".search.v1.Register" +
+      "ChannelResponse\"\000\022P\n\013RegisterApp\022\035.searc" +
+      "h.v1.RegisterAppRequest\032\036.search.v1.Regi" +
+      "sterAppResponse\"\0000\001\022O\n\014CloseChannel\022\036.se" +
+      "arch.v1.CloseChannelRequest\032\037.search.v1." +
+      "CloseChannelResponse\022B\n\007AppSend\022\031.search" +
+      ".v1.AppSendRequest\032\032.search.v1.AppSendRe" +
+      "sponse\"\000\022B\n\007AppRecv\022\031.search.v1.AppRecvR" +
+      "equest\032\032.search.v1.AppRecvResponse\"\0002\232\002\n" +
+      "\027PublicMiddlewareService\022N\n\013InitChannel\022" +
+      "\035.search.v1.InitChannelRequest\032\036.search." +
+      "v1.InitChannelResponse\"\000\022Q\n\014StartChannel" +
+      "\022\036.search.v1.StartChannelRequest\032\037.searc" +
+      "h.v1.StartChannelResponse\"\000\022\\\n\017MessageEx" +
+      "change\022!.search.v1.MessageExchangeReques" +
+      "t\032\".search.v1.MessageExchangeResponse\"\000(" +
+      "\001Ba\n\034ar.com.montepagano.search.v1ZAgithu" +
+      "b.com/SEArch-Service-Execution-Architect" +
+      "ure/search/gen/go/v1b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10109,7 +10543,7 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
     internal_static_search_v1_InitChannelRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_search_v1_InitChannelRequest_descriptor,
-        new java.lang.String[] { "ChannelId", "AppId", "Participants", });
+        new java.lang.String[] { "ChannelId", "AppId", "Participants", "Messagetranslations", });
     internal_static_search_v1_InitChannelRequest_ParticipantsEntry_descriptor =
       internal_static_search_v1_InitChannelRequest_descriptor.getNestedTypes().get(0);
     internal_static_search_v1_InitChannelRequest_ParticipantsEntry_fieldAccessorTable = new

@@ -1,0 +1,22 @@
+.outputs Client
+.state graph
+q0 Srv1 ! sum(int x, int y) q1
+q1 Srv1 ? result(int z) q2
+q2 Srv2 ! sum(int x, int y) q3
+q3 Srv2 ? result(int z) q4
+.marking q0
+.end
+
+.outputs Srv1
+.state graph
+q0 Client ? sum(int x, int y) q1
+q1 Client ! result(int z) q2
+.marking q0
+.end
+
+.outputs Srv2
+.state graph
+q0 Client ? sum(int x, int y) q1
+q1 Client ! result(int z) q2
+.marking q0
+.end

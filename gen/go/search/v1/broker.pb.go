@@ -21,6 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Sent by client middleware to the broker to register a new channel.
 type BrokerChannelRequest struct {
 	state    protoimpl.MessageState `protogen:"open.v1"`
 	Contract *GlobalContract        `protobuf:"bytes,1,opt,name=contract,proto3" json:"contract,omitempty"` // requirements contract
@@ -76,11 +77,12 @@ func (x *BrokerChannelRequest) GetPresetParticipants() map[string]*RemotePartici
 }
 
 type BrokerChannelResponse struct {
-	state         protoimpl.MessageState        `protogen:"open.v1"`
-	ChannelId     string                        `protobuf:"bytes,2,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`                                                                // uuidv4
-	Participants  map[string]*RemoteParticipant `protobuf:"bytes,3,rep,name=participants,proto3" json:"participants,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // preset + brokered participants
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state               protoimpl.MessageState        `protogen:"open.v1"`
+	ChannelId           string                        `protobuf:"bytes,2,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`                                                                // uuidv4
+	Participants        map[string]*RemoteParticipant `protobuf:"bytes,3,rep,name=participants,proto3" json:"participants,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // preset + brokered participants
+	Messagetranslations []*MessageTranslations        `protobuf:"bytes,4,rep,name=messagetranslations,proto3" json:"messagetranslations,omitempty"`                                                             // message name translations for each participant
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *BrokerChannelResponse) Reset() {
@@ -123,6 +125,13 @@ func (x *BrokerChannelResponse) GetChannelId() string {
 func (x *BrokerChannelResponse) GetParticipants() map[string]*RemoteParticipant {
 	if x != nil {
 		return x.Participants
+	}
+	return nil
+}
+
+func (x *BrokerChannelResponse) GetMessagetranslations() []*MessageTranslations {
+	if x != nil {
+		return x.Messagetranslations
 	}
 	return nil
 }
@@ -286,11 +295,12 @@ const file_search_v1_broker_proto_rawDesc = "" +
 	"\x13preset_participants\x18\x02 \x03(\v27.search.v1.BrokerChannelRequest.PresetParticipantsEntryR\x12presetParticipants\x1ac\n" +
 	"\x17PresetParticipantsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x122\n" +
-	"\x05value\x18\x02 \x01(\v2\x1c.search.v1.RemoteParticipantR\x05value:\x028\x01\"\xed\x01\n" +
+	"\x05value\x18\x02 \x01(\v2\x1c.search.v1.RemoteParticipantR\x05value:\x028\x01\"\xbf\x02\n" +
 	"\x15BrokerChannelResponse\x12\x1d\n" +
 	"\n" +
 	"channel_id\x18\x02 \x01(\tR\tchannelId\x12V\n" +
-	"\fparticipants\x18\x03 \x03(\v22.search.v1.BrokerChannelResponse.ParticipantsEntryR\fparticipants\x1a]\n" +
+	"\fparticipants\x18\x03 \x03(\v22.search.v1.BrokerChannelResponse.ParticipantsEntryR\fparticipants\x12P\n" +
+	"\x13messagetranslations\x18\x04 \x03(\v2\x1e.search.v1.MessageTranslationsR\x13messagetranslations\x1a]\n" +
 	"\x11ParticipantsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x122\n" +
 	"\x05value\x18\x02 \x01(\v2\x1c.search.v1.RemoteParticipantR\x05value:\x028\x01\"a\n" +
@@ -329,24 +339,26 @@ var file_search_v1_broker_proto_goTypes = []any{
 	nil,                              // 5: search.v1.BrokerChannelRequest.PresetParticipantsEntry
 	nil,                              // 6: search.v1.BrokerChannelResponse.ParticipantsEntry
 	(*GlobalContract)(nil),           // 7: search.v1.GlobalContract
-	(*LocalContract)(nil),            // 8: search.v1.LocalContract
+	(*MessageTranslations)(nil),      // 8: search.v1.MessageTranslations
+	(*LocalContract)(nil),            // 9: search.v1.LocalContract
 }
 var file_search_v1_broker_proto_depIdxs = []int32{
 	7, // 0: search.v1.BrokerChannelRequest.contract:type_name -> search.v1.GlobalContract
 	5, // 1: search.v1.BrokerChannelRequest.preset_participants:type_name -> search.v1.BrokerChannelRequest.PresetParticipantsEntry
 	6, // 2: search.v1.BrokerChannelResponse.participants:type_name -> search.v1.BrokerChannelResponse.ParticipantsEntry
-	8, // 3: search.v1.RegisterProviderRequest.contract:type_name -> search.v1.LocalContract
-	4, // 4: search.v1.BrokerChannelRequest.PresetParticipantsEntry.value:type_name -> search.v1.RemoteParticipant
-	4, // 5: search.v1.BrokerChannelResponse.ParticipantsEntry.value:type_name -> search.v1.RemoteParticipant
-	0, // 6: search.v1.BrokerService.BrokerChannel:input_type -> search.v1.BrokerChannelRequest
-	2, // 7: search.v1.BrokerService.RegisterProvider:input_type -> search.v1.RegisterProviderRequest
-	1, // 8: search.v1.BrokerService.BrokerChannel:output_type -> search.v1.BrokerChannelResponse
-	3, // 9: search.v1.BrokerService.RegisterProvider:output_type -> search.v1.RegisterProviderResponse
-	8, // [8:10] is the sub-list for method output_type
-	6, // [6:8] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	8, // 3: search.v1.BrokerChannelResponse.messagetranslations:type_name -> search.v1.MessageTranslations
+	9, // 4: search.v1.RegisterProviderRequest.contract:type_name -> search.v1.LocalContract
+	4, // 5: search.v1.BrokerChannelRequest.PresetParticipantsEntry.value:type_name -> search.v1.RemoteParticipant
+	4, // 6: search.v1.BrokerChannelResponse.ParticipantsEntry.value:type_name -> search.v1.RemoteParticipant
+	0, // 7: search.v1.BrokerService.BrokerChannel:input_type -> search.v1.BrokerChannelRequest
+	2, // 8: search.v1.BrokerService.RegisterProvider:input_type -> search.v1.RegisterProviderRequest
+	1, // 9: search.v1.BrokerService.BrokerChannel:output_type -> search.v1.BrokerChannelResponse
+	3, // 10: search.v1.BrokerService.RegisterProvider:output_type -> search.v1.RegisterProviderResponse
+	9, // [9:11] is the sub-list for method output_type
+	7, // [7:9] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_search_v1_broker_proto_init() }

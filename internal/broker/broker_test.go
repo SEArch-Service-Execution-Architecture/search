@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"os"
 	"sync"
 	"testing"
 
@@ -376,11 +377,11 @@ func TestGetBestCandidate_NoCompatibleResultsWithRegisteredProviders(t *testing.
 	// Set broker's compatibility function to a mock that returns false. We later want to assert how many times the function was called.
 	numberOfCallsToCompatFunc := 0
 	counterLock := sync.Mutex{}
-	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
+	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
 		counterLock.Lock()
 		numberOfCallsToCompatFunc++
 		counterLock.Unlock()
-		return false, nil, nil
+		return false, nil, nil, nil
 	})
 
 	// Act
@@ -465,15 +466,15 @@ func TestGetBestCandidate_OnlyOneCompatibleResult(t *testing.T) {
 	// Set broker's compatibility function to a mock that returns true for provider 3. We later want to assert how many times the function was called.
 	numberOfCallsToCompatFunc := 0
 	counterLock := sync.Mutex{}
-	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
+	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
 		counterLock.Lock()
 		numberOfCallsToCompatFunc++
 		counterLock.Unlock()
 		t.Logf("provID: %v, prov data: %s", prov.GetContractID(), prov.GetBytesRepr())
 		if prov.GetContractID() == "a62c6b1ee8a142d1086ffa68acc298705a293fcb09cf58784c0e390e44feafd8457d199b2bd239ac01f42f4939658927b68a43214f38d7a5e7a703da437374b8" {
-			return true, map[string]string{"serviceClient": "dunno"}, nil
+			return true, map[string]string{"serviceClient": "dunno"}, nil, nil
 		}
-		return false, nil, nil
+		return false, nil, nil, nil
 	})
 
 	// Act
@@ -555,12 +556,12 @@ func TestGetBestCandidate_CachedResult(t *testing.T) {
 	// Set broker's compatibility function to a mock that returns true for both providers. We later want to assert how many times the function was called.
 	numberOfCallsToCompatFunc := 0
 	counterLock := sync.Mutex{}
-	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
+	b.SetCompatFunc(func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
 		counterLock.Lock()
 		numberOfCallsToCompatFunc++
 		counterLock.Unlock()
 		t.Logf("provID: %v, prov data: %s", prov.GetContractID(), prov.GetBytesRepr())
-		return true, map[string]string{"serviceClient": "dunno"}, nil
+		return true, map[string]string{"serviceClient": "dunno"}, nil, nil
 	})
 
 	// Act
@@ -583,8 +584,8 @@ func TestBisimulationPython(t *testing.T) {
 	q0 ClientApp ? CardDetailsWithTotalAmount q1
 	q1 ClientApp ! PaymentNonce q2
 	q2 Srv ? RequestChargeWithNonce q3
-	q3 Srv ! ChargeOK q4
-	q3 Srv ! ChargeFail q5
+	q3 Srv ! OK q4
+	q3 Srv ! ERROR q5
 	.marking q0
 	.end`
 
@@ -593,8 +594,8 @@ func TestBisimulationPython(t *testing.T) {
 	q0 cliente ? CardDetailsWithTotalAmount q1
 	q1 cliente ! PaymentNonce q2
 	q2 backend ? RequestChargeWithNonce q3
-	q3 backend ! ChargeOK q4
-	q3 backend ! ChargeFail q5
+	q3 backend ! OK q4
+	q3 backend ! ERROR q5
 	.marking q0
 	.end`
 
@@ -618,7 +619,7 @@ func TestBisimulationPython(t *testing.T) {
 		t.Fatalf("error converting contract: %v", err)
 	}
 
-	res, participantMapping, err := BisimilarityAlgorithm(context.Background(), reqContract, provContract)
+	res, participantMapping, _, err := BisimilarityAlgorithm(context.Background(), reqContract, provContract)
 	if err != nil {
 		t.Fatalf("error running bisimilarity algorithm: %v", err)
 	}
@@ -641,5 +642,99 @@ func TestBisimulationPython(t *testing.T) {
 	if p != "backend" {
 		t.Fatalf("participant mapping for Srv is not backend")
 	}
+
+	// m, ok := messageMapping["CardDetailsWithTotalAmount"]
+	// if !ok {
+	// 	t.Fatalf("message mapping does not contain CardDetailsWithTotalAmount")
+	// }
+	// if m != "CardDetailsWithTotalAmount" {
+	// 	t.Fatalf("message mapping for CardDetailsWithTotalAmount is not CardDetailsWithTotalAmount")
+	// }
+	// m, ok = messageMapping["OK"]
+	// if !ok {
+	// 	t.Fatalf("message mapping does not contain OK")
+	// }
+	// if m != "ChargeOK" {
+	// 	t.Fatalf("message mapping for OK is not ChargeOK")
+	// }
+}
+
+func TestBisimulationCalculatorCheck(t *testing.T) {
+	testDir := t.TempDir()
+	b := NewBrokerServer(fmt.Sprintf("%s/t.db", testDir))
+	t.Cleanup(b.Stop)
+
+	// Load the global client contract from calculatorcheck.fsa
+	clientFSA, err := os.ReadFile("./calculatorcheck.fsa")
+	if err != nil {
+		t.Fatalf("failed to read calculatorcheck.fsa: %v", err)
+	}
+	clientContract, err := contract.ConvertPBGlobalContract(&pb.GlobalContract{
+		Contract:      clientFSA,
+		Format:        pb.GlobalContractFormat_GLOBAL_CONTRACT_FORMAT_FSA,
+		InitiatorName: "Client",
+	})
+	if err != nil {
+		t.Fatalf("error converting global contract: %v", err)
+	}
+
+	// Load calculator 1 contract
+	calc1FSA, err := os.ReadFile("./calculator1.fsa")
+	if err != nil {
+		t.Fatalf("failed to read calculator1.fsa: %v", err)
+	}
+	calc1Contract, err := contract.ConvertPBLocalContract(&pb.LocalContract{
+		Contract: calc1FSA,
+		Format:   pb.LocalContractFormat_LOCAL_CONTRACT_FORMAT_FSA,
+	})
+	if err != nil {
+		t.Fatalf("error converting calculator1 contract: %v", err)
+	}
+
+	// Load calculator 2 contract
+	calc2FSA, err := os.ReadFile("./calculator2.fsa")
+	if err != nil {
+		t.Fatalf("failed to read calculator2.fsa: %v", err)
+	}
+	calc2Contract, err := contract.ConvertPBLocalContract(&pb.LocalContract{
+		Contract: calc2FSA,
+		Format:   pb.LocalContractFormat_LOCAL_CONTRACT_FORMAT_FSA,
+	})
+	if err != nil {
+		t.Fatalf("error converting calculator2 contract: %v", err)
+	}
+
+	// Get projections for Srv1 and Srv2 from the global contract
+	projSrv1, err := clientContract.GetProjection("Srv1")
+	if err != nil {
+		t.Fatalf("error projecting for Srv1: %v", err)
+	}
+	projSrv2, err := clientContract.GetProjection("Srv2")
+	if err != nil {
+		t.Fatalf("error projecting for Srv2: %v", err)
+	}
+
+	// Run bisimulation algorithm between projections and provider contracts
+	res1, participantMapping1, messageMapping1, err := BisimilarityAlgorithm(context.Background(), projSrv1, calc1Contract)
+	if err != nil {
+		t.Fatalf("error running bisimulation for Srv1: %v", err)
+	}
+	if !res1 {
+		t.Fatalf("bisimilarity algorithm returned false for Srv1")
+	}
+	res2, participantMapping2, messageMapping2, err := BisimilarityAlgorithm(context.Background(), projSrv2, calc2Contract)
+	if err != nil {
+		t.Fatalf("error running bisimulation for Srv2: %v", err)
+	}
+	if !res2 {
+		t.Fatalf("bisimilarity algorithm returned false for Srv2")
+	}
+
+	assert.Equal(t, participantMapping1["Client"], "User")
+	assert.Equal(t, messageMapping1["sum(int x, int y)"], "add(int x, int y)")
+	assert.Equal(t, messageMapping1["result(int z)"], "sumdone(int z)")
+	assert.Equal(t, participantMapping2["Client"], "Client")
+	assert.Equal(t, messageMapping2["sum(int x, int y)"], "plus(int x, int y)")
+	assert.Equal(t, messageMapping2["result(int z)"], "finished(int z)")
 
 }

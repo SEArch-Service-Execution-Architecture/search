@@ -158,3 +158,51 @@ export class LocalContract extends Message<LocalContract> {
   }
 }
 
+/**
+ * @generated from message search.v1.MessageTranslations
+ */
+export class MessageTranslations extends Message<MessageTranslations> {
+  /**
+   * Different contracts can be compatible while using different names for messages that are equivalent.
+   * This data structure contains the mapping of each message name to the name used by the other participant.
+   * The keys are the message names in the contract of who receives this message, and the values are the message
+   * names according to the other participant's contract.
+   *
+   * @generated from field: string participant = 1;
+   */
+  participant = "";
+
+  /**
+   * @generated from field: map<string, string> translations = 2;
+   */
+  translations: { [key: string]: string } = {};
+
+  constructor(data?: PartialMessage<MessageTranslations>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "search.v1.MessageTranslations";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "participant", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "translations", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): MessageTranslations {
+    return new MessageTranslations().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): MessageTranslations {
+    return new MessageTranslations().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): MessageTranslations {
+    return new MessageTranslations().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: MessageTranslations | PlainMessage<MessageTranslations> | undefined, b: MessageTranslations | PlainMessage<MessageTranslations> | undefined): boolean {
+    return proto3.util.equals(MessageTranslations, a, b);
+  }
+}
+

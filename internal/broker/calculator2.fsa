@@ -1,0 +1,6 @@
+.outputs Calc2
+.state graph
+q0 Client ? plus(int x, int y) q1
+q1 Client ! finished(int z) q2
+.marking q0
+.end

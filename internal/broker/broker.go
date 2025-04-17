@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"sort"
+	"text/template"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -63,41 +64,63 @@ func getContract(c *ent.RegisteredContract) (contract.LocalContract, error) {
 	})
 }
 
-type ContractCompatibilityFunc func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error)
+type ContractCompatibilityFunc func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error)
 
-func allContractsIncompatible(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
-	return false, nil, nil
+func allContractsIncompatible(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
+	return false, nil, nil, nil
 }
 
 // This function assumes that it can call out to Python with the cfsm-bisimulation package installed.
 // It also assumes both contracts are CFSMs.
-func BisimilarityAlgorithm(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
+func BisimilarityAlgorithm(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, map[string]string, error) {
 	reqPyFormatInterface, err := req.Convert(pb.LocalContractFormat_LOCAL_CONTRACT_FORMAT_PYTHON_BISIMULATION_CODE)
 	if err != nil {
-		return false, nil, fmt.Errorf("error converting requirement contract to Python bisimulation format: %w", err)
+		return false, nil, nil, fmt.Errorf("error converting requirement contract to Python bisimulation format: %w", err)
 	}
 	provPyFormatInterface, err := prov.Convert(pb.LocalContractFormat_LOCAL_CONTRACT_FORMAT_PYTHON_BISIMULATION_CODE)
 	if err != nil {
-		return false, nil, fmt.Errorf("error converting provider contract to Python bisimulation format: %w", err)
+		return false, nil, nil, fmt.Errorf("error converting provider contract to Python bisimulation format: %w", err)
 	}
 	reqPyFormat, ok := reqPyFormatInterface.(*contract.LocalPyCFSMContract)
 	if !ok {
-		return false, nil, errors.New("error casting requirement contract to LocalPyCFSMContract")
+		return false, nil, nil, errors.New("error casting requirement contract to LocalPyCFSMContract")
 	}
 	provPyFormat, ok := provPyFormatInterface.(*contract.LocalPyCFSMContract)
 	if !ok {
-		return false, nil, errors.New("error casting provider contract to LocalPyCFSMContract")
+		return false, nil, nil, errors.New("error casting provider contract to LocalPyCFSMContract")
 	}
 	// log.Printf("reqPyFormat: %s", reqPyFormat.GetBytesRepr())
 	// log.Printf("provPyFormat: %s", provPyFormat.GetBytesRepr())
 
-	pythonScript := "import json\n"
-	pythonScript += "from cfsm_bisimulation import CommunicatingFiniteStateMachine\n\n"
+	pythonScriptTemplate := `import json
+from cfsm_bisimulation import CommunicatingFiniteStateMachine
 
-	pythonScript += reqPyFormat.GetPythonCode("req") + "\n\n"
-	pythonScript += provPyFormat.GetPythonCode("prov") + "\n\n"
-	pythonScript += "relation, matches = req.calculate_bisimulation_with(prov)\n\n"
-	pythonScript += "print(json.dumps({'relation': bool(relation), 'participant_matches': matches['participants']}))\n"
+{{.ReqPythonCode}}
+
+{{.ProvPythonCode}}
+
+relation, matches = req.calculate_bisimulation_with(prov)
+
+message_matches = { k: str(v) for k, v in matches['messages'].items() }
+print(json.dumps({
+	'relation': bool(relation),
+	'participant_matches': matches['participants'],
+	'message_matches': message_matches,
+}))
+`
+
+	scriptVars := struct {
+		ReqPythonCode  string
+		ProvPythonCode string
+	}{
+		ReqPythonCode:  reqPyFormat.GetPythonCode("req"),
+		ProvPythonCode: provPyFormat.GetPythonCode("prov"),
+	}
+
+	tmpl, err := template.New("pythonScript").Parse(pythonScriptTemplate)
+	if err != nil {
+		return false, nil, nil, fmt.Errorf("error creating Python script template: %w", err)
+	}
 
 	// Create a temporary file to store the Python code
 	tempFile, err := os.CreateTemp("", "bisimilarity_check_*.py")
@@ -106,27 +129,29 @@ func BisimilarityAlgorithm(ctx context.Context, req contract.LocalContract, prov
 	}
 	defer os.Remove(tempFile.Name()) // Delete the temporary file when finished
 
-	// Write the Python code to the temporary file
-	_, err = tempFile.WriteString(pythonScript)
+	// Process the template and write the Python code to the temporary file
+	err = tmpl.Execute(tempFile, scriptVars)
 	if err != nil {
-		panic(err)
+		return false, nil, nil, fmt.Errorf("error executing Python script template: %w", err)
 	}
 
 	// Execute the Python code using exec.Command
+	// cmd := exec.Command("/Users/pmontepagano/.pyenv/versions/search/bin/python", tempFile.Name())
 	cmd := exec.Command("python", tempFile.Name())
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return false, nil, fmt.Errorf("error executing Python code: %w", err)
+		return false, nil, nil, fmt.Errorf("error executing Python code: %w", err)
 	}
 
 	type BisimOuput struct {
 		Result                      bool              `json:"relation"`
 		ParticipantNameTranslations map[string]string `json:"participant_matches"`
+		MessageNameTranslations     map[string]string `json:"message_matches"`
 	}
 	var data BisimOuput
 	err = json.Unmarshal(output, &data)
 	if err != nil {
-		return false, nil, fmt.Errorf("Error parsing JSON: %w", err)
+		return false, nil, nil, fmt.Errorf("Error parsing JSON: %w", err)
 	}
 
 	// We need to translate participant names back because the Python code uses different naming schemas for the participants.
@@ -139,16 +164,30 @@ func BisimilarityAlgorithm(ctx context.Context, req contract.LocalContract, prov
 		}
 		nameInReq, err := reqPyFormat.GetOriginalParticipantName(k)
 		if err != nil {
-			return false, nil, fmt.Errorf("error getting original participant name for %s: %w", k, err)
+			return false, nil, nil, fmt.Errorf("error getting original participant name for %s: %w", k, err)
 		}
 		nameInProv, err := provPyFormat.GetOriginalParticipantName(v)
 		if err != nil {
-			return false, nil, fmt.Errorf("error getting original participant name for %s: %w", v, err)
+			return false, nil, nil, fmt.Errorf("error getting original participant name for %s: %w", v, err)
 		}
 		participantMapping[nameInReq] = nameInProv
 	}
+	// We need to translate message names back because the Python code uses different naming schemas for the messages.
+	// data.MessageNameTranslations is a map from the message names in the requirement contract to the message names in the provider contract.
+	messageMapping := make(map[string]string)
+	for k, v := range data.MessageNameTranslations {
+		nameInReq, err := reqPyFormat.GetOriginalMessageName(k)
+		if err != nil {
+			return false, nil, nil, fmt.Errorf("error getting original message name for %s: %w", k, err)
+		}
+		nameInProv, err := provPyFormat.GetOriginalMessageName(v)
+		if err != nil {
+			return false, nil, nil, fmt.Errorf("error getting original message name for %s: %w", v, err)
+		}
+		messageMapping[nameInReq] = nameInProv
+	}
 
-	return data.Result, participantMapping, nil
+	return data.Result, participantMapping, messageMapping, nil
 }
 
 // returns new slice with keys of r filtered-out from orig. All keys of r MUST be present in orig
@@ -263,13 +302,15 @@ func (s *brokerServer) getBestCandidate(ctx context.Context, req contract.Global
 						// TODO: handle error properly
 						return
 					}
-					isCompatible, mapping, err := s.compatFunc(ctx, reqProjection, provContract)
+					isCompatible, participantMapping, _, err := s.compatFunc(ctx, reqProjection, provContract)
+					// TODO: we will also need to send message mapping
+					// TODO: we will also need to run the algorithm between each pair of providers to get the message mappings between them?
 					if err != nil {
 						s.logger.Printf("error calculating compatibility: %v", err)
 						// TODO: proper error handler
 						return
 					}
-					_, err = s.saveCompatibilityResult(ctx, rc, thisContract, isCompatible, mapping)
+					_, err = s.saveCompatibilityResult(ctx, rc, thisContract, isCompatible, participantMapping)
 					if err != nil {
 						s.logger.Printf("error saving compatibility result: %v", err)
 						// TODO: proper error handler

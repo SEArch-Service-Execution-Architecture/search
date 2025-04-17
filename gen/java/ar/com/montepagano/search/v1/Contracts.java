@@ -1537,6 +1537,892 @@ public final class Contracts {
 
   }
 
+  public interface MessageTranslationsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:search.v1.MessageTranslations)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Different contracts can be compatible while using different names for messages that are equivalent.
+     * This data structure contains the mapping of each message name to the name used by the other participant.
+     * The keys are the message names in the contract of who receives this message, and the values are the message
+     * names according to the other participant's contract.
+     * </pre>
+     *
+     * <code>string participant = 1 [json_name = "participant"];</code>
+     * @return The participant.
+     */
+    java.lang.String getParticipant();
+    /**
+     * <pre>
+     * Different contracts can be compatible while using different names for messages that are equivalent.
+     * This data structure contains the mapping of each message name to the name used by the other participant.
+     * The keys are the message names in the contract of who receives this message, and the values are the message
+     * names according to the other participant's contract.
+     * </pre>
+     *
+     * <code>string participant = 1 [json_name = "participant"];</code>
+     * @return The bytes for participant.
+     */
+    com.google.protobuf.ByteString
+        getParticipantBytes();
+
+    /**
+     * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+     */
+    int getTranslationsCount();
+    /**
+     * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+     */
+    boolean containsTranslations(
+        java.lang.String key);
+    /**
+     * Use {@link #getTranslationsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getTranslations();
+    /**
+     * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getTranslationsMap();
+    /**
+     * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+     */
+    /* nullable */
+java.lang.String getTranslationsOrDefault(
+        java.lang.String key,
+        /* nullable */
+java.lang.String defaultValue);
+    /**
+     * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+     */
+    java.lang.String getTranslationsOrThrow(
+        java.lang.String key);
+  }
+  /**
+   * Protobuf type {@code search.v1.MessageTranslations}
+   */
+  public static final class MessageTranslations extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:search.v1.MessageTranslations)
+      MessageTranslationsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 30,
+        /* patch= */ 2,
+        /* suffix= */ "",
+        MessageTranslations.class.getName());
+    }
+    // Use MessageTranslations.newBuilder() to construct.
+    private MessageTranslations(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MessageTranslations() {
+      participant_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ar.com.montepagano.search.v1.Contracts.internal_static_search_v1_MessageTranslations_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetTranslations();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ar.com.montepagano.search.v1.Contracts.internal_static_search_v1_MessageTranslations_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              ar.com.montepagano.search.v1.Contracts.MessageTranslations.class, ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder.class);
+    }
+
+    public static final int PARTICIPANT_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object participant_ = "";
+    /**
+     * <pre>
+     * Different contracts can be compatible while using different names for messages that are equivalent.
+     * This data structure contains the mapping of each message name to the name used by the other participant.
+     * The keys are the message names in the contract of who receives this message, and the values are the message
+     * names according to the other participant's contract.
+     * </pre>
+     *
+     * <code>string participant = 1 [json_name = "participant"];</code>
+     * @return The participant.
+     */
+    @java.lang.Override
+    public java.lang.String getParticipant() {
+      java.lang.Object ref = participant_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        participant_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Different contracts can be compatible while using different names for messages that are equivalent.
+     * This data structure contains the mapping of each message name to the name used by the other participant.
+     * The keys are the message names in the contract of who receives this message, and the values are the message
+     * names according to the other participant's contract.
+     * </pre>
+     *
+     * <code>string participant = 1 [json_name = "participant"];</code>
+     * @return The bytes for participant.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getParticipantBytes() {
+      java.lang.Object ref = participant_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        participant_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TRANSLATIONS_FIELD_NUMBER = 2;
+    private static final class TranslationsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  ar.com.montepagano.search.v1.Contracts.internal_static_search_v1_MessageTranslations_TranslationsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    @SuppressWarnings("serial")
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> translations_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetTranslations() {
+      if (translations_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            TranslationsDefaultEntryHolder.defaultEntry);
+      }
+      return translations_;
+    }
+    public int getTranslationsCount() {
+      return internalGetTranslations().getMap().size();
+    }
+    /**
+     * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+     */
+    @java.lang.Override
+    public boolean containsTranslations(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetTranslations().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getTranslationsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getTranslations() {
+      return getTranslationsMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.String, java.lang.String> getTranslationsMap() {
+      return internalGetTranslations().getMap();
+    }
+    /**
+     * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+     */
+    @java.lang.Override
+    public /* nullable */
+java.lang.String getTranslationsOrDefault(
+        java.lang.String key,
+        /* nullable */
+java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTranslations().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+     */
+    @java.lang.Override
+    public java.lang.String getTranslationsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetTranslations().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(participant_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, participant_);
+      }
+      com.google.protobuf.GeneratedMessage
+        .serializeStringMapTo(
+          output,
+          internalGetTranslations(),
+          TranslationsDefaultEntryHolder.defaultEntry,
+          2);
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(participant_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, participant_);
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetTranslations().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        translations__ = TranslationsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .build();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, translations__);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof ar.com.montepagano.search.v1.Contracts.MessageTranslations)) {
+        return super.equals(obj);
+      }
+      ar.com.montepagano.search.v1.Contracts.MessageTranslations other = (ar.com.montepagano.search.v1.Contracts.MessageTranslations) obj;
+
+      if (!getParticipant()
+          .equals(other.getParticipant())) return false;
+      if (!internalGetTranslations().equals(
+          other.internalGetTranslations())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + PARTICIPANT_FIELD_NUMBER;
+      hash = (53 * hash) + getParticipant().hashCode();
+      if (!internalGetTranslations().getMap().isEmpty()) {
+        hash = (37 * hash) + TRANSLATIONS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetTranslations().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(ar.com.montepagano.search.v1.Contracts.MessageTranslations prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code search.v1.MessageTranslations}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:search.v1.MessageTranslations)
+        ar.com.montepagano.search.v1.Contracts.MessageTranslationsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ar.com.montepagano.search.v1.Contracts.internal_static_search_v1_MessageTranslations_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetTranslations();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapFieldReflectionAccessor internalGetMutableMapFieldReflection(
+          int number) {
+        switch (number) {
+          case 2:
+            return internalGetMutableTranslations();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ar.com.montepagano.search.v1.Contracts.internal_static_search_v1_MessageTranslations_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                ar.com.montepagano.search.v1.Contracts.MessageTranslations.class, ar.com.montepagano.search.v1.Contracts.MessageTranslations.Builder.class);
+      }
+
+      // Construct using ar.com.montepagano.search.v1.Contracts.MessageTranslations.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        participant_ = "";
+        internalGetMutableTranslations().clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ar.com.montepagano.search.v1.Contracts.internal_static_search_v1_MessageTranslations_descriptor;
+      }
+
+      @java.lang.Override
+      public ar.com.montepagano.search.v1.Contracts.MessageTranslations getDefaultInstanceForType() {
+        return ar.com.montepagano.search.v1.Contracts.MessageTranslations.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public ar.com.montepagano.search.v1.Contracts.MessageTranslations build() {
+        ar.com.montepagano.search.v1.Contracts.MessageTranslations result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public ar.com.montepagano.search.v1.Contracts.MessageTranslations buildPartial() {
+        ar.com.montepagano.search.v1.Contracts.MessageTranslations result = new ar.com.montepagano.search.v1.Contracts.MessageTranslations(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(ar.com.montepagano.search.v1.Contracts.MessageTranslations result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.participant_ = participant_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.translations_ = internalGetTranslations();
+          result.translations_.makeImmutable();
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof ar.com.montepagano.search.v1.Contracts.MessageTranslations) {
+          return mergeFrom((ar.com.montepagano.search.v1.Contracts.MessageTranslations)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(ar.com.montepagano.search.v1.Contracts.MessageTranslations other) {
+        if (other == ar.com.montepagano.search.v1.Contracts.MessageTranslations.getDefaultInstance()) return this;
+        if (!other.getParticipant().isEmpty()) {
+          participant_ = other.participant_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        internalGetMutableTranslations().mergeFrom(
+            other.internalGetTranslations());
+        bitField0_ |= 0x00000002;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                participant_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+                translations__ = input.readMessage(
+                    TranslationsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                internalGetMutableTranslations().getMutableMap().put(
+                    translations__.getKey(), translations__.getValue());
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object participant_ = "";
+      /**
+       * <pre>
+       * Different contracts can be compatible while using different names for messages that are equivalent.
+       * This data structure contains the mapping of each message name to the name used by the other participant.
+       * The keys are the message names in the contract of who receives this message, and the values are the message
+       * names according to the other participant's contract.
+       * </pre>
+       *
+       * <code>string participant = 1 [json_name = "participant"];</code>
+       * @return The participant.
+       */
+      public java.lang.String getParticipant() {
+        java.lang.Object ref = participant_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          participant_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Different contracts can be compatible while using different names for messages that are equivalent.
+       * This data structure contains the mapping of each message name to the name used by the other participant.
+       * The keys are the message names in the contract of who receives this message, and the values are the message
+       * names according to the other participant's contract.
+       * </pre>
+       *
+       * <code>string participant = 1 [json_name = "participant"];</code>
+       * @return The bytes for participant.
+       */
+      public com.google.protobuf.ByteString
+          getParticipantBytes() {
+        java.lang.Object ref = participant_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          participant_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Different contracts can be compatible while using different names for messages that are equivalent.
+       * This data structure contains the mapping of each message name to the name used by the other participant.
+       * The keys are the message names in the contract of who receives this message, and the values are the message
+       * names according to the other participant's contract.
+       * </pre>
+       *
+       * <code>string participant = 1 [json_name = "participant"];</code>
+       * @param value The participant to set.
+       * @return This builder for chaining.
+       */
+      public Builder setParticipant(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        participant_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Different contracts can be compatible while using different names for messages that are equivalent.
+       * This data structure contains the mapping of each message name to the name used by the other participant.
+       * The keys are the message names in the contract of who receives this message, and the values are the message
+       * names according to the other participant's contract.
+       * </pre>
+       *
+       * <code>string participant = 1 [json_name = "participant"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearParticipant() {
+        participant_ = getDefaultInstance().getParticipant();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Different contracts can be compatible while using different names for messages that are equivalent.
+       * This data structure contains the mapping of each message name to the name used by the other participant.
+       * The keys are the message names in the contract of who receives this message, and the values are the message
+       * names according to the other participant's contract.
+       * </pre>
+       *
+       * <code>string participant = 1 [json_name = "participant"];</code>
+       * @param value The bytes for participant to set.
+       * @return This builder for chaining.
+       */
+      public Builder setParticipantBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        participant_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> translations_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+          internalGetTranslations() {
+        if (translations_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              TranslationsDefaultEntryHolder.defaultEntry);
+        }
+        return translations_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+          internalGetMutableTranslations() {
+        if (translations_ == null) {
+          translations_ = com.google.protobuf.MapField.newMapField(
+              TranslationsDefaultEntryHolder.defaultEntry);
+        }
+        if (!translations_.isMutable()) {
+          translations_ = translations_.copy();
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return translations_;
+      }
+      public int getTranslationsCount() {
+        return internalGetTranslations().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+       */
+      @java.lang.Override
+      public boolean containsTranslations(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetTranslations().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getTranslationsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getTranslations() {
+        return getTranslationsMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+       */
+      @java.lang.Override
+      public java.util.Map<java.lang.String, java.lang.String> getTranslationsMap() {
+        return internalGetTranslations().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+       */
+      @java.lang.Override
+      public /* nullable */
+java.lang.String getTranslationsOrDefault(
+          java.lang.String key,
+          /* nullable */
+java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTranslations().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+       */
+      @java.lang.Override
+      public java.lang.String getTranslationsOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetTranslations().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+      public Builder clearTranslations() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        internalGetMutableTranslations().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+       */
+      public Builder removeTranslations(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableTranslations().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+          getMutableTranslations() {
+        bitField0_ |= 0x00000002;
+        return internalGetMutableTranslations().getMutableMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+       */
+      public Builder putTranslations(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) { throw new NullPointerException("map value"); }
+        internalGetMutableTranslations().getMutableMap()
+            .put(key, value);
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>map&lt;string, string&gt; translations = 2 [json_name = "translations"];</code>
+       */
+      public Builder putAllTranslations(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableTranslations().getMutableMap()
+            .putAll(values);
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:search.v1.MessageTranslations)
+    }
+
+    // @@protoc_insertion_point(class_scope:search.v1.MessageTranslations)
+    private static final ar.com.montepagano.search.v1.Contracts.MessageTranslations DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new ar.com.montepagano.search.v1.Contracts.MessageTranslations();
+    }
+
+    public static ar.com.montepagano.search.v1.Contracts.MessageTranslations getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MessageTranslations>
+        PARSER = new com.google.protobuf.AbstractParser<MessageTranslations>() {
+      @java.lang.Override
+      public MessageTranslations parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MessageTranslations> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MessageTranslations> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public ar.com.montepagano.search.v1.Contracts.MessageTranslations getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_search_v1_GlobalContract_descriptor;
   private static final 
@@ -1547,6 +2433,16 @@ public final class Contracts {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_search_v1_LocalContract_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_search_v1_MessageTranslations_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_search_v1_MessageTranslations_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_search_v1_MessageTranslations_TranslationsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_search_v1_MessageTranslations_TranslationsEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1563,16 +2459,21 @@ public final class Contracts {
       "\030\003 \001(\tR\rinitiatorName\"c\n\rLocalContract\022\032" +
       "\n\010contract\030\001 \001(\014R\010contract\0226\n\006format\030\002 \001" +
       "(\0162\036.search.v1.LocalContractFormatR\006form" +
-      "at*}\n\024GlobalContractFormat\022&\n\"GLOBAL_CON" +
-      "TRACT_FORMAT_UNSPECIFIED\020\000\022\036\n\032GLOBAL_CON" +
-      "TRACT_FORMAT_FSA\020\001\022\035\n\031GLOBAL_CONTRACT_FO" +
-      "RMAT_GC\020\002*\217\001\n\023LocalContractFormat\022%\n!LOC" +
-      "AL_CONTRACT_FORMAT_UNSPECIFIED\020\000\022\035\n\031LOCA" +
-      "L_CONTRACT_FORMAT_FSA\020\001\0222\n.LOCAL_CONTRAC" +
-      "T_FORMAT_PYTHON_BISIMULATION_CODE\020\002Ba\n\034a" +
-      "r.com.montepagano.search.v1ZAgithub.com/" +
-      "SEArch-Service-Execution-Architecture/se" +
-      "arch/gen/go/v1b\006proto3"
+      "at\"\316\001\n\023MessageTranslations\022 \n\013participan" +
+      "t\030\001 \001(\tR\013participant\022T\n\014translations\030\002 \003" +
+      "(\01320.search.v1.MessageTranslations.Trans" +
+      "lationsEntryR\014translations\032?\n\021Translatio" +
+      "nsEntry\022\020\n\003key\030\001 \001(\tR\003key\022\024\n\005value\030\002 \001(\t" +
+      "R\005value:\0028\001*}\n\024GlobalContractFormat\022&\n\"G" +
+      "LOBAL_CONTRACT_FORMAT_UNSPECIFIED\020\000\022\036\n\032G" +
+      "LOBAL_CONTRACT_FORMAT_FSA\020\001\022\035\n\031GLOBAL_CO" +
+      "NTRACT_FORMAT_GC\020\002*\217\001\n\023LocalContractForm" +
+      "at\022%\n!LOCAL_CONTRACT_FORMAT_UNSPECIFIED\020" +
+      "\000\022\035\n\031LOCAL_CONTRACT_FORMAT_FSA\020\001\0222\n.LOCA" +
+      "L_CONTRACT_FORMAT_PYTHON_BISIMULATION_CO" +
+      "DE\020\002Ba\n\034ar.com.montepagano.search.v1ZAgi" +
+      "thub.com/SEArch-Service-Execution-Archit" +
+      "ecture/search/gen/go/v1b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1590,6 +2491,18 @@ public final class Contracts {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_search_v1_LocalContract_descriptor,
         new java.lang.String[] { "Contract", "Format", });
+    internal_static_search_v1_MessageTranslations_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_search_v1_MessageTranslations_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_search_v1_MessageTranslations_descriptor,
+        new java.lang.String[] { "Participant", "Translations", });
+    internal_static_search_v1_MessageTranslations_TranslationsEntry_descriptor =
+      internal_static_search_v1_MessageTranslations_descriptor.getNestedTypes().get(0);
+    internal_static_search_v1_MessageTranslations_TranslationsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_search_v1_MessageTranslations_TranslationsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     descriptor.resolveAllFeaturesImmutable();
   }
 
