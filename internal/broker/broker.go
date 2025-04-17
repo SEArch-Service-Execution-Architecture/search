@@ -465,12 +465,9 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 			s.logger.Printf("Connecting to participant %s during brokerage. Provider AppId: %s, URL: %s", pname, p.AppId, p.Url)
 
 			// Connect to the provider's middleware.
-			conn, err := grpc.DialContext(
-				ctx,
+			conn, err := grpc.NewClient(
 				p.Url,
 				grpc.WithTransportCredentials(insecure.NewCredentials()), // TODO: use tls
-				grpc.WithBlock(),
-				grpc.FailOnNonTempDialError(true),
 			)
 			result.conn = conn
 			if err != nil {
