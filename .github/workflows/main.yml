@@ -51,13 +51,13 @@ jobs:
     - name: Run gofmt
       run: go fmt ./...
     - name: Install buf
-      uses: bufbuild/buf-setup-action@v1
+      uses: bufbuild/buf-setup-action
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    - uses: bufbuild/buf-lint-action@v1
+    - uses: bufbuild/buf-lint-action
       with:
         input: proto
-    - uses: bufbuild/buf-breaking-action@v1
+    - uses: bufbuild/buf-breaking-action
       with:
         # The 'main' branch of the GitHub repository that defines the module.
         against: "https://github.com/${GITHUB_REPOSITORY}.git#branch=main,subdir=proto"
