@@ -29,6 +29,7 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 	lineCommentRe := regexp.MustCompile(`^--.*`)
 	machineStartRe := regexp.MustCompile(`^\.outputs(\s+(\S+))?$`)
 	startStateRe := regexp.MustCompile(`^\.marking\s+(\S+)$`)
+	acceptingStatesRe := regexp.MustCompile(`^\.accepting\s+(.+)$`)
 	messageRe := regexp.MustCompile(`^(\S+)\s+(\S+)\s+([\?!])\s+(\S+)\s+(\S+)$`)
 
 	// Possible states of the parser while consuming input.
@@ -171,18 +172,32 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 			})
 
 		case StartStateRead:
-			// Here we can only see the end marker.
-			// TODO: We could also see transitions? As-is, the line ".marking <START_STATE>" has to come after
-			//   all transitions and must be followed by an ".end" line.
+			// Here we can see the end marker or accepting states.
 			if currentLine == ".end" {
 				status = Initial
 				if singleCFSM {
 					break
 				}
 				continue
-			} else {
-				return nil, fmt.Errorf("fsa file invalid. Expected '.end', got %s", currentLine)
 			}
+
+			// Check for accepting states directive
+			acceptingStatesMatch := acceptingStatesRe.FindStringSubmatch(currentLine)
+			if len(acceptingStatesMatch) == 2 {
+				acceptingStateNames := strings.Fields(acceptingStatesMatch[1])
+				for _, stateName := range acceptingStateNames {
+					val, ok := stateNames[stateName]
+					if !ok {
+						val = currentMachine.NewState()
+						val.Label = stateName
+						stateNames[stateName] = val
+					}
+					currentMachine.AddAcceptingState(val)
+				}
+				continue
+			}
+
+			return nil, fmt.Errorf("fsa file invalid. Expected '.end' or '.accepting', got %s", currentLine)
 		}
 
 	}
