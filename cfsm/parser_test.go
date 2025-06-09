@@ -1234,3 +1234,185 @@ q1   Client   !   response   q0
 	require.Equal(t, "request", clientTransitions[0].Message())
 	require.Equal(t, "Server", clientTransitions[0].NameOfOtherCFSM())
 }
+
+func TestParseFSAAcceptingStates(t *testing.T) {
+	// Test the new .accepting feature that specifies accepting/terminal states
+	const fsaWithAcceptingStates = `
+.outputs ImgP
+.state graph
+0 WebUI ? req 1
+0 WebUI ? stop 2
+1 WebUI ! img 0
+.marking 0
+.accepting 2
+.end
+
+.outputs WebUI
+.state graph
+0 ImgP ! req 1
+0 ImgP ! stop 3
+1 ImgP ? img 0
+.marking 0
+.accepting 3
+.end`
+
+	sys, err := ParseSystemCFSMsFSA(strings.NewReader(fsaWithAcceptingStates))
+	require.NoError(t, err)
+	require.Len(t, sys.CFSMs, 2)
+
+	imgP := sys.CFSMs[0]
+	webUI := sys.CFSMs[1]
+
+	require.Equal(t, "ImgP", imgP.Name)
+	require.Equal(t, "WebUI", webUI.Name)
+
+	// Test ImgP accepting states
+	imgPStates := imgP.States()
+	require.Len(t, imgPStates, 3) // states 0, 1, 2
+
+	// Find state with label "2" which should be accepting
+	var state2 *State
+	for _, state := range imgPStates {
+		if state.Label == "2" {
+			state2 = state
+			break
+		}
+	}
+	require.NotNil(t, state2)
+
+	// Verify ImgP has accepting states and state "2" is accepting
+	acceptingStates := imgP.AcceptingStates()
+	require.Len(t, acceptingStates, 1)
+	require.Contains(t, acceptingStates, state2)
+	require.True(t, imgP.IsAcceptingState(state2))
+
+	// Test WebUI accepting states
+	webUIStates := webUI.States()
+	require.Len(t, webUIStates, 3) // states 0, 1, 3
+
+	// Find state with label "3" which should be accepting
+	var state3 *State
+	for _, state := range webUIStates {
+		if state.Label == "3" {
+			state3 = state
+			break
+		}
+	}
+	require.NotNil(t, state3)
+
+	// Verify WebUI has accepting states and state "3" is accepting
+	webUIAcceptingStates := webUI.AcceptingStates()
+	require.Len(t, webUIAcceptingStates, 1)
+	require.Contains(t, webUIAcceptingStates, state3)
+	require.True(t, webUI.IsAcceptingState(state3))
+
+	// Verify non-accepting states
+	for _, state := range imgPStates {
+		if state.Label != "2" {
+			require.False(t, imgP.IsAcceptingState(state))
+		}
+	}
+	for _, state := range webUIStates {
+		if state.Label != "3" {
+			require.False(t, webUI.IsAcceptingState(state))
+		}
+	}
+}
+
+func TestParseFSAMultipleAcceptingStates(t *testing.T) {
+	// Test multiple accepting states in a single CFSM
+	const fsaWithMultipleAcceptingStates = `
+.outputs MultiAccept
+.state graph
+start Service ! init state1
+start Service ! cancel end1
+state1 Service ? ok end1
+state1 Service ? error end2
+.marking start
+.accepting end1 end2
+.end
+
+.outputs Service  
+.state graph
+idle MultiAccept ? init processing
+idle MultiAccept ? cancel idle
+processing MultiAccept ! ok idle
+processing MultiAccept ! error idle
+.marking idle
+.end`
+
+	sys, err := ParseSystemCFSMsFSA(strings.NewReader(fsaWithMultipleAcceptingStates))
+	require.NoError(t, err)
+	require.Len(t, sys.CFSMs, 2)
+
+	multiAccept := sys.CFSMs[0]
+	service := sys.CFSMs[1]
+
+	// Test MultiAccept has multiple accepting states
+	acceptingStates := multiAccept.AcceptingStates()
+	require.Len(t, acceptingStates, 2)
+
+	// Find end1 and end2 states
+	var end1State, end2State *State
+	for _, state := range multiAccept.States() {
+		if state.Label == "end1" {
+			end1State = state
+		} else if state.Label == "end2" {
+			end2State = state
+		}
+	}
+	require.NotNil(t, end1State)
+	require.NotNil(t, end2State)
+
+	// Verify both are accepting
+	require.True(t, multiAccept.IsAcceptingState(end1State))
+	require.True(t, multiAccept.IsAcceptingState(end2State))
+	require.Contains(t, acceptingStates, end1State)
+	require.Contains(t, acceptingStates, end2State)
+
+	// Test Service has no accepting states (no .accepting line)
+	serviceAcceptingStates := service.AcceptingStates()
+	require.Len(t, serviceAcceptingStates, 0)
+
+	// Verify no states are accepting in Service
+	for _, state := range service.States() {
+		require.False(t, service.IsAcceptingState(state))
+	}
+}
+
+func TestParseFSANoAcceptingStates(t *testing.T) {
+	// Test CFSM without any .accepting line
+	const fsaWithoutAcceptingStates = `
+.outputs Simple
+.state graph
+q0 Other ! msg q1
+q1 Other ? ack q0
+.marking q0
+.end
+
+.outputs Other
+.state graph
+q0 Simple ? msg q1
+q1 Simple ! ack q0
+.marking q0
+.end`
+
+	sys, err := ParseSystemCFSMsFSA(strings.NewReader(fsaWithoutAcceptingStates))
+	require.NoError(t, err)
+	require.Len(t, sys.CFSMs, 2)
+
+	simple := sys.CFSMs[0]
+	other := sys.CFSMs[1]
+
+	// Both CFSMs should have no accepting states
+	require.Len(t, simple.AcceptingStates(), 0)
+	require.Len(t, other.AcceptingStates(), 0)
+
+	// No states should be accepting
+	for _, state := range simple.States() {
+		require.False(t, simple.IsAcceptingState(state))
+	}
+	for _, state := range other.States() {
+		require.False(t, other.IsAcceptingState(state))
+	}
+}

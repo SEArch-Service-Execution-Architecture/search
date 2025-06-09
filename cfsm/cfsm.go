@@ -122,10 +122,11 @@ func (s *System) GetAllMachineNames() []string {
 
 // CFSM is a single Communicating Finite State Machine.
 type CFSM struct {
-	ID      int    // Unique identifier.
-	Start   *State // Starting state of the CFSM.
-	Comment string // Comments on the CFSM.
-	Name    string // Unique name.
+	ID              int                 // Unique identifier.
+	Start           *State              // Starting state of the CFSM.
+	Comment         string              // Comments on the CFSM.
+	Name            string              // Unique name.
+	acceptingStates map[*State]struct{} // Accepting/terminal states of the CFSM (set implementation).
 
 	states []*State // States in a CFSM.
 }
@@ -161,6 +162,43 @@ func (m *CFSM) States() []*State {
 // IsEmpty returns true if there are no transitions in the CFSM.
 func (m *CFSM) IsEmpty() bool {
 	return len(m.states) == 0 || (len(m.states) == 1 && len(m.states[0].edges) == 0)
+}
+
+// AcceptingStates returns the accepting/terminal states of the CFSM.
+func (m *CFSM) AcceptingStates() []*State {
+	if m.acceptingStates == nil {
+		return nil
+	}
+	states := make([]*State, 0, len(m.acceptingStates))
+	for state := range m.acceptingStates {
+		states = append(states, state)
+	}
+	return states
+}
+
+// IsAcceptingState returns true if the given state is an accepting state.
+func (m *CFSM) IsAcceptingState(state *State) bool {
+	if m.acceptingStates == nil {
+		return false
+	}
+	_, exists := m.acceptingStates[state]
+	return exists
+}
+
+// AddAcceptingState adds a state to the list of accepting states.
+func (m *CFSM) AddAcceptingState(state *State) {
+	if m.acceptingStates == nil {
+		m.acceptingStates = make(map[*State]struct{})
+	}
+	m.acceptingStates[state] = struct{}{}
+}
+
+// SetAcceptingStates sets the accepting states for the CFSM.
+func (m *CFSM) SetAcceptingStates(states []*State) {
+	m.acceptingStates = make(map[*State]struct{})
+	for _, state := range states {
+		m.acceptingStates[state] = struct{}{}
+	}
 }
 
 func (m *CFSM) bytesBuffer() *bytes.Buffer {
