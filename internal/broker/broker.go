@@ -674,11 +674,13 @@ func (s *brokerServer) RegisterProvider(ctx context.Context, req *pb.RegisterPro
 
 	provContract, err := contract.ConvertPBLocalContract(req.GetContract())
 	if err != nil {
+		s.logger.Printf("Error converting contract: %v", err)
 		st := status.New(codes.InvalidArgument, "invalid contract or format")
 		return nil, st.Err()
 	}
 	providerUrl, err := url.Parse(req.Url)
 	if err != nil {
+		s.logger.Printf("Error parsing provider URL: %v. The URL was %s", err, providerUrl)
 		return nil, status.New(codes.InvalidArgument, "invalid url for provider").Err()
 	}
 	rc, err := s.getOrSaveContract(ctx, provContract)

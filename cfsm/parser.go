@@ -127,7 +127,7 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 			}
 			transitionMatches := messageRe.FindStringSubmatch(currentLine)
 			if transitionMatches == nil {
-				return nil, errors.New("expected transition")
+				return nil, fmt.Errorf("expected transition, got %s", currentLine)
 			}
 
 			// Create fromState and nextState if they don't exist already.
@@ -181,7 +181,7 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 				}
 				continue
 			} else {
-				return nil, errors.New("fsa file invalid. Expected '.end'")
+				return nil, fmt.Errorf("fsa file invalid. Expected '.end', got %s", currentLine)
 			}
 		}
 

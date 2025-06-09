@@ -223,15 +223,18 @@ func (s *MiddlewareServer) RegisterApp(req *pb.RegisterAppRequest, stream pb.Pri
 	s.providersLock.Lock()
 
 	// Send contract to broker.
+	s.logger.Printf("Sending provider contract to broker...")
 	res, err := client.RegisterProvider(ctx, &pb.RegisterProviderRequest{
 		Contract: req.ProviderContract,
 		Url:      s.PublicURL,
 	})
 	conn.Close() // disconnect from the broker.
 	if err != nil {
+		s.logger.Printf("Error registering provider with broker: %v", err)
 		return status.Error(codes.Unavailable, "error registering provider with broker")
 	}
 	// Send ACK to local app via the stream.
+	s.logger.Printf("Sending ACK to provider to confirm successful registration with appID %s", res.GetAppId())
 	ack := pb.RegisterAppResponse{
 		AckOrNew: &pb.RegisterAppResponse_AppId{
 			AppId: res.GetAppId()}}
