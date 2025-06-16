@@ -497,7 +497,7 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 			res, err := client.InitChannel(ctx, &req)
 			if err != nil {
 				unresponsiveParticipants <- pname
-				s.logger.Printf("Error doing InitChannel with participant name %s, with URL %s", pname, p.Url)
+				s.logger.Printf("Error doing InitChannel with participant name %s, with URL %s. Error: %s", pname, p.Url, err)
 				return result, fmt.Errorf("unresponsive provider during InitChannel: %w", err)
 			}
 			if res.Result != pb.InitChannelResponse_RESULT_ACK {

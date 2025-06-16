@@ -189,8 +189,13 @@ func (r *SEARCHChannel) broker(ctx context.Context) error {
 		}
 
 		details := st.Details()
-		detail := details[0].(*errdetails.ErrorInfo)
-		r.mw.brokeringFailedChannels[r.LocalID.String()] = strings.Split(detail.GetMetadata()["failed_participants"], ",")
+		if len(details) > 0 {
+			detail := details[0].(*errdetails.ErrorInfo)
+			r.mw.brokeringFailedChannels[r.LocalID.String()] = strings.Split(detail.GetMetadata()["failed_participants"], ",")
+		} else {
+			// No details available, use empty failed participants list
+			r.mw.brokeringFailedChannels[r.LocalID.String()] = []string{}
+		}
 		delete(r.mw.brokeringChannels, r.LocalID.String())
 		return st.Err()
 	}
@@ -546,6 +551,7 @@ func (s *MiddlewareServer) MessageExchange(stream pb.PublicMiddlewareService_Mes
 
 	s.logger.Printf("Received message from %s of type %s", in.SenderId, in.Content.Type)
 	c.Incoming[participantName] <- in.Content
+	s.logger.Printf("Enqueued message of type %s in incoming buffer for channel %s, participant %s", in.Content.Type, in.GetChannelId(), participantName)
 
 	for {
 		s.logger.Printf("Waiting for next message from %s...", participantName)
