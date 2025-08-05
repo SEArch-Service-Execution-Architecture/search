@@ -760,7 +760,7 @@ func (s *brokerServer) StartServer(address string, tls bool, certFile string, ke
 	s.server = grpcServer
 	pb.RegisterBrokerServiceServer(grpcServer, s)
 
-	// Registrar el servicio de health check
+	// Register GRPC health check service.
 	healthServer := health.NewServer()
 	healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
 	healthpb.RegisterHealthServer(grpcServer, healthServer)
