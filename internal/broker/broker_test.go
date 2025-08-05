@@ -643,3 +643,174 @@ func TestBisimulationPython(t *testing.T) {
 	}
 
 }
+
+// New functional test where we do the following:
+// 1. Register provider Monitor with the following contract:
+const monitor_contract = `
+.outputs Monitor
+.state graph
+0 ImgP ? stop 2
+0 ImgP ! allFine 0
+0 ImgP ! attack 3
+.marking 0
+.end
+`
+
+// 2. Register provider ImgP with the following contract:
+const imgp_contract = `
+.outputs ImgP
+.state graph
+0 2 ? req 4
+0 2 ? stop 2
+2 1 ! stop 8
+4 1 ? allFine 5
+4 1 ? attack 6
+5 2 ! img 0
+6 2 ! attack 7
+.marking 0
+.end
+`
+
+// 3. Send a request to the broker with the following global contract:
+const webui_contract = `
+.outputs ImgP
+.state graph
+0 WebUI ? req 4
+0 WebUI ? stop 2
+2 Monitor ! stop 8
+4 Monitor ? allFine 5
+4 Monitor ? attack 6
+5 WebUI ! img 0
+6 WebUI ! attack 7
+.marking 0
+.end
+
+
+.outputs Monitor
+.state graph
+0 ImgP ? stop 2
+0 ImgP ! allFine 0
+0 ImgP ! attack 3
+.marking 0
+.end
+
+
+.outputs WebUI
+.state graph
+0 ImgP ! req 5
+0 ImgP ! stop 3
+5 ImgP ? attack 6
+5 ImgP ? img 0
+.marking 0
+.end
+`
+
+func TestParticipantMapping(t *testing.T) {
+	// Arrange
+	testDir := t.TempDir()
+	b := NewBrokerServer(fmt.Sprintf("%s/t.db", testDir))
+	t.Cleanup(b.Stop)
+
+	// Register Monitor provider
+	monitorContract, err := contract.ConvertPBLocalContract(
+		&pb.LocalContract{
+			Contract: []byte(monitor_contract),
+			Format:   pb.LocalContractFormat_LOCAL_CONTRACT_FORMAT_FSA,
+		},
+	)
+	if err != nil {
+		t.Fatalf("error converting monitor contract: %v", err)
+	}
+
+	monitorRegisteredContract, err := b.getOrSaveContract(context.Background(), monitorContract)
+	if err != nil {
+		t.Fatalf("error saving monitor contract: %v", err)
+	}
+	monitorAppID := uuid.New()
+	monitorUrl, _ := url.Parse("monitor.example.org:8080")
+	_, err = b.saveProvider(context.TODO(), monitorAppID, monitorUrl, monitorRegisteredContract)
+	if err != nil {
+		t.Fatalf("error saving monitor provider: %v", err)
+	}
+
+	// Register ImgP provider
+	imgpContract, err := contract.ConvertPBLocalContract(
+		&pb.LocalContract{
+			Contract: []byte(imgp_contract),
+			Format:   pb.LocalContractFormat_LOCAL_CONTRACT_FORMAT_FSA,
+		},
+	)
+	if err != nil {
+		t.Fatalf("error converting imgp contract: %v", err)
+	}
+
+	imgpRegisteredContract, err := b.getOrSaveContract(context.Background(), imgpContract)
+	if err != nil {
+		t.Fatalf("error saving imgp contract: %v", err)
+	}
+	imgpAppID := uuid.New()
+	imgpUrl, _ := url.Parse("imgp.example.org:8080")
+	_, err = b.saveProvider(context.TODO(), imgpAppID, imgpUrl, imgpRegisteredContract)
+	if err != nil {
+		t.Fatalf("error saving imgp provider: %v", err)
+	}
+
+	// Create global contract request
+	globalContract, err := contract.ConvertPBGlobalContract(
+		&pb.GlobalContract{
+			Contract:      []byte(webui_contract),
+			Format:        pb.GlobalContractFormat_GLOBAL_CONTRACT_FORMAT_FSA,
+			InitiatorName: "ImgP", // Starting with ImgP as initiator
+		},
+	)
+	if err != nil {
+		t.Fatalf("error converting global contract: %v", err)
+	}
+
+	// Test participant mapping for ImgP
+	imgpProjection, err := globalContract.GetProjection("ImgP")
+	if err != nil {
+		t.Fatalf("error getting ImgP projection: %v", err)
+	}
+
+	imgpRes, imgpMapping, err := BisimilarityAlgorithm(context.Background(), imgpProjection, imgpContract)
+	if err != nil {
+		t.Fatalf("error running bisimilarity algorithm for ImgP: %v", err)
+	}
+	if !imgpRes {
+		t.Fatal("ImgP contracts are not bisimilar")
+	}
+
+	// Verify ImgP mappings
+	expectedImgpMappings := map[string]string{
+		"WebUI":   "2",
+		"Monitor": "1",
+	}
+	for participant, mapping := range expectedImgpMappings {
+		if got := imgpMapping[participant]; got != mapping {
+			t.Errorf("ImgP mapping for %s = %s; want %s", participant, got, mapping)
+		}
+	}
+
+	// Test participant mapping for Monitor
+	monitorProjection, err := globalContract.GetProjection("Monitor")
+	if err != nil {
+		t.Fatalf("error getting Monitor projection: %v", err)
+	}
+
+	monitorRes, monitorMapping, err := BisimilarityAlgorithm(context.Background(), monitorProjection, monitorContract)
+	if err != nil {
+		t.Fatalf("error running bisimilarity algorithm for Monitor: %v", err)
+	}
+	if !monitorRes {
+		t.Fatal("Monitor contracts are not bisimilar")
+	}
+
+	// Verify Monitor mappings
+	if len(monitorMapping) != 1 {
+		t.Errorf("Monitor mapping has %d entries; want 1", len(monitorMapping))
+	}
+	if got := monitorMapping["ImgP"]; got != "ImgP" {
+		t.Errorf("Monitor mapping for ImgP = %s; want ImgP", got)
+	}
+}

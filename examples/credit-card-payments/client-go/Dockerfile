@@ -2,9 +2,9 @@ ARG GOVERSION="1.24"
 ARG USERNAME=search
 FROM golang:${GOVERSION} AS dev
 
-RUN GRPC_HEALTH_PROBE_VERSION=v0.4.22 && \
-    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
-    chmod +x /bin/grpc_health_probe
+RUN GRPC_HEALTH_PROBE_VERSION=v0.4.39 && \
+    wget -qO/usr/local/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+    chmod +x /usr/local/bin/grpc_health_probe
 
 WORKDIR /src
 

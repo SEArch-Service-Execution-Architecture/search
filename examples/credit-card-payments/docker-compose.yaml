@@ -6,7 +6,8 @@ services:
     networks:
       - backend_network
     depends_on:
-      - middleware-backend
+      middleware-backend:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "/usr/bin/stat", "/tmp/registered"]
       interval: 2s
@@ -32,9 +33,12 @@ services:
     networks:
       - client_network
     depends_on:
-      - middleware-client
-      - backend
-      - payments-service
+      middleware-client:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+      payments-service:
+        condition: service_healthy
 
   payments-service:
     build:
@@ -43,7 +47,8 @@ services:
     networks:
       - payments_network
     depends_on:
-      - middleware-payments-service
+      middleware-payments-service:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "/usr/bin/stat", "/tmp/registered"]
       interval: 2s
@@ -56,6 +61,12 @@ services:
     networks:
       - broker_network
     command: ["broker"]
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/grpc_health_probe", "-addr=:10000"]
+      interval: 1s
+      timeout: 1s
+      retries: 5
+      start_period: 1s
 
   middleware-backend:
     build: ../../
@@ -66,12 +77,13 @@ services:
       - SERVICE_NAME=backend
     command: "middleware -broker_addr broker:10000 -private_host 0.0.0.0 -public_url middleware-backend:10000"
     depends_on:
-      - broker
+      broker:
+        condition: service_healthy
     expose:
       - "11000"
       - "10000"
     healthcheck:
-      test: ["CMD", "/bin/grpc_health_probe", "-addr=:11000"]
+      test: ["CMD", "/usr/local/bin/grpc_health_probe", "-addr=:11000"]
       interval: 2s
       timeout: 1s
       retries: 5
@@ -86,9 +98,10 @@ services:
       - SERVICE_NAME=client
     command: "middleware -broker_addr broker:10000 -private_host 0.0.0.0 -public_url middleware-client:10000"
     depends_on:
-      - broker
+      broker:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "/bin/grpc_health_probe", "-addr=:11000"]
+      test: ["CMD", "/usr/local/bin/grpc_health_probe", "-addr=:11000"]
       interval: 2s
       timeout: 1s
       retries: 5
@@ -103,9 +116,10 @@ services:
       - SERVICE_NAME=payments-service
     command: "middleware -broker_addr broker:10000 -private_host 0.0.0.0 -public_url middleware-payments-service:10000"
     depends_on:
-      - broker
+      broker:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "/bin/grpc_health_probe", "-addr=:11000"]
+      test: ["CMD", "/usr/local/bin/grpc_health_probe", "-addr=:11000"]
       interval: 2s
       timeout: 1s
       retries: 5

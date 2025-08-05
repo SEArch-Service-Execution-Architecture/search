@@ -19,6 +19,8 @@ import (
 	"github.com/sourcegraph/conc/iter"
 	"github.com/sourcegraph/conc/pool"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
@@ -757,6 +759,12 @@ func (s *brokerServer) StartServer(address string, tls bool, certFile string, ke
 	grpcServer := grpc.NewServer(opts...)
 	s.server = grpcServer
 	pb.RegisterBrokerServiceServer(grpcServer, s)
+
+	// Register GRPC health check service.
+	healthServer := health.NewServer()
+	healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
+	healthpb.RegisterHealthServer(grpcServer, healthServer)
+
 	s.logger.Printf("Broker server starting...")
 	if notifyStartChan != nil {
 		s.logger.Print("Sending broker public URL to notifyStartChan...")
