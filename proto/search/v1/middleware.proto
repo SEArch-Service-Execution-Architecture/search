@@ -41,7 +41,10 @@ message AppSendResponse {
 
 message AppRecvRequest {
     string channel_id = 1;
-    string participant = 2;
+    string participant = 2; // From which participant the message comes
+    // TODO: to fix middleware and allow multiple participants in the same
+    // channel sharing the same middleware.
+    // string recipient = 3;  // To which participant the message is addressed
 }
 
 message RegisterChannelRequest {

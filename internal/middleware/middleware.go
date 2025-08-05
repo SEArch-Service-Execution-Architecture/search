@@ -544,6 +544,7 @@ func (s *MiddlewareServer) MessageExchange(stream pb.PublicMiddlewareService_Mes
 		return fmt.Errorf("Received MessageExchange with ChannelID %s but it is not a brokered Channel in this middleware.", in.GetChannelId())
 	}
 	s.channelLock.RUnlock()
+	// Fix this!
 	// TODO: must check in.RecipientId... we could be hosting two different apps from same channel
 	participantName := c.participants[in.SenderId]
 
