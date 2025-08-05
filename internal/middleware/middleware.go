@@ -22,6 +22,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/testdata"
 
@@ -532,20 +534,16 @@ func (s *MiddlewareServer) MessageExchange(stream pb.PublicMiddlewareService_Mes
 		s.logger.Printf("Error in MessageExchange when attempting to recv from stream: %s", err)
 		return err // TODO: what should we do here?
 	}
-	s.logger.Print("[DEBUG] Attempting to obtain channelLock...")
 	s.channelLock.RLock()
-	s.logger.Print("[DEBUG] Obtained the channelLock...")
 	c, ok := s.brokeredChannels[in.GetChannelId()]
 	if !ok {
 		// TODO: attempt to get the channel from s.brokeringChannels (this can happen when some provider starts sending messages to the Service Client
 		// before we have finished processing the BrokerChannelResponse)
 		s.logger.Printf("Received MessageExchange with ChannelID %s but it is not a brokered Channel in this middleware.", in.GetChannelId())
 		s.channelLock.RUnlock()
-		s.logger.Print("[DEBUG] Released channelLock...")
 		return fmt.Errorf("Received MessageExchange with ChannelID %s but it is not a brokered Channel in this middleware.", in.GetChannelId())
 	}
 	s.channelLock.RUnlock()
-	s.logger.Print("[DEBUG] Released channelLock...")
 	// TODO: must check in.RecipientId... we could be hosting two different apps from same channel
 	participantName := c.participants[in.SenderId]
 
@@ -693,6 +691,12 @@ func (s *MiddlewareServer) StartMiddlewareServer(wg *sync.WaitGroup, publicURL s
 
 	s.publicServer = publicGrpcServer
 	s.privateServer = privateGrpcServer
+
+	// Register GRPC healthcheck service on both servers.
+	healthServer := health.NewServer()
+	healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
+	healthpb.RegisterHealthServer(publicGrpcServer, healthServer)
+	healthpb.RegisterHealthServer(privateGrpcServer, healthServer)
 
 	pb.RegisterPublicMiddlewareServiceServer(publicGrpcServer, s)
 	pb.RegisterPrivateMiddlewareServiceServer(privateGrpcServer, s)

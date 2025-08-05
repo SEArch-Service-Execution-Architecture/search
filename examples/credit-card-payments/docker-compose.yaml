@@ -71,7 +71,7 @@ services:
       - "11000"
       - "10000"
     healthcheck:
-      test: ["CMD", "/bin/grpc_health_probe", "-addr=:11000"]
+      test: ["CMD", "/usr/local/bin/grpc_health_probe", "-addr=:11000"]
       interval: 2s
       timeout: 1s
       retries: 5
@@ -88,7 +88,7 @@ services:
     depends_on:
       - broker
     healthcheck:
-      test: ["CMD", "/bin/grpc_health_probe", "-addr=:11000"]
+      test: ["CMD", "/usr/local/bin/grpc_health_probe", "-addr=:11000"]
       interval: 2s
       timeout: 1s
       retries: 5
@@ -105,7 +105,7 @@ services:
     depends_on:
       - broker
     healthcheck:
-      test: ["CMD", "/bin/grpc_health_probe", "-addr=:11000"]
+      test: ["CMD", "/usr/local/bin/grpc_health_probe", "-addr=:11000"]
       interval: 2s
       timeout: 1s
       retries: 5
