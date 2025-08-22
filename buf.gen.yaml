@@ -1,36 +1,29 @@
-# https://buf.build/blog/remote-plugin-execution
-
-version: v1
+# https://buf.build/docs/configuration/v2/buf-gen-yaml/
+version: v2
 plugins:
   # Go
-  - plugin: buf.build/protocolbuffers/go
+  - remote: buf.build/protocolbuffers/go
     out: gen/go
     opt: paths=source_relative
-  - plugin: buf.build/grpc/go
+  - remote: buf.build/grpc/go
     out: gen/go
     opt: paths=source_relative
 
-  # Python
-  # - plugin: buf.build/protocolbuffers/python
-  #   out: gen/python
-  # - plugin: buf.build/grpc/python
-  #   out: gen/python
-  
   # We use local plugin for Python, since we're using an unreleased version.
   # Install the protoc plugin by running pip install -r requirements.txt (See README.md)
-  - plugin: python_betterproto
+  - local: protoc-gen-python_betterproto
     out: gen/python
 
   # Java
-  - plugin: buf.build/grpc/java:v1.71.0
+  - remote: buf.build/grpc/java:v1.71.0
     out: gen/java
-  - plugin: buf.build/protocolbuffers/java:v30.2
+  - remote: buf.build/protocolbuffers/java:v30.2
     out: gen/java
 
   # Typescript
-  - plugin: buf.build/bufbuild/es:v1.4.2
-    opt: target=ts
+  - remote: buf.build/bufbuild/es:v1.4.2
     out: gen/ts
-  - plugin: buf.build/connectrpc/es:v1.1.3
     opt: target=ts
+  - remote: buf.build/connectrpc/es:v1.1.3
     out: gen/ts
+    opt: target=ts
