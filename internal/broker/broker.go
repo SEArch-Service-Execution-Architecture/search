@@ -35,7 +35,6 @@ import (
 	"github.com/SEArch-Service-Execution-Architecture/search/ent"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/compatibilityresult"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
-	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
 	"github.com/SEArch-Service-Execution-Architecture/search/internal/searcherrors"
 
 	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
@@ -218,90 +217,71 @@ func (s *brokerServer) getBestCandidate(ctx context.Context, req contract.Global
 		return result, nil
 	}
 
-	// If there is no result in the cache, also enqueue jobs to calculate compatibility with all providers for which we have not
-	// calculated compatibility, but in this case wait until either they all fail to find
-	// a compatible provider or we find one (and in that case we return the first one).
-	// FALTA FILTRAR POR LOS QUE TENGAN CONTRATO DE REQUERIMIENTO IGUAL AL QUE ESTAMOS PROCESANDO.
+	// If there is no compatible provider in the cache, calculate compatibility with all provider contracts for which we
+	// have not calculated it yet, and return the first compatible provider found (if any). The remaining checks keep
+	// running in the background so that their results are cached for future requests.
 	contractsToCalculate, err := s.dbClient.RegisteredContract.Query().
-		Where(func(s *sql.Selector) {
-			rpt := sql.Table(registeredprovider.Table)
-			crt := sql.Table(compatibilityresult.Table)
-			s.Join(rpt).On(s.C(registeredcontract.FieldID), rpt.C(registeredprovider.ContractColumn))
-			s.LeftJoin(crt).On(s.C(registeredcontract.FieldID), crt.C(compatibilityresult.FieldProviderContractID))
-		}).WithProviders().
+		Where(
+			registeredcontract.HasProviders(),
+			registeredcontract.Not(registeredcontract.HasCompatibilityResultsAsProviderWith(
+				compatibilityresult.RequirementContractID(rc.ID),
+			)),
+		).
+		WithProviders().
 		All(ctx)
-
-	// for _, cDebug := range contractsToCalculate {
-	// 	s.logger.Printf("provider contract to calculate with ID %s and content %s", cDebug.ID, cDebug.Contract)
-	// }
-
-	// providersToCompute, err := s.dbClient.Debug().RegisteredProvider.Query().
-	// 	Where(
-	// 		registeredprovider.Not(registeredprovider.HasContractWith(registeredcontract)
 	if err != nil {
 		return nil, candidateErr{p, fmt.Errorf("error querying registered contracts for participant %s: %w", p, err)}
 	}
-	// allRegisteredProviders, err := s.dbClient.Debug().RegisteredProvider.Query().WithContract().All(ctx)
-	// for _, rp := range allRegisteredProviders {
-	// 	fmt.Printf("registered provider with participant name %s and contract ID: %s\n", rp.ParticipantName, rp.Edges.Contract.ID)
-	// }
 	if len(contractsToCalculate) == 0 {
 		return nil, candidateErr{p, errors.New("no compatible provider found and no potential candidates to calculate compatibility")}
 	}
+
+	// Buffered so that the first compatible result never blocks; later ones are dropped (but still cached).
 	firstResult := make(chan *ent.RegisteredProvider, 1)
-	workersFinished := make(chan struct{}, 1)
+	// The checks outlive this request, so they must not be cancelled when it finishes.
+	checksCtx := context.WithoutCancel(ctx)
 	s.compatChecksWaitGroup.Go(func() {
 		workers := pool.New()
 		for _, c := range contractsToCalculate {
-			for _, prov := range c.Edges.Providers {
-				thisContract := c
-				thisProv := prov
-				workers.Go(func() {
-					provContract, err := getContract(thisContract)
-					if err != nil {
-						s.logger.Printf("error parsing registeredContract with ID %s", thisContract.ID)
-						// TODO: handle error properly
-						return
+			workers.Go(func() {
+				provContract, err := getContract(c)
+				if err != nil {
+					s.logger.Printf("error parsing registeredContract with ID %s: %v", c.ID, err)
+					return
+				}
+				isCompatible, mapping, err := s.compatFunc(checksCtx, projection, provContract)
+				if err != nil {
+					s.logger.Printf("error calculating compatibility: %v", err)
+					return
+				}
+				_, err = s.saveCompatibilityResult(checksCtx, rc, c, isCompatible, mapping)
+				if err != nil {
+					s.logger.Printf("error saving compatibility result: %v", err)
+					return
+				}
+				if isCompatible {
+					select {
+					case firstResult <- c.Edges.Providers[0]:
+						s.logger.Printf("found compatible provider %s, returning early...", c.Edges.Providers[0].ID)
+					default:
 					}
-					reqProjection, err := req.GetProjection(p)
-					if err != nil {
-						s.logger.Printf("error getting projection for participant %s", p)
-						// TODO: handle error properly
-						return
-					}
-					isCompatible, mapping, err := s.compatFunc(ctx, reqProjection, provContract)
-					if err != nil {
-						s.logger.Printf("error calculating compatibility: %v", err)
-						// TODO: proper error handler
-						return
-					}
-					_, err = s.saveCompatibilityResult(ctx, rc, thisContract, isCompatible, mapping)
-					if err != nil {
-						s.logger.Printf("error saving compatibility result: %v", err)
-						// TODO: proper error handler
-						return
-					}
-					if isCompatible {
-						s.logger.Printf("found compatible provider %s, returning early...", thisProv.ID)
-						firstResult <- thisProv
-					}
-				})
-			}
+				}
+			})
 		}
-		s.logger.Printf("waiting for workers to finish...")
 		workers.Wait()
-		s.logger.Print("workers finished")
-		workersFinished <- struct{}{}
-		s.logger.Printf("Exiting routine for getBestCandidate with req %s and participant %s", req.GetContractID(), p)
+		close(firstResult)
+		s.logger.Printf("Finished compatibility checks for req %s and participant %s", req.GetContractID(), p)
 	})
 
 	select {
-	case r := <-firstResult:
-		return r, nil
-	case <-workersFinished:
+	case r, ok := <-firstResult:
+		if ok {
+			return r, nil
+		}
 		return nil, candidateErr{p, fmt.Errorf("no compatible provider found for participant %s", p)}
+	case <-ctx.Done():
+		return nil, candidateErr{p, ctx.Err()}
 	}
-
 }
 
 // given a contract and a list of participants, get best possible candidates for those candidates
@@ -312,8 +292,7 @@ func (s *brokerServer) getBestCandidates(ctx context.Context, contract contract.
 	contractParticipants := contract.GetParticipants()
 	for _, p := range participants {
 		if !slices.Contains(contractParticipants, p) {
-			// participant element not present in contract
-			s.logger.Fatalf("getBestCandidates got a participant not present in contract.")
+			return nil, status.Errorf(codes.InvalidArgument, "participant %s is not present in the contract", p)
 		}
 	}
 
@@ -324,9 +303,18 @@ func (s *brokerServer) getBestCandidates(ctx context.Context, contract contract.
 		return s.getBestCandidate(ctx, contract, *p)
 	})
 	if err != nil {
-		failedParticipants := make([]string, 0)
-		for _, e := range err.(interface{ Unwrap() []error }).Unwrap() {
-			failedParticipants = append(failedParticipants, e.(candidateErr).participantName)
+		errs := []error{err}
+		var joined interface{ Unwrap() []error }
+		if errors.As(err, &joined) {
+			errs = joined.Unwrap()
+		}
+		failedParticipants := make([]string, 0, len(errs))
+		for _, e := range errs {
+			var ce candidateErr
+			if !errors.As(e, &ce) {
+				return nil, status.Errorf(codes.Internal, "unexpected error while brokering: %v", e)
+			}
+			failedParticipants = append(failedParticipants, ce.participantName)
 		}
 		return nil, searcherrors.BrokerageFailedError(failedParticipants)
 	}
@@ -488,6 +476,7 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 			}
 			if err != nil {
 				s.logger.Print(err.Error())
+				conn.Close()
 				unresponsiveParticipants <- pname
 				return result, fmt.Errorf("internal error calculating participant mapping: %w", err)
 			}
@@ -498,11 +487,13 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 			}
 			res, err := client.InitChannel(ctx, &req)
 			if err != nil {
+				conn.Close()
 				unresponsiveParticipants <- pname
 				s.logger.Printf("Error doing InitChannel with participant name %s, with URL %s. Error: %s", pname, p.Url, err)
 				return result, fmt.Errorf("unresponsive provider during InitChannel: %w", err)
 			}
 			if res.Result != pb.InitChannelResponse_RESULT_ACK {
+				conn.Close()
 				unresponsiveParticipants <- pname
 				s.logger.Printf("Received non-ACK response to InitChannel")
 				return result, fmt.Errorf("non-ACK received during InitChannel")
@@ -513,13 +504,20 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 
 	providerMwClientsSlice, err := initChannelPool.Wait()
 	if err != nil {
-		s.logger.Printf("Failed to InitChannel at least one participant")
-		close(unresponsiveParticipants)
-		for pname := range unresponsiveParticipants {
-			// TODO: what do we do if an unresponsive provider is one of the presetParticipants? Send error to Service Client.
-			denylistedProviders[allParticipants[pname]] = struct{}{}
+		s.logger.Printf("Failed to InitChannel at least one participant: %v", err)
+		for _, p := range providerMwClientsSlice {
+			if p.conn != nil {
+				p.conn.Close()
+			}
 		}
-		s.logger.Fatalf("TODO: failed to InitChannel at least one participant. Denylist providers and ask for new candidates.")
+		close(unresponsiveParticipants)
+		failed := make([]string, 0)
+		for pname := range unresponsiveParticipants {
+			failed = append(failed, pname)
+		}
+		slices.Sort(failed)
+		// TODO: denylist the unresponsive providers and ask for new candidates instead of failing.
+		return nil, status.Errorf(codes.Unavailable, "participants %v did not respond to InitChannel", failed)
 	}
 	providerMwClients := make(map[string]struct {
 		client pb.PublicMiddlewareServiceClient
