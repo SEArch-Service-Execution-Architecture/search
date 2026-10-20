@@ -28,6 +28,8 @@ jobs:
     - name: Install cfsm_bisimulation
       run: pip install -r requirements.txt
     - name: Test
+      env:
+        SEARCH_REQUIRE_PYTHON: "1"
       run: go test ./... -coverprofile=coverage.txt -covermode atomic -coverpkg=./cfsm/...,./internal/...,./contract -timeout 30s
     - name: Print coverage info
       run: go tool cover -func coverage.txt
