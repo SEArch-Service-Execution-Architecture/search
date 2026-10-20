@@ -10,7 +10,7 @@ import (
 // importable. Set SEARCH_REQUIRE_PYTHON=1 (as CI does) to fail instead of skipping.
 func requirePythonBisimulation(t *testing.T) {
 	t.Helper()
-	err := exec.Command("python", "-c", "import cfsm_bisimulation").Run()
+	err := exec.Command(PythonExecutable, "-c", "import cfsm_bisimulation").Run()
 	if err == nil {
 		return
 	}
