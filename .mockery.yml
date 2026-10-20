@@ -1,0 +1,12 @@
+# https://vektra.github.io/mockery/latest/configuration/
+# Regenerate with: go tool mockery
+all: true
+dir: mocks
+filename: "{{.InterfaceName}}.go"
+structname: "{{.InterfaceName}}"
+pkgname: mocks
+template: testify
+template-data:
+  unroll-variadic: true
+packages:
+  github.com/SEArch-Service-Execution-Architecture/search/contract: {}

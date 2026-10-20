@@ -59,9 +59,9 @@ With Python 3.11+ installed, you can then run the following commands to install 
     pip install -r requirements.txt
 ```
 
-2. Go 1.21+ [https://go.dev/](https://go.dev/) and the following tools:
+2. Go 1.26+ [https://go.dev/](https://go.dev/) and the following tools:
   - `buf` [https://buf.build/docs/installation](https://buf.build/docs/installation), used to generate code from our Protocol Buffer definitions to Go code *(cf. Section 3 of the paper)*.
-  - `mockery`: [https://vektra.github.io/mockery/](https://vektra.github.io/mockery/latest/installation/), used to generate mocks for tests.
+  - `mockery` [https://vektra.github.io/mockery/](https://vektra.github.io/mockery/latest/), used to generate mocks for tests. It is pinned as a Go tool in `go.mod`, so no installation is needed (`go tool mockery`).
   - `ent` [https://github.com/ent/ent](https://github.com/ent/ent), used to model the database where we store contracts, providers and compatibility checks already computed.
 
 
@@ -119,8 +119,9 @@ In software development, test mocks are simulated objects used in testing. They 
 
 We use `mockery` to generate test _mocks_ (only for the `contract` package for now). If you modify the `contract` package, regenerate the mocks by running the following command and commiting the changes to the repository. The generated mocks live in the `mocks` directory:
 ```bash
-    mockery --dir contract --all --with-expecter
+    go tool mockery
 ```
+The configuration lives in `.mockery.yml`.
 
 ### Compiling the broker and the middleware:
 Building the infrastructure (i.e., the Broker and the Middleware) account to executing the following command:
