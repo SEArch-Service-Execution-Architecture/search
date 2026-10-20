@@ -995,7 +995,7 @@ var File_search_v1_middleware_proto protoreflect.FileDescriptor
 
 const file_search_v1_middleware_proto_rawDesc = "" +
 	"\n" +
-	"\x1asearch/v1/middleware.proto\x12\tsearch.v1\x1a\x1bsearch/v1/app_message.proto\x1a\x19search/v1/contracts.proto\x1a\x16search/v1/broker.proto\"\x8d\x01\n" +
+	"\x1asearch/v1/middleware.proto\x12\tsearch.v1\x1a\x1bsearch/v1/app_message.proto\x1a\x16search/v1/broker.proto\x1a\x19search/v1/contracts.proto\"\x8d\x01\n" +
 	"\x0fAppSendResponse\x129\n" +
 	"\x06result\x18\x01 \x01(\x0e2!.search.v1.AppSendResponse.ResultR\x06result\"?\n" +
 	"\x06Result\x12\x16\n" +
@@ -1170,8 +1170,8 @@ func file_search_v1_middleware_proto_init() {
 		return
 	}
 	file_search_v1_app_message_proto_init()
-	file_search_v1_contracts_proto_init()
 	file_search_v1_broker_proto_init()
+	file_search_v1_contracts_proto_init()
 	file_search_v1_middleware_proto_msgTypes[5].OneofWrappers = []any{
 		(*RegisterAppResponse_AppId)(nil),
 		(*RegisterAppResponse_Notification)(nil),

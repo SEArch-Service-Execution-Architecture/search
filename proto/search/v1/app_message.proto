@@ -1,43 +1,41 @@
 syntax = "proto3";
 package search.v1;
+
 option go_package = "github.com/SEArch-Service-Execution-Architecture/search/gen/go/v1";
 option java_package = "ar.com.montepagano.search.v1";
 
-
 // This is what will be exchanged between middlewares
 message MessageExchangeRequest {
-    string channel_id = 1;  // We'll use UUIDv4. It's a global ID shared by all participants
-    
-    // This is necessary because URLs don't univocally determine apps. There can be multiple applications
-    // behind the same middleware (there is a 1:1 mapping between URLs and middlewares)
-    string sender_id = 2;    // appid de app emisora
-    string recipient_id = 3; // appid de app receptora
+  string channel_id = 1; // We'll use UUIDv4. It's a global ID shared by all participants
 
-    // TODO: how to avoid spoofing?
+  // This is necessary because URLs don't univocally determine apps. There can be multiple applications
+  // behind the same middleware (there is a 1:1 mapping between URLs and middlewares)
+  string sender_id = 2; // appid de app emisora
+  string recipient_id = 3; // appid de app receptora
 
-    AppMessage content = 4;
+  // TODO: how to avoid spoofing?
 
+  AppMessage content = 4;
 }
-
 
 // This is what will be sent from an app to the middleware
 message AppSendRequest {
-    string channel_id = 1;
-    string recipient = 2; // name of the recipient in the local contract
-    AppMessage message = 3;
+  string channel_id = 1;
+  string recipient = 2; // name of the recipient in the local contract
+  AppMessage message = 3;
 }
 
 // This is what will be sent from the middleware to a local app
 message AppRecvResponse {
-    string channel_id = 1;
-    string sender = 2; // name of the sender in the local contract
-    AppMessage message = 3;
+  string channel_id = 1;
+  string sender = 2; // name of the sender in the local contract
+  AppMessage message = 3;
 }
 
 // This is the message content that is sent by the app (this is copied as-is by the middlewares)
 // TODO: we may want to use self-describing messages to have a rich type system for messages!
 // https://protobuf.dev/programming-guides/techniques/#self-description
 message AppMessage {
-    string type = 1;
-    bytes body = 2;
+  string type = 1;
+  bytes body = 2;
 }

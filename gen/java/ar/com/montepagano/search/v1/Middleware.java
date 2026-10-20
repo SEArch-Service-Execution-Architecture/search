@@ -9973,8 +9973,8 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
   static {
     java.lang.String[] descriptorData = {
       "\n\032search/v1/middleware.proto\022\tsearch.v1\032" +
-      "\033search/v1/app_message.proto\032\031search/v1/" +
-      "contracts.proto\032\026search/v1/broker.proto\"" +
+      "\033search/v1/app_message.proto\032\026search/v1/" +
+      "broker.proto\032\031search/v1/contracts.proto\"" +
       "\215\001\n\017AppSendResponse\0229\n\006result\030\001 \001(\0162!.se" +
       "arch.v1.AppSendResponse.ResultR\006result\"?" +
       "\n\006Result\022\026\n\022RESULT_UNSPECIFIED\020\000\022\r\n\tRESU" +
@@ -10053,8 +10053,8 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           ar.com.montepagano.search.v1.AppMessageOuterClass.getDescriptor(),
-          ar.com.montepagano.search.v1.Contracts.getDescriptor(),
           ar.com.montepagano.search.v1.Broker.getDescriptor(),
+          ar.com.montepagano.search.v1.Contracts.getDescriptor(),
         });
     internal_static_search_v1_AppSendResponse_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -10154,8 +10154,8 @@ ar.com.montepagano.search.v1.Broker.RemoteParticipant defaultValue) {
         new java.lang.String[] { "Result", "ErrorMessage", });
     descriptor.resolveAllFeaturesImmutable();
     ar.com.montepagano.search.v1.AppMessageOuterClass.getDescriptor();
-    ar.com.montepagano.search.v1.Contracts.getDescriptor();
     ar.com.montepagano.search.v1.Broker.getDescriptor();
+    ar.com.montepagano.search.v1.Contracts.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
