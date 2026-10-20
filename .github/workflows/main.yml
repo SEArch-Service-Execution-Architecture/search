@@ -1,7 +1,6 @@
 on:
   push:
     branches:
-      - master
       - main
   pull_request:
 name: Test
@@ -10,57 +9,62 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: [1.23.x, 1.24.x]
+        go-version: [1.26.x, 1.27.x]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
+    - name: Checkout code
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - name: Install Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
       with:
         go-version: ${{ matrix.go-version }}
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Setup Python
-      uses: actions/setup-python@v5
+    - name: Install uv
+      uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
       with:
-        python-version: '3.13'
-        cache: 'pip' # caching pip dependencies
+        python-version: '3.14'
+        activate-environment: true
     - name: Install cfsm_bisimulation
-      run: pip install -r requirements.txt
+      run: uv pip install -r requirements.txt
     - name: Test
       env:
         SEARCH_REQUIRE_PYTHON: "1"
-      run: go test ./... -coverprofile=coverage.txt -covermode atomic -coverpkg=./cfsm/...,./internal/...,./contract -timeout 30s
+      run: go test ./... -coverprofile=coverage.txt -covermode atomic -coverpkg=./cfsm/...,./internal/...,./contract -timeout 60s
     - name: Print coverage info
       run: go tool cover -func coverage.txt
     - name: Test with race detector
-      run: go test -race ./... -timeout 1m -v
-  lint-and-format:
+      env:
+        SEARCH_REQUIRE_PYTHON: "1"
+      run: go test -race ./... -timeout 2m -v
+  lint:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - name: Install Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
       with:
         go-version: 'stable'
-    - name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v3
+    - name: Run golangci-lint (includes go vet and gofmt)
+      uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
       with:
-        args: --timeout=5m
-    - name: Run go vet
-      run: go vet ./...
-    - name: Run gofmt
-      run: go fmt ./...
-    - name: Install buf
-      uses: bufbuild/buf-setup-action@v1
+        version: v2.15.0
+    - name: Check generated code is up to date
+      run: |
+        go generate ./ent
+        go tool mockery
+        git diff --exit-code -- ent mocks
+  buf:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # buf-action posts a summary comment on PRs, and fails the job if it can't.
+      pull-requests: write
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: bufbuild/buf-action@85aebf73123b5c15fd5528aaecbf9129cddf7fa7 # v1.6.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    - uses: bufbuild/buf-lint-action@v1
-      with:
-        input: proto
-    - uses: bufbuild/buf-breaking-action@v1
-      with:
-        # The 'main' branch of the GitHub repository that defines the module.
-        against: "https://github.com/${GITHUB_REPOSITORY}.git#branch=main,subdir=proto"
-        input: proto
+        # Lint, format and breaking-change checks; never push to the BSR.
+        push: false
