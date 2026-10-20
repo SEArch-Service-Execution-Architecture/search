@@ -444,19 +444,18 @@ func circleContractCompatChecker(ctx context.Context, req contract.LocalContract
 	log.Printf("[TestCircle] - Checking req ID: %s, prov ID: %s, req participants: %v, prov participants: %v", req.GetContractID(), prov.GetContractID(), req.GetRemoteParticipantNames(), prov.GetRemoteParticipantNames())
 	mapping := make(map[string]string)
 	if req.GetContractID() == "c6c64de47a8ca6293d5bfc108b47c8982c6ebc178b7d6cb5bcd22581685b1ce7b512c62e78ea8badaff14df89075d06186da982ae0a0719b651174f7031bcb92" && prov.GetContractID() == "bc15e8c84c7ef522602bafb1da221735198067c825dc5ee2d2af2ba5d3f5e87d5b0c3385b65fd49752d0c18025177db1cdc13d831909ae0b6a59aa3b84df9ee2" {
-		mapping["sender"] = "self"
-		mapping["receiver"] = "r2_special"
+		mapping["self"] = "sender"
+		mapping["r2_special"] = "receiver"
 	}
 	if req.GetContractID() == "0b719e3ea36cac5dbbd0d3efdb36ade1de42ceaf267dc978c49018be7dc4aa51aa60133c756ca552cb378970220dd59d6c70a650eabb9f97f80f176027ef7c44" && prov.GetContractID() == "af79e694939e2ea7fb836ebbe96c4aadb07177dd0646d9ab4b482741065dba7c3dd7556a03617d55201595f3a19d7f5de174eedfa7e8dd5981ffb5bdd76d007d" {
-		mapping["sender"] = "r1_special"
-		mapping["receiver"] = "r3_special"
+		mapping["r1_special"] = "sender"
+		mapping["r3_special"] = "receiver"
 	}
 	if req.GetContractID() == "cbe93c0bf4e2e1f8340e8febdc1b7bea9290aec3cfa66ca616e1c815f9efa34a1ae8b762c3118703ad47f0cee341ced5a2949a07c42e2afecb088ed4c8852642" && prov.GetContractID() == "f83914e510d991a1da253701150c9cc51f9d85743d9d30bfecfe9fcfd24f1e39e87643689b23cf2ccfa08987bb4cdea90e30caa1eeb6ba5f1ab58eb094e97e72" {
-		mapping["sender"] = "r2_special"
-		mapping["receiver"] = "self"
+		mapping["r2_special"] = "sender"
+		mapping["self"] = "receiver"
 	}
-	_, ok := mapping["receiver"]
-	if !ok {
+	if len(mapping) == 0 {
 		return false, nil, nil
 	}
 	return true, mapping, nil
@@ -534,9 +533,10 @@ const pingContractFSA = `
 // Mock function for checking contracts in TestPingPongFullExample.
 func pingPongContractCompatChecker(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
 	log.Printf("Checking with pingPongContractCompatChecker...")
+	// Keys are names in the requirement contract, values are names in the provider contract.
 	mapping := map[string]string{
-		"Other": "Ping",
-		"Pong":  "Pong",
+		"Ping": "Other",
+		"Pong": "Pong",
 	}
 	return true, mapping, nil
 }
