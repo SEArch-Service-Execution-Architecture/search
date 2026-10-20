@@ -68,6 +68,9 @@ func getContract(c *ent.RegisteredContract) (contract.LocalContract, error) {
 	})
 }
 
+// ContractCompatibilityFunc checks whether a provider contract is compatible with a requirement
+// contract. When they are compatible, it also returns the participant mapping: keys are participant
+// names in the requirement contract and values are the corresponding names in the provider contract.
 type ContractCompatibilityFunc func(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error)
 
 func allContractsIncompatible(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
@@ -353,9 +356,15 @@ func (s *brokerServer) getParticipantMapping(req contract.GlobalContract, initia
 	if err != nil {
 		return nil, fmt.Errorf("failed to retrieve mapping for %s", receiverRegisteredProvider.ID)
 	}
+	// compatResult.Mapping maps names in the requirement contract (the initiator's names) to names in the
+	// provider contract. The receiver needs the mapping keyed by its own (provider) names.
 	res := make(map[string]*pb.RemoteParticipant)
-	for a, b := range compatResult.Mapping {
-		res[a] = initiatorMapping[b]
+	for nameInReq, nameInProv := range compatResult.Mapping {
+		remote, ok := initiatorMapping[nameInReq]
+		if !ok {
+			return nil, fmt.Errorf("participant %s from the compatibility mapping is not in the initiator's mapping", nameInReq)
+		}
+		res[nameInProv] = remote
 	}
 
 	s.logger.Printf("getParticipantMapping for %v returning %v", receiver, res)

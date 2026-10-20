@@ -163,7 +163,7 @@ func TestGetParticipantMapping(t *testing.T) {
 			},
 			compatResult: true,
 			compatResultMapping: map[string]string{
-				"Merchant": "TravelClient",
+				"TravelClient": "Merchant",
 			},
 		},
 	}
