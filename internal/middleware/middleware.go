@@ -342,7 +342,6 @@ func (r *SEARCHChannel) sender(ctx context.Context, participant string) error {
 		select {
 		case msg = <-r.Outgoing[participant]:
 			r.mw.logger.Printf("Received outbound message to send on channel %s for participant %s\n", r.ID, participant)
-			break
 		case <-ctx.Done():
 			r.mw.logger.Printf("Context cancelled (cause: %s). Closing sender routine for channel %s, participant %s\n", context.Cause(ctx), r.ID, participant)
 			close(r.Outgoing[participant])
@@ -353,7 +352,7 @@ func (r *SEARCHChannel) sender(ctx context.Context, participant string) error {
 			}
 			if reply.Result != pb.MessageExchangeResponse_RESULT_OK {
 				r.mw.logger.Printf("Error in MessageExchange when attempting to close stream: %s", reply.ErrorMessage)
-				return fmt.Errorf("Error in MessageExchange when attempting to close stream: %s", reply.ErrorMessage)
+				return fmt.Errorf("error in MessageExchange when attempting to close stream: %s", reply.ErrorMessage)
 			}
 			r.mw.logger.Printf("Closed sender stream for channel %s, participant %s\n", r.ID, participant)
 			return nil
@@ -541,7 +540,7 @@ func (s *MiddlewareServer) MessageExchange(stream pb.PublicMiddlewareService_Mes
 		// before we have finished processing the BrokerChannelResponse)
 		s.logger.Printf("Received MessageExchange with ChannelID %s but it is not a brokered Channel in this middleware.", in.GetChannelId())
 		s.channelLock.RUnlock()
-		return fmt.Errorf("Received MessageExchange with ChannelID %s but it is not a brokered Channel in this middleware.", in.GetChannelId())
+		return fmt.Errorf("received MessageExchange with ChannelID %s but it is not a brokered Channel in this middleware", in.GetChannelId())
 	}
 	s.channelLock.RUnlock()
 	// TODO: must check in.RecipientId... we could be hosting two different apps from same channel
@@ -597,7 +596,7 @@ func (s *MiddlewareServer) InitChannel(ctx context.Context, icr *pb.InitChannelR
 		r.LocalID = uuid.MustParse(icr.GetChannelId()) // in non locally initiated channels, LocalID == ID
 	} else {
 		// TODO: improve error message, return proper gRPC error.
-		return nil, fmt.Errorf("Received InitChannel for invalid AppID %s", icr.GetAppId())
+		return nil, fmt.Errorf("received InitChannel for invalid AppID %s", icr.GetAppId())
 	}
 	r.addresses = icr.GetParticipants()
 	for k, v := range r.addresses {

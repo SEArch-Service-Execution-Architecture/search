@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -103,7 +102,7 @@ func main() {
 	fmt.Printf("Shipping Address: %s\n", shippingAddress)
 
 	// Load contract.fsa
-	contractBytes, err := ioutil.ReadFile("contract.fsa")
+	contractBytes, err := os.ReadFile("contract.fsa")
 	if err != nil {
 		log.Fatalf("Failed to read contract file: %v", err)
 	}
@@ -115,7 +114,7 @@ func main() {
 	}
 
 	// Connect to middleware
-	conn, err := grpc.Dial("dns:///"+middlewareURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("dns:///"+middlewareURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect: %v", err)
 	}
