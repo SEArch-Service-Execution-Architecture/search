@@ -1,6 +1,7 @@
 package broker
 
 import (
+	"bytes"
 	"context"
 	stdsql "database/sql"
 	"encoding/json"
@@ -12,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"slices"
+	"strings"
 	"time"
 
 	"entgo.io/ent/dialect"
@@ -73,6 +75,10 @@ func allContractsIncompatible(ctx context.Context, req contract.LocalContract, p
 	return false, nil, nil
 }
 
+// PythonExecutable is the Python interpreter used by BisimilarityAlgorithm. It must have the
+// cfsm-bisimulation package installed.
+var PythonExecutable = "python"
+
 // This function assumes that it can call out to Python with the cfsm-bisimulation package installed.
 // It also assumes both contracts are CFSMs.
 func BisimilarityAlgorithm(ctx context.Context, req contract.LocalContract, prov contract.LocalContract) (bool, map[string]string, error) {
@@ -103,24 +109,20 @@ func BisimilarityAlgorithm(ctx context.Context, req contract.LocalContract, prov
 	pythonScript += "relation, matches = req.calculate_bisimulation_with(prov)\n\n"
 	pythonScript += "print(json.dumps({'relation': bool(relation), 'participant_matches': matches['participants']}))\n"
 
-	// Create a temporary file to store the Python code
-	tempFile, err := os.CreateTemp("", "bisimilarity_check_*.py")
-	if err != nil {
-		panic(err)
+	// Pass the script on stdin ("python -") and keep stderr separate from the JSON on stdout,
+	// so that Python warnings don't break parsing.
+	cmd := exec.CommandContext(ctx, PythonExecutable, "-")
+	cmd.Stdin = strings.NewReader(pythonScript)
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	// If the context is cancelled, don't wait forever for grandchildren holding the pipes.
+	cmd.WaitDelay = time.Second
+	output, err := cmd.Output()
+	if ctxErr := ctx.Err(); ctxErr != nil {
+		return false, nil, fmt.Errorf("bisimulation check cancelled: %w", ctxErr)
 	}
-	defer os.Remove(tempFile.Name()) // Delete the temporary file when finished
-
-	// Write the Python code to the temporary file
-	_, err = tempFile.WriteString(pythonScript)
 	if err != nil {
-		panic(err)
-	}
-
-	// Execute the Python code using exec.Command
-	cmd := exec.Command("python", tempFile.Name())
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return false, nil, fmt.Errorf("error executing Python code: %w", err)
+		return false, nil, fmt.Errorf("error executing Python code: %w. stderr: %s", err, stderr.String())
 	}
 
 	type BisimOuput struct {
