@@ -1,16 +1,17 @@
-ARG GOVERSION="1.24"
+ARG GOVERSION="1.27"
 ARG USERNAME=search
 FROM golang:${GOVERSION} AS dev
+ARG TARGETARCH
 
-RUN GRPC_HEALTH_PROBE_VERSION=v0.4.39 && \
-    wget -qO/usr/local/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+RUN GRPC_HEALTH_PROBE_VERSION=v0.4.60 && \
+    wget -qO/usr/local/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-${TARGETARCH} && \
     chmod +x /usr/local/bin/grpc_health_probe
 
 # Install Delve debugger
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
 
 WORKDIR /src
-# ENV CGO_ENABLED=0
+ENV CGO_ENABLED=0
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
@@ -36,17 +37,16 @@ RUN --mount=type=cache,target=/home/$USERNAME/.cache/go-build \
 # COPY --from=dev /usr/local/bin/broker /
 
 
-# Use Python 3.13 as base image
-FROM python:3.12-slim AS with-python-vfsm-bisimulation
+FROM python:3.14-slim AS with-python-vfsm-bisimulation
 ENV PYTHONUNBUFFERED=1
 # https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
-COPY --from=ghcr.io/astral-sh/uv:0.8.4 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.4 /uv /uvx /bin/
 ENV UV_COMPILE_BYTECODE=1
 
 # Set working directory to /app
 WORKDIR /app
 
-RUN uv pip install --system z3-solver cfsm-bisimulation
+RUN uv pip install --system z3-solver==5.3.1.0 cfsm-bisimulation==2.1.0
 
 COPY --from=dev /usr/local/bin/grpc_health_probe /usr/local/bin/
 COPY --from=dev /usr/local/bin/middleware /usr/local/bin/

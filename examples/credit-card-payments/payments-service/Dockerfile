@@ -1,13 +1,14 @@
-ARG GOVERSION="1.24"
+ARG GOVERSION="1.27"
 ARG USERNAME=search
 FROM golang:${GOVERSION} AS dev
+ARG TARGETARCH
 
-RUN GRPC_HEALTH_PROBE_VERSION=v0.4.39 && \
-    wget -qO/usr/local/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+RUN GRPC_HEALTH_PROBE_VERSION=v0.4.60 && \
+    wget -qO/usr/local/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-${TARGETARCH} && \
     chmod +x /usr/local/bin/grpc_health_probe
 
 WORKDIR /src
-# ENV CGO_ENABLED=0
+ENV CGO_ENABLED=0
 COPY go.* .
 RUN go mod download
 COPY cfsm ./cfsm

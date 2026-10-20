@@ -1,6 +1,5 @@
 
-# Use Python 3.12 as base image
-FROM python:3.12
+FROM python:3.14-slim
 ENV PYTHONUNBUFFERED=1
 
 # Set working directory to /app
