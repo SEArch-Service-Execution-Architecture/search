@@ -10,7 +10,7 @@ To run the infrastructure of `SEArch` on the example of the paper follow the fol
 	- [Docker Engine](https://docs.docker.com/engine/) (v25+)
 	- [Docker buildx plugin](https://github.com/docker/buildx)
 	- [Docker Compose](https://docs.docker.com/compose/) v2.24+  
-4. Navigate the root directory `search-bisimulation-impl-paper` , and then to the example folder `examples/credit-card-payments`; for instance, in a Linux terminal you can type:
+4. Navigate to the root directory of the repository, and then to the example folder `examples/credit-card-payments`; for instance, in a Linux terminal you can type:
 ```bash
 	cd [path_to_search]
 	cd examples/credit-card-payments/
@@ -21,7 +21,7 @@ To run the infrastructure of `SEArch` on the example of the paper follow the fol
 ```
 6. **Run:**
 ```bash
-     docker compose run client
+     docker compose run --rm client-go
 ```
 Before running the client, Docker will first build the infraestructure (i.e., the Broker and the Middleware), the services and the client. Then, it will run everything within containers; the Broker, a Middleware for each service required by the example, and their corresponding services behind them. Finally, it will run a Middleware for the client, and the client application behind it.
 
@@ -67,7 +67,9 @@ With Python 3.11+ installed, you can then run the following commands to install 
 
 
 ### Obtain `SEArch`
-Clone the [repository](https://github.com/SEArch-Service-Execution-Architecture/search.git) and checkout the branch `origin/bisimulation-impl-paper`; alternatively unzip the [file](https://github.com/SEArch-Service-Execution-Architecture/search/archive/refs/heads/bisimulation-impl-paper.zip) containing it.
+Clone the [repository](https://github.com/SEArch-Service-Execution-Architecture/search.git).
+
+The exact version of the code that accompanies the thesis and paper is preserved in the `thesis-artifact` tag (also available as the `bisimulation-impl-paper` branch). The `main` branch is under active development and may differ from what is described in the paper.
 
 The structure of the repository is:
 - `internal`: contains the code of the middleware and the broker, along with their tests.
@@ -242,11 +244,7 @@ In a terminal run the middleware for the client application:
     go run cmd/middleware/middleware.go -private_port 11003 -public_port 10003 -public_host localhost --broker_addr localhost:12000
 ```
 
-For this example we need OpenJDK 21 and Maven 3.9. On Ubuntu 23.10 you can install them by installing the packages `maven openjdk-21-jdk-headless`.
-
-In another terminal navigate to directory `examples/credit-card-payments/client` and run the client application:
+In another terminal navigate to directory `examples/credit-card-payments/client-go` and run the client application, passing the address of its middleware:
 ```bash
-    mvn verify --fail-never
-    mvn package
-    java -jar target/clientapp-1.0-SNAPSHOT-jar-with-dependencies.jar localhost:11003
+    go run main.go localhost:11003
 ```

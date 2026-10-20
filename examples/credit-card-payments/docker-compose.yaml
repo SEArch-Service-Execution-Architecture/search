@@ -15,17 +15,6 @@ services:
       retries: 10
       start_period: 2s
 
-  # client:
-  #   build:
-  #     context: ../../
-  #     dockerfile: ./examples/credit-card-payments/client/Dockerfile
-  #   networks:
-  #     - client_network
-  #   depends_on:
-  #     - middleware-client
-  #     - backend
-  #     - payments-service
-
   client-go:
     build:
       context: ../../
