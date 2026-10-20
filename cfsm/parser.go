@@ -55,7 +55,7 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 
 	var namesOfCFSMs []string            // array of names of CFSMs as we find in order. If they don't have name, we use str(int) of the machine order (starts with 0).
 	numberOfCFSM := make(map[string]int) // inverse of the latter
-	var status FSAParserStatus = Initial
+	status := Initial
 	sys := NewSystem() // This is what we'll return.
 
 	// While reading transitions we can find transitions that refer to CFSMs that we haven't yet parsed.

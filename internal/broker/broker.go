@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
-	"sort"
+	"slices"
 	"time"
 
 	"entgo.io/ent/dialect"
@@ -130,7 +130,7 @@ func BisimilarityAlgorithm(ctx context.Context, req contract.LocalContract, prov
 	var data BisimOuput
 	err = json.Unmarshal(output, &data)
 	if err != nil {
-		return false, nil, fmt.Errorf("Error parsing JSON: %w", err)
+		return false, nil, fmt.Errorf("error parsing JSON: %w", err)
 	}
 
 	// We need to translate participant names back because the Python code uses different naming schemas for the participants.
@@ -308,12 +308,8 @@ func (s *brokerServer) getBestCandidates(ctx context.Context, contract contract.
 	denylistedProviders map[*pb.RemoteParticipant]struct{}) (map[string]*ent.RegisteredProvider, error) {
 	// sanity check: check that all elements of param `participants` are present as participants in param `contract`
 	contractParticipants := contract.GetParticipants()
-	sort.Strings(contractParticipants)
 	for _, p := range participants {
-		// https://golang.org/pkg/sort/#Search
-		i := sort.Search(len(contractParticipants),
-			func(i int) bool { return contractParticipants[i] >= p })
-		if !(i < len(contractParticipants) && contractParticipants[i] == p) {
+		if !slices.Contains(contractParticipants, p) {
 			// participant element not present in contract
 			s.logger.Fatalf("getBestCandidates got a participant not present in contract.")
 		}
@@ -563,7 +559,7 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 			res, err := client.StartChannel(ctx, &req)
 			if err != nil {
 				s.logger.Printf("Error sending StartChannel to participant %s, with URL %s", pname, p.Url)
-				return fmt.Errorf("Error sending StartChannel to participant %s, with URL %s. Error caused by %w", pname, p.Url, err)
+				return fmt.Errorf("error sending StartChannel to participant %s, with URL %s: %w", pname, p.Url, err)
 			}
 			if res.Result != pb.StartChannelResponse_RESULT_ACK {
 				msg := fmt.Sprintf("Non-ACK response while sending StartChannel to participant %s, with URL %s", pname, p.Url)
@@ -783,7 +779,9 @@ func (s *brokerServer) Stop() {
 	if s.server != nil {
 		s.server.Stop()
 	}
-	s.dbClient.Close()
+	if err := s.dbClient.Close(); err != nil {
+		s.logger.Printf("error closing database: %v", err)
+	}
 }
 
 func (s *brokerServer) SetCompatFunc(f ContractCompatibilityFunc) {

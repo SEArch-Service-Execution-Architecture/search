@@ -1,0 +1,35 @@
+# https://golangci-lint.run/docs/configuration/file/
+version: "2"
+
+linters:
+  # The "standard" set: errcheck, govet, ineffassign, staticcheck, unused.
+  default: standard
+  settings:
+    errcheck:
+      exclude-functions:
+        # Closing a client connection or a temp file has no actionable error for us.
+        - (*google.golang.org/grpc.ClientConn).Close
+        - (*os.File).Close
+        - (io/fs.File).Close
+        - os.Remove
+  exclusions:
+    generated: strict
+    paths:
+      - ent
+      - gen
+      - mocks
+    rules:
+      # Interactive example programs: ignoring Scan errors is fine there.
+      - path: examples/
+        linters:
+          - errcheck
+
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: strict
+    paths:
+      - ent
+      - gen
+      - mocks

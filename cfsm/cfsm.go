@@ -205,7 +205,7 @@ func (m *CFSM) bytesBuffer() *bytes.Buffer {
 	var buf bytes.Buffer
 
 	fmap := template.FuncMap{
-		"multiline": func(s string) string { return strings.Replace(s, "\n", "\n--", -1) },
+		"multiline": func(s string) string { return strings.ReplaceAll(s, "\n", "\n--") },
 	}
 	t := template.Must(template.New("petrify").Funcs(fmap).Parse(petrify.Tmpl))
 	mach := struct {

@@ -62,7 +62,7 @@ func (c *LocalCFSMContract) GetContractID() string {
 }
 
 func (lc *LocalCFSMContract) GetRemoteParticipantNames() []string {
-	return lc.CFSM.OtherCFSMs()
+	return lc.OtherCFSMs()
 }
 
 func (c *LocalCFSMContract) GetBytesRepr() []byte {

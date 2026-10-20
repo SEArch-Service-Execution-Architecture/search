@@ -1355,9 +1355,10 @@ processing MultiAccept ! error idle
 	// Find end1 and end2 states
 	var end1State, end2State *State
 	for _, state := range multiAccept.States() {
-		if state.Label == "end1" {
+		switch state.Label {
+		case "end1":
 			end1State = state
-		} else if state.Label == "end2" {
+		case "end2":
 			end2State = state
 		}
 	}
