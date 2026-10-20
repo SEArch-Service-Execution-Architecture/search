@@ -23,81 +23,81 @@ type CompatibilityResultCreate struct {
 }
 
 // SetRequirementContractID sets the "requirement_contract_id" field.
-func (crc *CompatibilityResultCreate) SetRequirementContractID(s string) *CompatibilityResultCreate {
-	crc.mutation.SetRequirementContractID(s)
-	return crc
+func (_c *CompatibilityResultCreate) SetRequirementContractID(v string) *CompatibilityResultCreate {
+	_c.mutation.SetRequirementContractID(v)
+	return _c
 }
 
 // SetProviderContractID sets the "provider_contract_id" field.
-func (crc *CompatibilityResultCreate) SetProviderContractID(s string) *CompatibilityResultCreate {
-	crc.mutation.SetProviderContractID(s)
-	return crc
+func (_c *CompatibilityResultCreate) SetProviderContractID(v string) *CompatibilityResultCreate {
+	_c.mutation.SetProviderContractID(v)
+	return _c
 }
 
 // SetResult sets the "result" field.
-func (crc *CompatibilityResultCreate) SetResult(b bool) *CompatibilityResultCreate {
-	crc.mutation.SetResult(b)
-	return crc
+func (_c *CompatibilityResultCreate) SetResult(v bool) *CompatibilityResultCreate {
+	_c.mutation.SetResult(v)
+	return _c
 }
 
 // SetMapping sets the "mapping" field.
-func (crc *CompatibilityResultCreate) SetMapping(snm schema.ParticipantNameMapping) *CompatibilityResultCreate {
-	crc.mutation.SetMapping(snm)
-	return crc
+func (_c *CompatibilityResultCreate) SetMapping(v schema.ParticipantNameMapping) *CompatibilityResultCreate {
+	_c.mutation.SetMapping(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (crc *CompatibilityResultCreate) SetCreatedAt(t time.Time) *CompatibilityResultCreate {
-	crc.mutation.SetCreatedAt(t)
-	return crc
+func (_c *CompatibilityResultCreate) SetCreatedAt(v time.Time) *CompatibilityResultCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (crc *CompatibilityResultCreate) SetNillableCreatedAt(t *time.Time) *CompatibilityResultCreate {
-	if t != nil {
-		crc.SetCreatedAt(*t)
+func (_c *CompatibilityResultCreate) SetNillableCreatedAt(v *time.Time) *CompatibilityResultCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return crc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (crc *CompatibilityResultCreate) SetUpdatedAt(t time.Time) *CompatibilityResultCreate {
-	crc.mutation.SetUpdatedAt(t)
-	return crc
+func (_c *CompatibilityResultCreate) SetUpdatedAt(v time.Time) *CompatibilityResultCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (crc *CompatibilityResultCreate) SetNillableUpdatedAt(t *time.Time) *CompatibilityResultCreate {
-	if t != nil {
-		crc.SetUpdatedAt(*t)
+func (_c *CompatibilityResultCreate) SetNillableUpdatedAt(v *time.Time) *CompatibilityResultCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return crc
+	return _c
 }
 
 // SetRequirementContract sets the "requirement_contract" edge to the RegisteredContract entity.
-func (crc *CompatibilityResultCreate) SetRequirementContract(r *RegisteredContract) *CompatibilityResultCreate {
-	return crc.SetRequirementContractID(r.ID)
+func (_c *CompatibilityResultCreate) SetRequirementContract(v *RegisteredContract) *CompatibilityResultCreate {
+	return _c.SetRequirementContractID(v.ID)
 }
 
 // SetProviderContract sets the "provider_contract" edge to the RegisteredContract entity.
-func (crc *CompatibilityResultCreate) SetProviderContract(r *RegisteredContract) *CompatibilityResultCreate {
-	return crc.SetProviderContractID(r.ID)
+func (_c *CompatibilityResultCreate) SetProviderContract(v *RegisteredContract) *CompatibilityResultCreate {
+	return _c.SetProviderContractID(v.ID)
 }
 
 // Mutation returns the CompatibilityResultMutation object of the builder.
-func (crc *CompatibilityResultCreate) Mutation() *CompatibilityResultMutation {
-	return crc.mutation
+func (_c *CompatibilityResultCreate) Mutation() *CompatibilityResultMutation {
+	return _c.mutation
 }
 
 // Save creates the CompatibilityResult in the database.
-func (crc *CompatibilityResultCreate) Save(ctx context.Context) (*CompatibilityResult, error) {
-	crc.defaults()
-	return withHooks(ctx, crc.sqlSave, crc.mutation, crc.hooks)
+func (_c *CompatibilityResultCreate) Save(ctx context.Context) (*CompatibilityResult, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (crc *CompatibilityResultCreate) SaveX(ctx context.Context) *CompatibilityResult {
-	v, err := crc.Save(ctx)
+func (_c *CompatibilityResultCreate) SaveX(ctx context.Context) *CompatibilityResult {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -105,72 +105,72 @@ func (crc *CompatibilityResultCreate) SaveX(ctx context.Context) *CompatibilityR
 }
 
 // Exec executes the query.
-func (crc *CompatibilityResultCreate) Exec(ctx context.Context) error {
-	_, err := crc.Save(ctx)
+func (_c *CompatibilityResultCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (crc *CompatibilityResultCreate) ExecX(ctx context.Context) {
-	if err := crc.Exec(ctx); err != nil {
+func (_c *CompatibilityResultCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (crc *CompatibilityResultCreate) defaults() {
-	if _, ok := crc.mutation.CreatedAt(); !ok {
+func (_c *CompatibilityResultCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := compatibilityresult.DefaultCreatedAt()
-		crc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := crc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := compatibilityresult.DefaultUpdatedAt()
-		crc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (crc *CompatibilityResultCreate) check() error {
-	if _, ok := crc.mutation.RequirementContractID(); !ok {
+func (_c *CompatibilityResultCreate) check() error {
+	if _, ok := _c.mutation.RequirementContractID(); !ok {
 		return &ValidationError{Name: "requirement_contract_id", err: errors.New(`ent: missing required field "CompatibilityResult.requirement_contract_id"`)}
 	}
-	if v, ok := crc.mutation.RequirementContractID(); ok {
+	if v, ok := _c.mutation.RequirementContractID(); ok {
 		if err := compatibilityresult.RequirementContractIDValidator(v); err != nil {
 			return &ValidationError{Name: "requirement_contract_id", err: fmt.Errorf(`ent: validator failed for field "CompatibilityResult.requirement_contract_id": %w`, err)}
 		}
 	}
-	if _, ok := crc.mutation.ProviderContractID(); !ok {
+	if _, ok := _c.mutation.ProviderContractID(); !ok {
 		return &ValidationError{Name: "provider_contract_id", err: errors.New(`ent: missing required field "CompatibilityResult.provider_contract_id"`)}
 	}
-	if v, ok := crc.mutation.ProviderContractID(); ok {
+	if v, ok := _c.mutation.ProviderContractID(); ok {
 		if err := compatibilityresult.ProviderContractIDValidator(v); err != nil {
 			return &ValidationError{Name: "provider_contract_id", err: fmt.Errorf(`ent: validator failed for field "CompatibilityResult.provider_contract_id": %w`, err)}
 		}
 	}
-	if _, ok := crc.mutation.Result(); !ok {
+	if _, ok := _c.mutation.Result(); !ok {
 		return &ValidationError{Name: "result", err: errors.New(`ent: missing required field "CompatibilityResult.result"`)}
 	}
-	if _, ok := crc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "CompatibilityResult.created_at"`)}
 	}
-	if _, ok := crc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "CompatibilityResult.updated_at"`)}
 	}
-	if _, ok := crc.mutation.RequirementContractID(); !ok {
+	if len(_c.mutation.RequirementContractIDs()) == 0 {
 		return &ValidationError{Name: "requirement_contract", err: errors.New(`ent: missing required edge "CompatibilityResult.requirement_contract"`)}
 	}
-	if _, ok := crc.mutation.ProviderContractID(); !ok {
+	if len(_c.mutation.ProviderContractIDs()) == 0 {
 		return &ValidationError{Name: "provider_contract", err: errors.New(`ent: missing required edge "CompatibilityResult.provider_contract"`)}
 	}
 	return nil
 }
 
-func (crc *CompatibilityResultCreate) sqlSave(ctx context.Context) (*CompatibilityResult, error) {
-	if err := crc.check(); err != nil {
+func (_c *CompatibilityResultCreate) sqlSave(ctx context.Context) (*CompatibilityResult, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := crc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, crc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -178,33 +178,33 @@ func (crc *CompatibilityResultCreate) sqlSave(ctx context.Context) (*Compatibili
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	crc.mutation.id = &_node.ID
-	crc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (crc *CompatibilityResultCreate) createSpec() (*CompatibilityResult, *sqlgraph.CreateSpec) {
+func (_c *CompatibilityResultCreate) createSpec() (*CompatibilityResult, *sqlgraph.CreateSpec) {
 	var (
-		_node = &CompatibilityResult{config: crc.config}
+		_node = &CompatibilityResult{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(compatibilityresult.Table, sqlgraph.NewFieldSpec(compatibilityresult.FieldID, field.TypeInt))
 	)
-	if value, ok := crc.mutation.Result(); ok {
+	if value, ok := _c.mutation.Result(); ok {
 		_spec.SetField(compatibilityresult.FieldResult, field.TypeBool, value)
 		_node.Result = value
 	}
-	if value, ok := crc.mutation.Mapping(); ok {
+	if value, ok := _c.mutation.Mapping(); ok {
 		_spec.SetField(compatibilityresult.FieldMapping, field.TypeJSON, value)
 		_node.Mapping = value
 	}
-	if value, ok := crc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(compatibilityresult.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := crc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(compatibilityresult.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if nodes := crc.mutation.RequirementContractIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.RequirementContractIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -221,7 +221,7 @@ func (crc *CompatibilityResultCreate) createSpec() (*CompatibilityResult, *sqlgr
 		_node.RequirementContractID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := crc.mutation.ProviderContractIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ProviderContractIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -249,16 +249,16 @@ type CompatibilityResultCreateBulk struct {
 }
 
 // Save creates the CompatibilityResult entities in the database.
-func (crcb *CompatibilityResultCreateBulk) Save(ctx context.Context) ([]*CompatibilityResult, error) {
-	if crcb.err != nil {
-		return nil, crcb.err
+func (_c *CompatibilityResultCreateBulk) Save(ctx context.Context) ([]*CompatibilityResult, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(crcb.builders))
-	nodes := make([]*CompatibilityResult, len(crcb.builders))
-	mutators := make([]Mutator, len(crcb.builders))
-	for i := range crcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*CompatibilityResult, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := crcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*CompatibilityResultMutation)
@@ -272,11 +272,11 @@ func (crcb *CompatibilityResultCreateBulk) Save(ctx context.Context) ([]*Compati
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, crcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, crcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -300,7 +300,7 @@ func (crcb *CompatibilityResultCreateBulk) Save(ctx context.Context) ([]*Compati
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, crcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -308,8 +308,8 @@ func (crcb *CompatibilityResultCreateBulk) Save(ctx context.Context) ([]*Compati
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (crcb *CompatibilityResultCreateBulk) SaveX(ctx context.Context) []*CompatibilityResult {
-	v, err := crcb.Save(ctx)
+func (_c *CompatibilityResultCreateBulk) SaveX(ctx context.Context) []*CompatibilityResult {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -317,14 +317,14 @@ func (crcb *CompatibilityResultCreateBulk) SaveX(ctx context.Context) []*Compati
 }
 
 // Exec executes the query.
-func (crcb *CompatibilityResultCreateBulk) Exec(ctx context.Context) error {
-	_, err := crcb.Save(ctx)
+func (_c *CompatibilityResultCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (crcb *CompatibilityResultCreateBulk) ExecX(ctx context.Context) {
-	if err := crcb.Exec(ctx); err != nil {
+func (_c *CompatibilityResultCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

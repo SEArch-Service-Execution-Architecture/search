@@ -52,12 +52,10 @@ type CompatibilityResultEdges struct {
 // RequirementContractOrErr returns the RequirementContract value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e CompatibilityResultEdges) RequirementContractOrErr() (*RegisteredContract, error) {
-	if e.loadedTypes[0] {
-		if e.RequirementContract == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: registeredcontract.Label}
-		}
+	if e.RequirementContract != nil {
 		return e.RequirementContract, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: registeredcontract.Label}
 	}
 	return nil, &NotLoadedError{edge: "requirement_contract"}
 }
@@ -65,12 +63,10 @@ func (e CompatibilityResultEdges) RequirementContractOrErr() (*RegisteredContrac
 // ProviderContractOrErr returns the ProviderContract value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e CompatibilityResultEdges) ProviderContractOrErr() (*RegisteredContract, error) {
-	if e.loadedTypes[1] {
-		if e.ProviderContract == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: registeredcontract.Label}
-		}
+	if e.ProviderContract != nil {
 		return e.ProviderContract, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: registeredcontract.Label}
 	}
 	return nil, &NotLoadedError{edge: "provider_contract"}
 }
@@ -99,7 +95,7 @@ func (*CompatibilityResult) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the CompatibilityResult fields.
-func (cr *CompatibilityResult) assignValues(columns []string, values []any) error {
+func (_m *CompatibilityResult) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -110,30 +106,30 @@ func (cr *CompatibilityResult) assignValues(columns []string, values []any) erro
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			cr.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case compatibilityresult.FieldRequirementContractID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field requirement_contract_id", values[i])
 			} else if value.Valid {
-				cr.RequirementContractID = value.String
+				_m.RequirementContractID = value.String
 			}
 		case compatibilityresult.FieldProviderContractID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field provider_contract_id", values[i])
 			} else if value.Valid {
-				cr.ProviderContractID = value.String
+				_m.ProviderContractID = value.String
 			}
 		case compatibilityresult.FieldResult:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field result", values[i])
 			} else if value.Valid {
-				cr.Result = value.Bool
+				_m.Result = value.Bool
 			}
 		case compatibilityresult.FieldMapping:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field mapping", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &cr.Mapping); err != nil {
+				if err := json.Unmarshal(*value, &_m.Mapping); err != nil {
 					return fmt.Errorf("unmarshal field mapping: %w", err)
 				}
 			}
@@ -141,16 +137,16 @@ func (cr *CompatibilityResult) assignValues(columns []string, values []any) erro
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				cr.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case compatibilityresult.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				cr.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		default:
-			cr.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -158,60 +154,60 @@ func (cr *CompatibilityResult) assignValues(columns []string, values []any) erro
 
 // Value returns the ent.Value that was dynamically selected and assigned to the CompatibilityResult.
 // This includes values selected through modifiers, order, etc.
-func (cr *CompatibilityResult) Value(name string) (ent.Value, error) {
-	return cr.selectValues.Get(name)
+func (_m *CompatibilityResult) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryRequirementContract queries the "requirement_contract" edge of the CompatibilityResult entity.
-func (cr *CompatibilityResult) QueryRequirementContract() *RegisteredContractQuery {
-	return NewCompatibilityResultClient(cr.config).QueryRequirementContract(cr)
+func (_m *CompatibilityResult) QueryRequirementContract() *RegisteredContractQuery {
+	return NewCompatibilityResultClient(_m.config).QueryRequirementContract(_m)
 }
 
 // QueryProviderContract queries the "provider_contract" edge of the CompatibilityResult entity.
-func (cr *CompatibilityResult) QueryProviderContract() *RegisteredContractQuery {
-	return NewCompatibilityResultClient(cr.config).QueryProviderContract(cr)
+func (_m *CompatibilityResult) QueryProviderContract() *RegisteredContractQuery {
+	return NewCompatibilityResultClient(_m.config).QueryProviderContract(_m)
 }
 
 // Update returns a builder for updating this CompatibilityResult.
 // Note that you need to call CompatibilityResult.Unwrap() before calling this method if this CompatibilityResult
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (cr *CompatibilityResult) Update() *CompatibilityResultUpdateOne {
-	return NewCompatibilityResultClient(cr.config).UpdateOne(cr)
+func (_m *CompatibilityResult) Update() *CompatibilityResultUpdateOne {
+	return NewCompatibilityResultClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the CompatibilityResult entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (cr *CompatibilityResult) Unwrap() *CompatibilityResult {
-	_tx, ok := cr.config.driver.(*txDriver)
+func (_m *CompatibilityResult) Unwrap() *CompatibilityResult {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: CompatibilityResult is not a transactional entity")
 	}
-	cr.config.driver = _tx.drv
-	return cr
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (cr *CompatibilityResult) String() string {
+func (_m *CompatibilityResult) String() string {
 	var builder strings.Builder
 	builder.WriteString("CompatibilityResult(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", cr.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("requirement_contract_id=")
-	builder.WriteString(cr.RequirementContractID)
+	builder.WriteString(_m.RequirementContractID)
 	builder.WriteString(", ")
 	builder.WriteString("provider_contract_id=")
-	builder.WriteString(cr.ProviderContractID)
+	builder.WriteString(_m.ProviderContractID)
 	builder.WriteString(", ")
 	builder.WriteString("result=")
-	builder.WriteString(fmt.Sprintf("%v", cr.Result))
+	builder.WriteString(fmt.Sprintf("%v", _m.Result))
 	builder.WriteString(", ")
 	builder.WriteString("mapping=")
-	builder.WriteString(fmt.Sprintf("%v", cr.Mapping))
+	builder.WriteString(fmt.Sprintf("%v", _m.Mapping))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(cr.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(cr.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

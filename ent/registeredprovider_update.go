@@ -25,54 +25,62 @@ type RegisteredProviderUpdate struct {
 }
 
 // Where appends a list predicates to the RegisteredProviderUpdate builder.
-func (rpu *RegisteredProviderUpdate) Where(ps ...predicate.RegisteredProvider) *RegisteredProviderUpdate {
-	rpu.mutation.Where(ps...)
-	return rpu
+func (_u *RegisteredProviderUpdate) Where(ps ...predicate.RegisteredProvider) *RegisteredProviderUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetURL sets the "url" field.
-func (rpu *RegisteredProviderUpdate) SetURL(u *url.URL) *RegisteredProviderUpdate {
-	rpu.mutation.SetURL(u)
-	return rpu
+func (_u *RegisteredProviderUpdate) SetURL(v *url.URL) *RegisteredProviderUpdate {
+	_u.mutation.SetURL(v)
+	return _u
 }
 
 // SetContractID sets the "contract_id" field.
-func (rpu *RegisteredProviderUpdate) SetContractID(s string) *RegisteredProviderUpdate {
-	rpu.mutation.SetContractID(s)
-	return rpu
+func (_u *RegisteredProviderUpdate) SetContractID(v string) *RegisteredProviderUpdate {
+	_u.mutation.SetContractID(v)
+	return _u
+}
+
+// SetNillableContractID sets the "contract_id" field if the given value is not nil.
+func (_u *RegisteredProviderUpdate) SetNillableContractID(v *string) *RegisteredProviderUpdate {
+	if v != nil {
+		_u.SetContractID(*v)
+	}
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (rpu *RegisteredProviderUpdate) SetUpdatedAt(t time.Time) *RegisteredProviderUpdate {
-	rpu.mutation.SetUpdatedAt(t)
-	return rpu
+func (_u *RegisteredProviderUpdate) SetUpdatedAt(v time.Time) *RegisteredProviderUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetContract sets the "contract" edge to the RegisteredContract entity.
-func (rpu *RegisteredProviderUpdate) SetContract(r *RegisteredContract) *RegisteredProviderUpdate {
-	return rpu.SetContractID(r.ID)
+func (_u *RegisteredProviderUpdate) SetContract(v *RegisteredContract) *RegisteredProviderUpdate {
+	return _u.SetContractID(v.ID)
 }
 
 // Mutation returns the RegisteredProviderMutation object of the builder.
-func (rpu *RegisteredProviderUpdate) Mutation() *RegisteredProviderMutation {
-	return rpu.mutation
+func (_u *RegisteredProviderUpdate) Mutation() *RegisteredProviderMutation {
+	return _u.mutation
 }
 
 // ClearContract clears the "contract" edge to the RegisteredContract entity.
-func (rpu *RegisteredProviderUpdate) ClearContract() *RegisteredProviderUpdate {
-	rpu.mutation.ClearContract()
-	return rpu
+func (_u *RegisteredProviderUpdate) ClearContract() *RegisteredProviderUpdate {
+	_u.mutation.ClearContract()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (rpu *RegisteredProviderUpdate) Save(ctx context.Context) (int, error) {
-	rpu.defaults()
-	return withHooks(ctx, rpu.sqlSave, rpu.mutation, rpu.hooks)
+func (_u *RegisteredProviderUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (rpu *RegisteredProviderUpdate) SaveX(ctx context.Context) int {
-	affected, err := rpu.Save(ctx)
+func (_u *RegisteredProviderUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -80,58 +88,58 @@ func (rpu *RegisteredProviderUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (rpu *RegisteredProviderUpdate) Exec(ctx context.Context) error {
-	_, err := rpu.Save(ctx)
+func (_u *RegisteredProviderUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rpu *RegisteredProviderUpdate) ExecX(ctx context.Context) {
-	if err := rpu.Exec(ctx); err != nil {
+func (_u *RegisteredProviderUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (rpu *RegisteredProviderUpdate) defaults() {
-	if _, ok := rpu.mutation.UpdatedAt(); !ok {
+func (_u *RegisteredProviderUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := registeredprovider.UpdateDefaultUpdatedAt()
-		rpu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (rpu *RegisteredProviderUpdate) check() error {
-	if v, ok := rpu.mutation.ContractID(); ok {
+func (_u *RegisteredProviderUpdate) check() error {
+	if v, ok := _u.mutation.ContractID(); ok {
 		if err := registeredprovider.ContractIDValidator(v); err != nil {
 			return &ValidationError{Name: "contract_id", err: fmt.Errorf(`ent: validator failed for field "RegisteredProvider.contract_id": %w`, err)}
 		}
 	}
-	if _, ok := rpu.mutation.ContractID(); rpu.mutation.ContractCleared() && !ok {
+	if _u.mutation.ContractCleared() && len(_u.mutation.ContractIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "RegisteredProvider.contract"`)
 	}
 	return nil
 }
 
-func (rpu *RegisteredProviderUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := rpu.check(); err != nil {
-		return n, err
+func (_u *RegisteredProviderUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(registeredprovider.Table, registeredprovider.Columns, sqlgraph.NewFieldSpec(registeredprovider.FieldID, field.TypeUUID))
-	if ps := rpu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := rpu.mutation.URL(); ok {
+	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(registeredprovider.FieldURL, field.TypeJSON, value)
 	}
-	if value, ok := rpu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(registeredprovider.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if rpu.mutation.ContractCleared() {
+	if _u.mutation.ContractCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -144,7 +152,7 @@ func (rpu *RegisteredProviderUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := rpu.mutation.ContractIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ContractIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -160,7 +168,7 @@ func (rpu *RegisteredProviderUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, rpu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{registeredprovider.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -168,8 +176,8 @@ func (rpu *RegisteredProviderUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		return 0, err
 	}
-	rpu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // RegisteredProviderUpdateOne is the builder for updating a single RegisteredProvider entity.
@@ -181,61 +189,69 @@ type RegisteredProviderUpdateOne struct {
 }
 
 // SetURL sets the "url" field.
-func (rpuo *RegisteredProviderUpdateOne) SetURL(u *url.URL) *RegisteredProviderUpdateOne {
-	rpuo.mutation.SetURL(u)
-	return rpuo
+func (_u *RegisteredProviderUpdateOne) SetURL(v *url.URL) *RegisteredProviderUpdateOne {
+	_u.mutation.SetURL(v)
+	return _u
 }
 
 // SetContractID sets the "contract_id" field.
-func (rpuo *RegisteredProviderUpdateOne) SetContractID(s string) *RegisteredProviderUpdateOne {
-	rpuo.mutation.SetContractID(s)
-	return rpuo
+func (_u *RegisteredProviderUpdateOne) SetContractID(v string) *RegisteredProviderUpdateOne {
+	_u.mutation.SetContractID(v)
+	return _u
+}
+
+// SetNillableContractID sets the "contract_id" field if the given value is not nil.
+func (_u *RegisteredProviderUpdateOne) SetNillableContractID(v *string) *RegisteredProviderUpdateOne {
+	if v != nil {
+		_u.SetContractID(*v)
+	}
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (rpuo *RegisteredProviderUpdateOne) SetUpdatedAt(t time.Time) *RegisteredProviderUpdateOne {
-	rpuo.mutation.SetUpdatedAt(t)
-	return rpuo
+func (_u *RegisteredProviderUpdateOne) SetUpdatedAt(v time.Time) *RegisteredProviderUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetContract sets the "contract" edge to the RegisteredContract entity.
-func (rpuo *RegisteredProviderUpdateOne) SetContract(r *RegisteredContract) *RegisteredProviderUpdateOne {
-	return rpuo.SetContractID(r.ID)
+func (_u *RegisteredProviderUpdateOne) SetContract(v *RegisteredContract) *RegisteredProviderUpdateOne {
+	return _u.SetContractID(v.ID)
 }
 
 // Mutation returns the RegisteredProviderMutation object of the builder.
-func (rpuo *RegisteredProviderUpdateOne) Mutation() *RegisteredProviderMutation {
-	return rpuo.mutation
+func (_u *RegisteredProviderUpdateOne) Mutation() *RegisteredProviderMutation {
+	return _u.mutation
 }
 
 // ClearContract clears the "contract" edge to the RegisteredContract entity.
-func (rpuo *RegisteredProviderUpdateOne) ClearContract() *RegisteredProviderUpdateOne {
-	rpuo.mutation.ClearContract()
-	return rpuo
+func (_u *RegisteredProviderUpdateOne) ClearContract() *RegisteredProviderUpdateOne {
+	_u.mutation.ClearContract()
+	return _u
 }
 
 // Where appends a list predicates to the RegisteredProviderUpdate builder.
-func (rpuo *RegisteredProviderUpdateOne) Where(ps ...predicate.RegisteredProvider) *RegisteredProviderUpdateOne {
-	rpuo.mutation.Where(ps...)
-	return rpuo
+func (_u *RegisteredProviderUpdateOne) Where(ps ...predicate.RegisteredProvider) *RegisteredProviderUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (rpuo *RegisteredProviderUpdateOne) Select(field string, fields ...string) *RegisteredProviderUpdateOne {
-	rpuo.fields = append([]string{field}, fields...)
-	return rpuo
+func (_u *RegisteredProviderUpdateOne) Select(field string, fields ...string) *RegisteredProviderUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated RegisteredProvider entity.
-func (rpuo *RegisteredProviderUpdateOne) Save(ctx context.Context) (*RegisteredProvider, error) {
-	rpuo.defaults()
-	return withHooks(ctx, rpuo.sqlSave, rpuo.mutation, rpuo.hooks)
+func (_u *RegisteredProviderUpdateOne) Save(ctx context.Context) (*RegisteredProvider, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (rpuo *RegisteredProviderUpdateOne) SaveX(ctx context.Context) *RegisteredProvider {
-	node, err := rpuo.Save(ctx)
+func (_u *RegisteredProviderUpdateOne) SaveX(ctx context.Context) *RegisteredProvider {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -243,50 +259,50 @@ func (rpuo *RegisteredProviderUpdateOne) SaveX(ctx context.Context) *RegisteredP
 }
 
 // Exec executes the query on the entity.
-func (rpuo *RegisteredProviderUpdateOne) Exec(ctx context.Context) error {
-	_, err := rpuo.Save(ctx)
+func (_u *RegisteredProviderUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rpuo *RegisteredProviderUpdateOne) ExecX(ctx context.Context) {
-	if err := rpuo.Exec(ctx); err != nil {
+func (_u *RegisteredProviderUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (rpuo *RegisteredProviderUpdateOne) defaults() {
-	if _, ok := rpuo.mutation.UpdatedAt(); !ok {
+func (_u *RegisteredProviderUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := registeredprovider.UpdateDefaultUpdatedAt()
-		rpuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (rpuo *RegisteredProviderUpdateOne) check() error {
-	if v, ok := rpuo.mutation.ContractID(); ok {
+func (_u *RegisteredProviderUpdateOne) check() error {
+	if v, ok := _u.mutation.ContractID(); ok {
 		if err := registeredprovider.ContractIDValidator(v); err != nil {
 			return &ValidationError{Name: "contract_id", err: fmt.Errorf(`ent: validator failed for field "RegisteredProvider.contract_id": %w`, err)}
 		}
 	}
-	if _, ok := rpuo.mutation.ContractID(); rpuo.mutation.ContractCleared() && !ok {
+	if _u.mutation.ContractCleared() && len(_u.mutation.ContractIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "RegisteredProvider.contract"`)
 	}
 	return nil
 }
 
-func (rpuo *RegisteredProviderUpdateOne) sqlSave(ctx context.Context) (_node *RegisteredProvider, err error) {
-	if err := rpuo.check(); err != nil {
+func (_u *RegisteredProviderUpdateOne) sqlSave(ctx context.Context) (_node *RegisteredProvider, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(registeredprovider.Table, registeredprovider.Columns, sqlgraph.NewFieldSpec(registeredprovider.FieldID, field.TypeUUID))
-	id, ok := rpuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "RegisteredProvider.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := rpuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, registeredprovider.FieldID)
 		for _, f := range fields {
@@ -298,20 +314,20 @@ func (rpuo *RegisteredProviderUpdateOne) sqlSave(ctx context.Context) (_node *Re
 			}
 		}
 	}
-	if ps := rpuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := rpuo.mutation.URL(); ok {
+	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(registeredprovider.FieldURL, field.TypeJSON, value)
 	}
-	if value, ok := rpuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(registeredprovider.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if rpuo.mutation.ContractCleared() {
+	if _u.mutation.ContractCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -324,7 +340,7 @@ func (rpuo *RegisteredProviderUpdateOne) sqlSave(ctx context.Context) (_node *Re
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := rpuo.mutation.ContractIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ContractIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -340,10 +356,10 @@ func (rpuo *RegisteredProviderUpdateOne) sqlSave(ctx context.Context) (_node *Re
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &RegisteredProvider{config: rpuo.config}
+	_node = &RegisteredProvider{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, rpuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{registeredprovider.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -351,6 +367,6 @@ func (rpuo *RegisteredProviderUpdateOne) sqlSave(ctx context.Context) (_node *Re
 		}
 		return nil, err
 	}
-	rpuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

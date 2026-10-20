@@ -9,8 +9,8 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/google/uuid"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/migrate"
+	"github.com/google/uuid"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -36,9 +36,7 @@ type Client struct {
 
 // NewClient creates a new client configured with the given options.
 func NewClient(opts ...Option) *Client {
-	cfg := config{log: log.Println, hooks: &hooks{}, inters: &inters{}}
-	cfg.options(opts...)
-	client := &Client{config: cfg}
+	client := &Client{config: newConfig(opts...)}
 	client.init()
 	return client
 }
@@ -67,6 +65,13 @@ type (
 	// Option function to configure the client.
 	Option func(*config)
 )
+
+// newConfig creates a new config for the client.
+func newConfig(opts ...Option) config {
+	cfg := config{log: log.Println, hooks: &hooks{}, inters: &inters{}}
+	cfg.options(opts...)
+	return cfg
+}
 
 // options applies the options on the config object.
 func (c *config) options(opts ...Option) {
@@ -268,8 +273,8 @@ func (c *CompatibilityResultClient) Update() *CompatibilityResultUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *CompatibilityResultClient) UpdateOne(cr *CompatibilityResult) *CompatibilityResultUpdateOne {
-	mutation := newCompatibilityResultMutation(c.config, OpUpdateOne, withCompatibilityResult(cr))
+func (c *CompatibilityResultClient) UpdateOne(_m *CompatibilityResult) *CompatibilityResultUpdateOne {
+	mutation := newCompatibilityResultMutation(c.config, OpUpdateOne, withCompatibilityResult(_m))
 	return &CompatibilityResultUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -286,8 +291,8 @@ func (c *CompatibilityResultClient) Delete() *CompatibilityResultDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *CompatibilityResultClient) DeleteOne(cr *CompatibilityResult) *CompatibilityResultDeleteOne {
-	return c.DeleteOneID(cr.ID)
+func (c *CompatibilityResultClient) DeleteOne(_m *CompatibilityResult) *CompatibilityResultDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -322,32 +327,32 @@ func (c *CompatibilityResultClient) GetX(ctx context.Context, id int) *Compatibi
 }
 
 // QueryRequirementContract queries the requirement_contract edge of a CompatibilityResult.
-func (c *CompatibilityResultClient) QueryRequirementContract(cr *CompatibilityResult) *RegisteredContractQuery {
+func (c *CompatibilityResultClient) QueryRequirementContract(_m *CompatibilityResult) *RegisteredContractQuery {
 	query := (&RegisteredContractClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := cr.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(compatibilityresult.Table, compatibilityresult.FieldID, id),
 			sqlgraph.To(registeredcontract.Table, registeredcontract.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, compatibilityresult.RequirementContractTable, compatibilityresult.RequirementContractColumn),
 		)
-		fromV = sqlgraph.Neighbors(cr.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // QueryProviderContract queries the provider_contract edge of a CompatibilityResult.
-func (c *CompatibilityResultClient) QueryProviderContract(cr *CompatibilityResult) *RegisteredContractQuery {
+func (c *CompatibilityResultClient) QueryProviderContract(_m *CompatibilityResult) *RegisteredContractQuery {
 	query := (&RegisteredContractClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := cr.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(compatibilityresult.Table, compatibilityresult.FieldID, id),
 			sqlgraph.To(registeredcontract.Table, registeredcontract.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, compatibilityresult.ProviderContractTable, compatibilityresult.ProviderContractColumn),
 		)
-		fromV = sqlgraph.Neighbors(cr.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -433,8 +438,8 @@ func (c *RegisteredContractClient) Update() *RegisteredContractUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *RegisteredContractClient) UpdateOne(rc *RegisteredContract) *RegisteredContractUpdateOne {
-	mutation := newRegisteredContractMutation(c.config, OpUpdateOne, withRegisteredContract(rc))
+func (c *RegisteredContractClient) UpdateOne(_m *RegisteredContract) *RegisteredContractUpdateOne {
+	mutation := newRegisteredContractMutation(c.config, OpUpdateOne, withRegisteredContract(_m))
 	return &RegisteredContractUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -451,8 +456,8 @@ func (c *RegisteredContractClient) Delete() *RegisteredContractDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *RegisteredContractClient) DeleteOne(rc *RegisteredContract) *RegisteredContractDeleteOne {
-	return c.DeleteOneID(rc.ID)
+func (c *RegisteredContractClient) DeleteOne(_m *RegisteredContract) *RegisteredContractDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -487,48 +492,48 @@ func (c *RegisteredContractClient) GetX(ctx context.Context, id string) *Registe
 }
 
 // QueryProviders queries the providers edge of a RegisteredContract.
-func (c *RegisteredContractClient) QueryProviders(rc *RegisteredContract) *RegisteredProviderQuery {
+func (c *RegisteredContractClient) QueryProviders(_m *RegisteredContract) *RegisteredProviderQuery {
 	query := (&RegisteredProviderClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := rc.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(registeredcontract.Table, registeredcontract.FieldID, id),
 			sqlgraph.To(registeredprovider.Table, registeredprovider.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, registeredcontract.ProvidersTable, registeredcontract.ProvidersColumn),
 		)
-		fromV = sqlgraph.Neighbors(rc.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // QueryCompatibilityResultsAsRequirement queries the compatibility_results_as_requirement edge of a RegisteredContract.
-func (c *RegisteredContractClient) QueryCompatibilityResultsAsRequirement(rc *RegisteredContract) *CompatibilityResultQuery {
+func (c *RegisteredContractClient) QueryCompatibilityResultsAsRequirement(_m *RegisteredContract) *CompatibilityResultQuery {
 	query := (&CompatibilityResultClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := rc.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(registeredcontract.Table, registeredcontract.FieldID, id),
 			sqlgraph.To(compatibilityresult.Table, compatibilityresult.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, registeredcontract.CompatibilityResultsAsRequirementTable, registeredcontract.CompatibilityResultsAsRequirementColumn),
 		)
-		fromV = sqlgraph.Neighbors(rc.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // QueryCompatibilityResultsAsProvider queries the compatibility_results_as_provider edge of a RegisteredContract.
-func (c *RegisteredContractClient) QueryCompatibilityResultsAsProvider(rc *RegisteredContract) *CompatibilityResultQuery {
+func (c *RegisteredContractClient) QueryCompatibilityResultsAsProvider(_m *RegisteredContract) *CompatibilityResultQuery {
 	query := (&CompatibilityResultClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := rc.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(registeredcontract.Table, registeredcontract.FieldID, id),
 			sqlgraph.To(compatibilityresult.Table, compatibilityresult.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, registeredcontract.CompatibilityResultsAsProviderTable, registeredcontract.CompatibilityResultsAsProviderColumn),
 		)
-		fromV = sqlgraph.Neighbors(rc.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -614,8 +619,8 @@ func (c *RegisteredProviderClient) Update() *RegisteredProviderUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *RegisteredProviderClient) UpdateOne(rp *RegisteredProvider) *RegisteredProviderUpdateOne {
-	mutation := newRegisteredProviderMutation(c.config, OpUpdateOne, withRegisteredProvider(rp))
+func (c *RegisteredProviderClient) UpdateOne(_m *RegisteredProvider) *RegisteredProviderUpdateOne {
+	mutation := newRegisteredProviderMutation(c.config, OpUpdateOne, withRegisteredProvider(_m))
 	return &RegisteredProviderUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -632,8 +637,8 @@ func (c *RegisteredProviderClient) Delete() *RegisteredProviderDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *RegisteredProviderClient) DeleteOne(rp *RegisteredProvider) *RegisteredProviderDeleteOne {
-	return c.DeleteOneID(rp.ID)
+func (c *RegisteredProviderClient) DeleteOne(_m *RegisteredProvider) *RegisteredProviderDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -668,16 +673,16 @@ func (c *RegisteredProviderClient) GetX(ctx context.Context, id uuid.UUID) *Regi
 }
 
 // QueryContract queries the contract edge of a RegisteredProvider.
-func (c *RegisteredProviderClient) QueryContract(rp *RegisteredProvider) *RegisteredContractQuery {
+func (c *RegisteredProviderClient) QueryContract(_m *RegisteredProvider) *RegisteredContractQuery {
 	query := (&RegisteredContractClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := rp.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(registeredprovider.Table, registeredprovider.FieldID, id),
 			sqlgraph.To(registeredcontract.Table, registeredcontract.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, registeredprovider.ContractTable, registeredprovider.ContractColumn),
 		)
-		fromV = sqlgraph.Neighbors(rp.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query

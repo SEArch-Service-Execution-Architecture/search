@@ -91,7 +91,7 @@ func (*RegisteredContract) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the RegisteredContract fields.
-func (rc *RegisteredContract) assignValues(columns []string, values []any) error {
+func (_m *RegisteredContract) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -101,28 +101,28 @@ func (rc *RegisteredContract) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				rc.ID = value.String
+				_m.ID = value.String
 			}
 		case registeredcontract.FieldFormat:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field format", values[i])
 			} else if value.Valid {
-				rc.Format = int(value.Int64)
+				_m.Format = int(value.Int64)
 			}
 		case registeredcontract.FieldContract:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field contract", values[i])
 			} else if value != nil {
-				rc.Contract = *value
+				_m.Contract = *value
 			}
 		case registeredcontract.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				rc.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			rc.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -130,56 +130,56 @@ func (rc *RegisteredContract) assignValues(columns []string, values []any) error
 
 // Value returns the ent.Value that was dynamically selected and assigned to the RegisteredContract.
 // This includes values selected through modifiers, order, etc.
-func (rc *RegisteredContract) Value(name string) (ent.Value, error) {
-	return rc.selectValues.Get(name)
+func (_m *RegisteredContract) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryProviders queries the "providers" edge of the RegisteredContract entity.
-func (rc *RegisteredContract) QueryProviders() *RegisteredProviderQuery {
-	return NewRegisteredContractClient(rc.config).QueryProviders(rc)
+func (_m *RegisteredContract) QueryProviders() *RegisteredProviderQuery {
+	return NewRegisteredContractClient(_m.config).QueryProviders(_m)
 }
 
 // QueryCompatibilityResultsAsRequirement queries the "compatibility_results_as_requirement" edge of the RegisteredContract entity.
-func (rc *RegisteredContract) QueryCompatibilityResultsAsRequirement() *CompatibilityResultQuery {
-	return NewRegisteredContractClient(rc.config).QueryCompatibilityResultsAsRequirement(rc)
+func (_m *RegisteredContract) QueryCompatibilityResultsAsRequirement() *CompatibilityResultQuery {
+	return NewRegisteredContractClient(_m.config).QueryCompatibilityResultsAsRequirement(_m)
 }
 
 // QueryCompatibilityResultsAsProvider queries the "compatibility_results_as_provider" edge of the RegisteredContract entity.
-func (rc *RegisteredContract) QueryCompatibilityResultsAsProvider() *CompatibilityResultQuery {
-	return NewRegisteredContractClient(rc.config).QueryCompatibilityResultsAsProvider(rc)
+func (_m *RegisteredContract) QueryCompatibilityResultsAsProvider() *CompatibilityResultQuery {
+	return NewRegisteredContractClient(_m.config).QueryCompatibilityResultsAsProvider(_m)
 }
 
 // Update returns a builder for updating this RegisteredContract.
 // Note that you need to call RegisteredContract.Unwrap() before calling this method if this RegisteredContract
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (rc *RegisteredContract) Update() *RegisteredContractUpdateOne {
-	return NewRegisteredContractClient(rc.config).UpdateOne(rc)
+func (_m *RegisteredContract) Update() *RegisteredContractUpdateOne {
+	return NewRegisteredContractClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the RegisteredContract entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (rc *RegisteredContract) Unwrap() *RegisteredContract {
-	_tx, ok := rc.config.driver.(*txDriver)
+func (_m *RegisteredContract) Unwrap() *RegisteredContract {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: RegisteredContract is not a transactional entity")
 	}
-	rc.config.driver = _tx.drv
-	return rc
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (rc *RegisteredContract) String() string {
+func (_m *RegisteredContract) String() string {
 	var builder strings.Builder
 	builder.WriteString("RegisteredContract(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", rc.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("format=")
-	builder.WriteString(fmt.Sprintf("%v", rc.Format))
+	builder.WriteString(fmt.Sprintf("%v", _m.Format))
 	builder.WriteString(", ")
 	builder.WriteString("contract=")
-	builder.WriteString(fmt.Sprintf("%v", rc.Contract))
+	builder.WriteString(fmt.Sprintf("%v", _m.Contract))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(rc.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

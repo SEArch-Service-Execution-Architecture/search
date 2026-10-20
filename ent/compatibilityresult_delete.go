@@ -20,56 +20,56 @@ type CompatibilityResultDelete struct {
 }
 
 // Where appends a list predicates to the CompatibilityResultDelete builder.
-func (crd *CompatibilityResultDelete) Where(ps ...predicate.CompatibilityResult) *CompatibilityResultDelete {
-	crd.mutation.Where(ps...)
-	return crd
+func (_d *CompatibilityResultDelete) Where(ps ...predicate.CompatibilityResult) *CompatibilityResultDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (crd *CompatibilityResultDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, crd.sqlExec, crd.mutation, crd.hooks)
+func (_d *CompatibilityResultDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (crd *CompatibilityResultDelete) ExecX(ctx context.Context) int {
-	n, err := crd.Exec(ctx)
+func (_d *CompatibilityResultDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (crd *CompatibilityResultDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *CompatibilityResultDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(compatibilityresult.Table, sqlgraph.NewFieldSpec(compatibilityresult.FieldID, field.TypeInt))
-	if ps := crd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, crd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	crd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // CompatibilityResultDeleteOne is the builder for deleting a single CompatibilityResult entity.
 type CompatibilityResultDeleteOne struct {
-	crd *CompatibilityResultDelete
+	_d *CompatibilityResultDelete
 }
 
 // Where appends a list predicates to the CompatibilityResultDelete builder.
-func (crdo *CompatibilityResultDeleteOne) Where(ps ...predicate.CompatibilityResult) *CompatibilityResultDeleteOne {
-	crdo.crd.mutation.Where(ps...)
-	return crdo
+func (_d *CompatibilityResultDeleteOne) Where(ps ...predicate.CompatibilityResult) *CompatibilityResultDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (crdo *CompatibilityResultDeleteOne) Exec(ctx context.Context) error {
-	n, err := crdo.crd.Exec(ctx)
+func (_d *CompatibilityResultDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (crdo *CompatibilityResultDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (crdo *CompatibilityResultDeleteOne) ExecX(ctx context.Context) {
-	if err := crdo.Exec(ctx); err != nil {
+func (_d *CompatibilityResultDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

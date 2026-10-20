@@ -20,56 +20,56 @@ type RegisteredContractDelete struct {
 }
 
 // Where appends a list predicates to the RegisteredContractDelete builder.
-func (rcd *RegisteredContractDelete) Where(ps ...predicate.RegisteredContract) *RegisteredContractDelete {
-	rcd.mutation.Where(ps...)
-	return rcd
+func (_d *RegisteredContractDelete) Where(ps ...predicate.RegisteredContract) *RegisteredContractDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (rcd *RegisteredContractDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, rcd.sqlExec, rcd.mutation, rcd.hooks)
+func (_d *RegisteredContractDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rcd *RegisteredContractDelete) ExecX(ctx context.Context) int {
-	n, err := rcd.Exec(ctx)
+func (_d *RegisteredContractDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (rcd *RegisteredContractDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *RegisteredContractDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(registeredcontract.Table, sqlgraph.NewFieldSpec(registeredcontract.FieldID, field.TypeString))
-	if ps := rcd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, rcd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	rcd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // RegisteredContractDeleteOne is the builder for deleting a single RegisteredContract entity.
 type RegisteredContractDeleteOne struct {
-	rcd *RegisteredContractDelete
+	_d *RegisteredContractDelete
 }
 
 // Where appends a list predicates to the RegisteredContractDelete builder.
-func (rcdo *RegisteredContractDeleteOne) Where(ps ...predicate.RegisteredContract) *RegisteredContractDeleteOne {
-	rcdo.rcd.mutation.Where(ps...)
-	return rcdo
+func (_d *RegisteredContractDeleteOne) Where(ps ...predicate.RegisteredContract) *RegisteredContractDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (rcdo *RegisteredContractDeleteOne) Exec(ctx context.Context) error {
-	n, err := rcdo.rcd.Exec(ctx)
+func (_d *RegisteredContractDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (rcdo *RegisteredContractDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rcdo *RegisteredContractDeleteOne) ExecX(ctx context.Context) {
-	if err := rcdo.Exec(ctx); err != nil {
+func (_d *RegisteredContractDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
