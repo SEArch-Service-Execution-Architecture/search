@@ -574,6 +574,7 @@ func TestGetBestCandidate_CachedResult(t *testing.T) {
 }
 
 func TestBisimulationPython(t *testing.T) {
+	requirePythonBisimulation(t)
 	testDir := t.TempDir()
 	b := NewBrokerServer(fmt.Sprintf("%s/t.db", testDir))
 	t.Cleanup(b.Stop)
@@ -706,6 +707,7 @@ const webui_contract = `
 `
 
 func TestParticipantMapping(t *testing.T) {
+	requirePythonBisimulation(t)
 	// Arrange
 	testDir := t.TempDir()
 	b := NewBrokerServer(fmt.Sprintf("%s/t.db", testDir))
