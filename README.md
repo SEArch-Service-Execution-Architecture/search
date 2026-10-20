@@ -83,13 +83,13 @@ The structure of the repository is:
 
 
 ### Code generation from Protocol Buffer definitions
-We use `buf` to generate definition for message types and gRPC services. Our Protocol Buffer definitions live in the `proto` directory. The generated code lives in the `gen` directory. If you modify the Protocol Buffer definitions or add more output languages (see `buf.gen.yaml`), just run:
+We use `buf` to generate definition for message types and gRPC services. Our Protocol Buffer definitions live in the `proto` directory. The generated code lives in the `gen` directory. If you modify the Protocol Buffer definitions or add more output languages (see `buf.gen.yaml`), run the following from the root of the repository:
 ```bash
-    buf generate proto
+    buf generate
 ```
 The generated code should be commited to the repository. After modifying the Protocol Buffers, make sure you run the linter like this:
 ```bash
-    buf lint proto
+    buf lint
 ```
 
 ### Code generation for database management
