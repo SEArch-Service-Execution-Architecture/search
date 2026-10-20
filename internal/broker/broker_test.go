@@ -24,12 +24,13 @@ func TestBrokerRegisterProviderRequest(t *testing.T) {
 	tmpDir := t.TempDir()
 	b := NewBrokerServer(fmt.Sprintf("%s/t.db", tmpDir))
 	t.Cleanup(b.Stop)
-	go b.StartServer("localhost:3333", false, "", "", nil)
+	brokerAddr := make(chan string, 1)
+	go b.StartServer("localhost:0", false, "", "", brokerAddr)
 
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
-	conn, err := grpc.NewClient(fmt.Sprintf("%s:%d", "localhost", 3333), opts...)
+	conn, err := grpc.NewClient(<-brokerAddr, opts...)
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
 	}
