@@ -2,6 +2,7 @@ package broker
 
 import (
 	"context"
+	stdsql "database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,6 +14,7 @@ import (
 	"sort"
 	"time"
 
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 	"github.com/sourcegraph/conc"
@@ -35,7 +37,7 @@ import (
 	"github.com/SEArch-Service-Execution-Architecture/search/internal/searcherrors"
 
 	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 type brokerServer struct {
@@ -716,14 +718,13 @@ func setUpDB(databasePath string) *ent.Client {
 
 // https://entgo.io/docs/sql-integration/
 func openDB(databaseFilePath string) (*ent.Client, error) {
-	dsn := fmt.Sprintf("file:%s?_fk=1&mode=rwc&busy_timeout=1000&cache=shared", databaseFilePath)
-	drv, err := sql.Open("sqlite3", dsn)
+	dsn := fmt.Sprintf("file:%s?mode=rwc&cache=shared&_pragma=foreign_keys(1)&_pragma=busy_timeout(1000)", databaseFilePath)
+	db, err := stdsql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, err
 	}
-	// Get the underlying sql.DB object of the driver.
-	db := drv.DB()
 	db.SetMaxOpenConns(1)
+	drv := sql.OpenDB(dialect.SQLite, db)
 	return ent.NewClient(ent.Driver(drv)), nil
 }
 
