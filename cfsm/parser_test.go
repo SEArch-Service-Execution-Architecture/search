@@ -1,10 +1,12 @@
 package cfsm
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"testing"
 	"testing/fstest"
+	"testing/iotest"
 
 	"github.com/stretchr/testify/require"
 )
@@ -656,6 +658,39 @@ q0 m1 @ msg q1
 			expectError: true,
 			errorMsg:    "expected transition, got q0 m1 @ msg q1",
 		},
+		{
+			name: "machine index out of range",
+			fsaContent: `
+.outputs A
+.state graph
+0 7 ! hi 1
+.marking 0
+.end`,
+			expectError: true,
+			errorMsg:    "non-existent CFSM 7",
+		},
+		{
+			name: "negative machine index",
+			fsaContent: `
+.outputs A
+.state graph
+0 -1 ! hi 1
+.marking 0
+.end`,
+			expectError: true,
+			errorMsg:    "non-existent CFSM -1",
+		},
+		{
+			name: "unknown machine name",
+			fsaContent: `
+.outputs A
+.state graph
+0 B ! hi 1
+.marking 0
+.end`,
+			expectError: true,
+			errorMsg:    "non-existent CFSM B",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -1068,7 +1103,7 @@ q0 Machine0 ? msg q1
 
 	_, err := ParseSystemCFSMsFSA(strings.NewReader(nonExistentCFSMFSA))
 	require.Error(t, err)
-	require.Contains(t, err.Error(), "non existant CFSM referenced")
+	require.Contains(t, err.Error(), "non-existent CFSM NonExistentMachine")
 }
 
 func TestParseFSAEmptyStatesAndTransitions(t *testing.T) {
@@ -1416,4 +1451,34 @@ q1 Simple ! ack q0
 	for _, state := range other.States() {
 		require.False(t, other.IsAcceptingState(state))
 	}
+}
+
+func TestParseSingleCFSMRejectsMultipleMachines(t *testing.T) {
+	fsa := `
+.outputs A
+.state graph
+0 B ! hi 1
+.marking 0
+.end
+
+.outputs B
+.state graph
+0 A ? hi 1
+.marking 0
+.end`
+	_, err := ParseSingleCFSMFSA(strings.NewReader(fsa))
+	require.ErrorContains(t, err, "expected a single CFSM")
+}
+
+func TestParseFSAReportsReadErrors(t *testing.T) {
+	readErr := errors.New("disk on fire")
+	r := iotest.DataErrReader(iotest.ErrReader(readErr))
+	_, err := ParseSystemCFSMsFSA(r)
+	require.ErrorIs(t, err, readErr)
+
+	// A line longer than bufio.Scanner's buffer must be reported, not silently dropped.
+	longLine := ".outputs " + strings.Repeat("A", 1<<20)
+	_, err = ParseSystemCFSMsFSA(strings.NewReader(longLine))
+	require.Error(t, err)
+	require.NotContains(t, err.Error(), "unexpected EOF")
 }

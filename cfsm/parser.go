@@ -80,6 +80,9 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 			if matches == nil {
 				return nil, errors.New("fsa file invalid. Expected .outputs")
 			}
+			if singleCFSM && len(namesOfCFSMs) > 0 {
+				return nil, errors.New("fsa file invalid: expected a single CFSM, found more than one")
+			}
 			currentMachineNumber := len(namesOfCFSMs)
 			machineName := matches[2]
 			if machineName != "" {
@@ -175,9 +178,6 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 			// Here we can see the end marker or accepting states.
 			if currentLine == ".end" {
 				status = Initial
-				if singleCFSM {
-					break
-				}
 				continue
 			}
 
@@ -201,6 +201,9 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 		}
 
 	}
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("error reading fsa file: %w", err)
+	}
 	if status != Initial {
 		return nil, errors.New("fsa file invalid: unexpected EOF")
 	}
@@ -215,8 +218,11 @@ func parseFSA(reader io.Reader, singleCFSM bool) (*System, error) {
 					var ok bool
 					otherMachineNum, ok = numberOfCFSM[t.OtherMachine]
 					if !ok {
-						return nil, errors.New("non existant CFSM referenced")
+						return nil, fmt.Errorf("fsa file invalid: transition references non-existent CFSM %s", t.OtherMachine)
 					}
+				}
+				if otherMachineNum < 0 || otherMachineNum >= len(sys.CFSMs) {
+					return nil, fmt.Errorf("fsa file invalid: transition references non-existent CFSM %s", t.OtherMachine)
 				}
 				otherMachine = sys.CFSMs[otherMachineNum]
 			}
