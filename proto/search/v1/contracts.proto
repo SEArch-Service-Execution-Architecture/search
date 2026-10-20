@@ -1,28 +1,28 @@
 syntax = "proto3";
 package search.v1;
+
 option go_package = "github.com/SEArch-Service-Execution-Architecture/search/gen/go/v1";
 option java_package = "ar.com.montepagano.search.v1";
 
-
 message GlobalContract {
-    bytes contract = 1;
-    GlobalContractFormat format = 2;
-    string initiator_name = 3;
+  bytes contract = 1;
+  GlobalContractFormat format = 2;
+  string initiator_name = 3;
 }
 
 enum GlobalContractFormat {
-    GLOBAL_CONTRACT_FORMAT_UNSPECIFIED = 0;
-    GLOBAL_CONTRACT_FORMAT_FSA = 1;   // System of CFSMs in FSA file format.
-    GLOBAL_CONTRACT_FORMAT_GC = 2;  // Global Choreography.
+  GLOBAL_CONTRACT_FORMAT_UNSPECIFIED = 0;
+  GLOBAL_CONTRACT_FORMAT_FSA = 1; // System of CFSMs in FSA file format.
+  GLOBAL_CONTRACT_FORMAT_GC = 2; // Global Choreography.
 }
 
 message LocalContract {
-    bytes contract = 1;
-    LocalContractFormat format = 2;
+  bytes contract = 1;
+  LocalContractFormat format = 2;
 }
 
 enum LocalContractFormat {
-    LOCAL_CONTRACT_FORMAT_UNSPECIFIED = 0;
-    LOCAL_CONTRACT_FORMAT_FSA = 1; // Single CFSM in FSA file format (for Service Providers).
-    LOCAL_CONTRACT_FORMAT_PYTHON_BISIMULATION_CODE = 2;  // Python code to construct CFSM for https://github.com/diegosenarruzza/bisimulation/
+  LOCAL_CONTRACT_FORMAT_UNSPECIFIED = 0;
+  LOCAL_CONTRACT_FORMAT_FSA = 1; // Single CFSM in FSA file format (for Service Providers).
+  LOCAL_CONTRACT_FORMAT_PYTHON_BISIMULATION_CODE = 2; // Python code to construct CFSM for https://github.com/diegosenarruzza/bisimulation/
 }

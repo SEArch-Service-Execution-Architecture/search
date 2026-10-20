@@ -1,42 +1,41 @@
 syntax = "proto3";
 package search.v1;
-option go_package = "github.com/SEArch-Service-Execution-Architecture/search/gen/go/v1";
-option java_package = "ar.com.montepagano.search.v1";
 
 import "search/v1/contracts.proto";
 
+option go_package = "github.com/SEArch-Service-Execution-Architecture/search/gen/go/v1";
+option java_package = "ar.com.montepagano.search.v1";
 
 service BrokerService {
-    rpc BrokerChannel (BrokerChannelRequest) returns (BrokerChannelResponse) {}
-    rpc RegisterProvider (RegisterProviderRequest) returns (RegisterProviderResponse) {}
+  rpc BrokerChannel(BrokerChannelRequest) returns (BrokerChannelResponse) {}
+  rpc RegisterProvider(RegisterProviderRequest) returns (RegisterProviderResponse) {}
 }
 
 message BrokerChannelRequest {
-    GlobalContract contract = 1;  // requirements contract
-    // subset of contract's participants that are already decided. This should at least
-    // include the initiator's RemoteParticpant data
-    map<string, RemoteParticipant> preset_participants = 2;
+  GlobalContract contract = 1; // requirements contract
+  // subset of contract's participants that are already decided. This should at least
+  // include the initiator's RemoteParticpant data
+  map<string, RemoteParticipant> preset_participants = 2;
 }
 
-
 message BrokerChannelResponse {
-    string channel_id = 2;  // uuidv4
-    map<string, RemoteParticipant> participants = 3;  // preset + brokered participants
+  string channel_id = 2; // uuidv4
+  map<string, RemoteParticipant> participants = 3; // preset + brokered participants
 }
 
 message RegisterProviderRequest {
-    LocalContract contract = 1;
-    string url = 2;
+  LocalContract contract = 1;
+  string url = 2;
 }
 
 // The registry assigns the provider an ID
 message RegisterProviderResponse {
-    string app_id = 1;
+  string app_id = 1;
 }
 
 message RemoteParticipant {
-    string url = 1; // points to the middleware for this participant
-    string app_id = 2;  // points to the specific app that is served by the middleware
-    // TODO: we should have URLs that refer to the app, uncoupled with the middleware's location.
-    //   for example https://middleware-load-balancer.example.org/app-that-does-x/
+  string url = 1; // points to the middleware for this participant
+  string app_id = 2; // points to the specific app that is served by the middleware
+  // TODO: we should have URLs that refer to the app, uncoupled with the middleware's location.
+  //   for example https://middleware-load-balancer.example.org/app-that-does-x/
 }

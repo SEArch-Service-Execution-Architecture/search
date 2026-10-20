@@ -1,141 +1,137 @@
 syntax = "proto3";
 package search.v1;
+
+import "search/v1/app_message.proto";
+import "search/v1/broker.proto";
+import "search/v1/contracts.proto";
+
 option go_package = "github.com/SEArch-Service-Execution-Architecture/search/gen/go/v1";
 option java_package = "ar.com.montepagano.search.v1";
 
-import "search/v1/app_message.proto";
-import "search/v1/contracts.proto";
-import "search/v1/broker.proto";
-
-
-
-/* 
-    This service is what a Middleware exposes to its local users (not on the internet.)
+/*
+   This service is what a Middleware exposes to its local users (not on the internet.)
 */
 service PrivateMiddlewareService {
-    // This is used by a requires point to start a new channel with a requirement contract.
-    rpc RegisterChannel(RegisterChannelRequest) returns(RegisterChannelResponse) {}
+  // This is used by a requires point to start a new channel with a requirement contract.
+  rpc RegisterChannel(RegisterChannelRequest) returns (RegisterChannelResponse) {}
 
-    // This is used by provider services to register their provision contract with the Registry/Broker.
-    rpc RegisterApp(RegisterAppRequest) returns (stream RegisterAppResponse) {}
+  // This is used by provider services to register their provision contract with the Registry/Broker.
+  rpc RegisterApp(RegisterAppRequest) returns (stream RegisterAppResponse) {}
 
-    // This is used by local app (be it a Service Client or a Service Provider) to close a channel.
-    rpc CloseChannel(CloseChannelRequest) returns (CloseChannelResponse);
-    
-    // This is used by the local app to communicate with other participants in an already
-    // initiated or registered channel
-    rpc AppSend(AppSendRequest) returns (AppSendResponse) {}
-    rpc AppRecv(AppRecvRequest) returns (AppRecvResponse) {}
+  // This is used by local app (be it a Service Client or a Service Provider) to close a channel.
+  rpc CloseChannel(CloseChannelRequest) returns (CloseChannelResponse);
 
-    
+  // This is used by the local app to communicate with other participants in an already
+  // initiated or registered channel
+  rpc AppSend(AppSendRequest) returns (AppSendResponse) {}
+  rpc AppRecv(AppRecvRequest) returns (AppRecvResponse) {}
 }
 
 message AppSendResponse {
-    enum Result {
-        RESULT_UNSPECIFIED = 0;
-        RESULT_OK = 1;
-        RESULT_ERR = 2;
-    }
-    Result result = 1;
+  enum Result {
+    RESULT_UNSPECIFIED = 0;
+    RESULT_OK = 1;
+    RESULT_ERR = 2;
+  }
+  Result result = 1;
 }
 
 message AppRecvRequest {
-    string channel_id = 1;
-    string participant = 2;
+  string channel_id = 1;
+  string participant = 2;
 }
 
 message RegisterChannelRequest {
-    GlobalContract requirements_contract = 1;
-    map<string, RemoteParticipant> preset_participants = 2;  // Mapping of participants that we don't want brokered.
+  GlobalContract requirements_contract = 1;
+  map<string, RemoteParticipant> preset_participants = 2; // Mapping of participants that we don't want brokered.
 }
 
 message RegisterChannelResponse {
-    string channel_id = 1;
+  string channel_id = 1;
 }
 
 message RegisterAppRequest {
-    LocalContract provider_contract = 1;
+  LocalContract provider_contract = 1;
 }
 
 // whenever a new channel that involves this app is started, the middleware needs to notify the local app
 message RegisterAppResponse {
-    oneof ack_or_new {
-        string app_id = 1;
-        InitChannelNotification notification = 2;
-    }
-    // TODO: error codes ?
+  oneof ack_or_new {
+    string app_id = 1;
+    InitChannelNotification notification = 2;
+  }
+  // TODO: error codes ?
 }
 
 // this is what a registered app receives whenever a new channel is initiated for that app
 // the app has to communicate with the middleware using UseChannel with this new channel_id
 message InitChannelNotification {
-    string channel_id = 1;
+  string channel_id = 1;
 }
 
 /*
-    This service is what a Middleware exposes to external components (other participants and the broker)
+   This service is what a Middleware exposes to external components (other participants and the broker)
 */
 service PublicMiddlewareService {
-    // The Broker, when a new channel is registered, signals all providers with this
-    rpc InitChannel(InitChannelRequest) returns(InitChannelResponse) {}
-    rpc StartChannel(StartChannelRequest) returns(StartChannelResponse) {}
-    rpc MessageExchange (stream MessageExchangeRequest) returns (MessageExchangeResponse) {}
+  // The Broker, when a new channel is registered, signals all providers with this
+  rpc InitChannel(InitChannelRequest) returns (InitChannelResponse) {}
+  rpc StartChannel(StartChannelRequest) returns (StartChannelResponse) {}
+  rpc MessageExchange(stream MessageExchangeRequest) returns (MessageExchangeResponse) {}
 }
-
 
 // This is something that is sent by the Broker to providers to notify that a new channel is starting
 message InitChannelRequest {
-    string channel_id = 1;
-    string app_id = 2; // which app behind the middleware is being notified
-    map<string, RemoteParticipant> participants = 3;
-    // int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
+  string channel_id = 1;
+  string app_id = 2; // which app behind the middleware is being notified
+  map<string, RemoteParticipant> participants = 3;
+  // int32 seq = 4; // sequence number (used because we may need multiple rounds until all participants are ready)
 }
 
 message InitChannelResponse {
-    enum Result {
-        RESULT_UNSPECIFIED = 0;
-        RESULT_ACK = 1;
-        RESULT_ERR = 2;
-    }
-    Result result = 1;
+  enum Result {
+    RESULT_UNSPECIFIED = 0;
+    RESULT_ACK = 1;
+    RESULT_ERR = 2;
+  }
+  Result result = 1;
 }
 
 message StartChannelRequest {
-    string channel_id = 1;
-    string app_id = 2;
+  string channel_id = 1;
+  string app_id = 2;
 }
 
 message StartChannelResponse {
-    enum Result {
-        RESULT_UNSPECIFIED = 0;
-        RESULT_ACK = 1;
-        RESULT_ERR = 2;
-    }
-    Result result = 1;
+  enum Result {
+    RESULT_UNSPECIFIED = 0;
+    RESULT_ACK = 1;
+    RESULT_ERR = 2;
+  }
+  Result result = 1;
 }
 
 message CloseChannelRequest {
-    string channel_id = 1;
+  string channel_id = 1;
 }
 
 message CloseChannelResponse {
-    enum Result {
-        RESULT_UNSPECIFIED = 0;
-        RESULT_CLOSED = 1;
-        RESULT_PENDING_INBOUND = 2;
-        RESULT_PENDING_OUTBOUND = 3;
-    }
-    Result result = 1;
-    string error_message = 2;
-    repeated string participants_with_pending_inbound = 3;
+  enum Result {
+    RESULT_UNSPECIFIED = 0;
+    RESULT_CLOSED = 1;
+    RESULT_PENDING_INBOUND = 2;
+    RESULT_PENDING_OUTBOUND = 3;
+  }
+  Result result = 1;
+  string error_message = 2;
+  repeated string participants_with_pending_inbound = 3;
 }
 
 message MessageExchangeResponse {
-    enum Result {
-        RESULT_UNSPECIFIED = 0;
-        RESULT_OK = 1;
-        RESULT_ERROR = 2;
-    }
-    Result result = 1;
-    string error_message = 2;
+  enum Result {
+    RESULT_UNSPECIFIED = 0;
+    RESULT_OK = 1;
+    RESULT_ERROR = 2;
+  }
+  Result result = 1;
+  string error_message = 2;
 }
