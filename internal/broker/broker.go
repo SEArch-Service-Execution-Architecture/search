@@ -36,6 +36,7 @@ import (
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/compatibilityresult"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
 	"github.com/SEArch-Service-Execution-Architecture/search/internal/searcherrors"
+	"github.com/SEArch-Service-Execution-Architecture/search/internal/transport"
 
 	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
 	_ "modernc.org/sqlite"
@@ -47,6 +48,8 @@ type brokerServer struct {
 
 	dbClient   *ent.Client
 	compatFunc ContractCompatibilityFunc
+	// credentials used to connect to the middlewares.
+	dialCreds credentials.TransportCredentials
 
 	PublicURL             string
 	logger                *log.Logger
@@ -466,7 +469,7 @@ func (s *brokerServer) BrokerChannel(ctx context.Context, request *pb.BrokerChan
 			// Connect to the provider's middleware.
 			conn, err := grpc.NewClient(
 				p.Url,
-				grpc.WithTransportCredentials(insecure.NewCredentials()), // TODO: use tls
+				grpc.WithTransportCredentials(s.dialCreds),
 			)
 			result.conn = conn
 			if err != nil {
@@ -739,6 +742,7 @@ func NewBrokerServer(databasePath string) *brokerServer {
 
 	s.dbClient = setUpDB(databasePath)
 	s.compatFunc = allContractsIncompatible
+	s.dialCreds = insecure.NewCredentials()
 	s.compatChecksWaitGroup = conc.NewWaitGroup()
 
 	s.logger = log.New(os.Stderr, "[BROKER] - ", log.LstdFlags|log.Lmsgprefix)
@@ -747,7 +751,7 @@ func NewBrokerServer(databasePath string) *brokerServer {
 
 // StartServer starts the broker server. If tls is true, certFile and keyFile must be provided. If notifyStartChan is not nil,
 // the broker will send its public URL to the channel when it's already listening on the port.
-func (s *brokerServer) StartServer(address string, tls bool, certFile string, keyFile string, notifyStartChan chan string) {
+func (s *brokerServer) StartServer(address string, useTLS bool, certFile string, keyFile string, notifyStartChan chan string) {
 	lis, err := net.Listen("tcp", address)
 	if err != nil {
 		s.logger.Fatalf("failed to listen: %v", err)
@@ -755,10 +759,10 @@ func (s *brokerServer) StartServer(address string, tls bool, certFile string, ke
 	s.PublicURL = lis.Addr().String()
 	s.logger = log.New(os.Stderr, fmt.Sprintf("[BROKER] %s - ", s.PublicURL), log.LstdFlags|log.Lmsgprefix|log.Lshortfile)
 	var opts []grpc.ServerOption
-	if tls {
-		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+	if useTLS {
+		creds, err := transport.ServerTLSCredentials(certFile, keyFile)
 		if err != nil {
-			s.logger.Fatalf("Failed to generate credentials %v", err)
+			s.logger.Fatalf("Failed to set up TLS: %v", err)
 		}
 		opts = []grpc.ServerOption{grpc.Creds(creds)}
 	}
@@ -791,6 +795,17 @@ func (s *brokerServer) Stop() {
 	if err := s.dbClient.Close(); err != nil {
 		s.logger.Printf("error closing database: %v", err)
 	}
+}
+
+// SetClientTLS makes the broker use TLS when connecting to middlewares. Server certificates are
+// verified against caFile, or against the system roots if caFile is empty.
+func (s *brokerServer) SetClientTLS(caFile string) error {
+	creds, err := transport.ClientTLSCredentials(caFile)
+	if err != nil {
+		return err
+	}
+	s.dialCreds = creds
+	return nil
 }
 
 func (s *brokerServer) SetCompatFunc(f ContractCompatibilityFunc) {

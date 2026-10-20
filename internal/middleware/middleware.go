@@ -17,6 +17,7 @@ import (
 	"github.com/SEArch-Service-Execution-Architecture/search/contract"
 	pb "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
 	"github.com/SEArch-Service-Execution-Architecture/search/internal/searcherrors"
+	"github.com/SEArch-Service-Execution-Architecture/search/internal/transport"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 
@@ -26,7 +27,6 @@ import (
 	"google.golang.org/grpc/health"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
-	"google.golang.org/grpc/testdata"
 
 	"github.com/vishalkuo/bimap"
 )
@@ -58,6 +58,9 @@ type MiddlewareServer struct {
 
 	brokerAddr string // maybe replace with net.url.URL type?
 
+	// credentials used to connect to the broker and to other middlewares.
+	dialCreds credentials.TransportCredentials
+
 	// pointers to gRPC servers
 	publicServer  *grpc.Server
 	privateServer *grpc.Server
@@ -82,8 +85,20 @@ func NewMiddlewareServer(brokerAddr string) *MiddlewareServer {
 	s.channelLock = new(sync.RWMutex)
 
 	s.brokerAddr = brokerAddr
+	s.dialCreds = insecure.NewCredentials()
 	s.logger = log.New(os.Stderr, "[MIDDLEWARE] - ", log.LstdFlags|log.Lmsgprefix)
 	return &s
+}
+
+// SetClientTLS makes the middleware use TLS when connecting to the broker and to other middlewares.
+// Server certificates are verified against caFile, or against the system roots if caFile is empty.
+func (s *MiddlewareServer) SetClientTLS(caFile string) error {
+	creds, err := transport.ClientTLSCredentials(caFile)
+	if err != nil {
+		return err
+	}
+	s.dialCreds = creds
+	return nil
 }
 
 // Struct to represent each Service Provider that is registered in the middleware.
@@ -150,9 +165,7 @@ func (mw *MiddlewareServer) newSEARCHChannel(c contract.Contract, pbContract *pb
 }
 
 func (s *MiddlewareServer) connectBroker() (pb.BrokerServiceClient, *grpc.ClientConn, error) {
-	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials())) // TODO: use tls
-	conn, err := grpc.NewClient(s.brokerAddr, opts...)
+	conn, err := grpc.NewClient(s.brokerAddr, grpc.WithTransportCredentials(s.dialCreds))
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create connection to broker addr %s: %w", s.brokerAddr, err)
 	}
@@ -337,9 +350,7 @@ func (r *SEARCHChannel) sender(ctx context.Context, participant string) error {
 	}
 	r.mw.logger.Printf("Received first outbound message to send on channel %s for participant %s. Opening connection to remote Service Provider...", r.ID, participant)
 	// connect and save stream in r.outStreams
-	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials())) // TODO: use tls
-	provconn, err := grpc.NewClient(r.addresses[participant].GetUrl(), opts...)
+	provconn, err := grpc.NewClient(r.addresses[participant].GetUrl(), grpc.WithTransportCredentials(r.mw.dialCreds))
 	if err != nil {
 		return fmt.Errorf("fail to dial: %w", err)
 	}
@@ -701,7 +712,7 @@ func (c *SEARCHChannel) startSenderRoutines() {
 }
 
 // StartServer starts gRPC middleware server
-func (s *MiddlewareServer) StartMiddlewareServer(wg *sync.WaitGroup, publicURL string, publicAddr string, privateAddr string, tls bool, certFile string, keyFile string, notifyListening chan string) {
+func (s *MiddlewareServer) StartMiddlewareServer(wg *sync.WaitGroup, publicURL string, publicAddr string, privateAddr string, useTLS bool, certFile string, keyFile string, notifyListening chan string) {
 	lisPub, err := net.Listen("tcp", publicAddr)
 	if err != nil {
 		s.logger.Fatalf("failed to listen on public interface: %v", err)
@@ -723,16 +734,10 @@ func (s *MiddlewareServer) StartMiddlewareServer(wg *sync.WaitGroup, publicURL s
 	}
 
 	var opts []grpc.ServerOption
-	if tls {
-		if certFile == "" {
-			certFile = testdata.Path("server1.pem")
-		}
-		if keyFile == "" {
-			keyFile = testdata.Path("server1.key")
-		}
-		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+	if useTLS {
+		creds, err := transport.ServerTLSCredentials(certFile, keyFile)
 		if err != nil {
-			s.logger.Fatalf("Failed to generate credentials %v", err)
+			s.logger.Fatalf("Failed to set up TLS: %v", err)
 		}
 		opts = []grpc.ServerOption{grpc.Creds(creds)}
 	}

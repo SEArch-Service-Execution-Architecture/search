@@ -132,6 +132,8 @@ It will compile the code found in `internal`, `cfsm`, `contract`, `gen` and `ent
 ```bash
 ./broker --help
 Usage of ./broker:
+  -ca_file string
+    	The CA root cert file used to verify middlewares when using TLS (defaults to the system roots)
   -cert_file string
     	The TLS cert file
   -database_file string
@@ -152,6 +154,8 @@ Usage of ./broker:
 Usage of ./middleware:
   -broker_addr string
     	The server address in the format of host:port (default "localhost:")
+  -ca_file string
+    	The CA root cert file used to verify the broker and other middlewares when using TLS (defaults to the system roots)
   -cert_file string
     	The TLS cert file
   -key_file string
