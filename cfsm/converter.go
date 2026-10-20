@@ -22,17 +22,26 @@ func ConvertCFSMToPythonBisimulationFormat(contract *CFSM) (pythonCode []byte, p
 
 	otherCFSMs := make([]string, 0)
 	msgRegex := regexp.MustCompile(`^[A-Z][a-z0-9]*$`)
+	usedNames := make(map[string]bool)
+	// Names that are already valid are kept as-is, so reserve them first.
 	for _, name := range contract.OtherCFSMs() {
-
-		matched := msgRegex.MatchString(name)
-		translatedName := name
-		if matched {
-			participantNameTranslations.Insert(name, name)
-		} else {
-			translatedName = "C" + filterOutNonAlphanumeric(name)
-			participantNameTranslations.Insert(name, translatedName)
-			// TODO: check that the new name is unique.
+		if msgRegex.MatchString(name) {
+			usedNames[name] = true
 		}
+	}
+	for _, name := range contract.OtherCFSMs() {
+		translatedName := name
+		if !msgRegex.MatchString(name) {
+			// Different names can sanitize to the same string (e.g. "a-b" and "ab"), so
+			// append a numeric suffix until the name is unique.
+			base := "C" + filterOutNonAlphanumeric(name)
+			translatedName = base
+			for i := 2; usedNames[translatedName]; i++ {
+				translatedName = fmt.Sprintf("%s%d", base, i)
+			}
+			usedNames[translatedName] = true
+		}
+		participantNameTranslations.Insert(name, translatedName)
 		otherCFSMs = append(otherCFSMs, translatedName)
 	}
 
