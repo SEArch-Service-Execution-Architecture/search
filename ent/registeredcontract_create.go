@@ -10,10 +10,10 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/compatibilityresult"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
+	"github.com/google/uuid"
 )
 
 // RegisteredContractCreate is the builder for creating a RegisteredContract entity.
@@ -24,96 +24,96 @@ type RegisteredContractCreate struct {
 }
 
 // SetFormat sets the "format" field.
-func (rcc *RegisteredContractCreate) SetFormat(i int) *RegisteredContractCreate {
-	rcc.mutation.SetFormat(i)
-	return rcc
+func (_c *RegisteredContractCreate) SetFormat(v int) *RegisteredContractCreate {
+	_c.mutation.SetFormat(v)
+	return _c
 }
 
 // SetContract sets the "contract" field.
-func (rcc *RegisteredContractCreate) SetContract(b []byte) *RegisteredContractCreate {
-	rcc.mutation.SetContract(b)
-	return rcc
+func (_c *RegisteredContractCreate) SetContract(v []byte) *RegisteredContractCreate {
+	_c.mutation.SetContract(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (rcc *RegisteredContractCreate) SetCreatedAt(t time.Time) *RegisteredContractCreate {
-	rcc.mutation.SetCreatedAt(t)
-	return rcc
+func (_c *RegisteredContractCreate) SetCreatedAt(v time.Time) *RegisteredContractCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (rcc *RegisteredContractCreate) SetNillableCreatedAt(t *time.Time) *RegisteredContractCreate {
-	if t != nil {
-		rcc.SetCreatedAt(*t)
+func (_c *RegisteredContractCreate) SetNillableCreatedAt(v *time.Time) *RegisteredContractCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return rcc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (rcc *RegisteredContractCreate) SetID(s string) *RegisteredContractCreate {
-	rcc.mutation.SetID(s)
-	return rcc
+func (_c *RegisteredContractCreate) SetID(v string) *RegisteredContractCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // AddProviderIDs adds the "providers" edge to the RegisteredProvider entity by IDs.
-func (rcc *RegisteredContractCreate) AddProviderIDs(ids ...uuid.UUID) *RegisteredContractCreate {
-	rcc.mutation.AddProviderIDs(ids...)
-	return rcc
+func (_c *RegisteredContractCreate) AddProviderIDs(ids ...uuid.UUID) *RegisteredContractCreate {
+	_c.mutation.AddProviderIDs(ids...)
+	return _c
 }
 
 // AddProviders adds the "providers" edges to the RegisteredProvider entity.
-func (rcc *RegisteredContractCreate) AddProviders(r ...*RegisteredProvider) *RegisteredContractCreate {
-	ids := make([]uuid.UUID, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_c *RegisteredContractCreate) AddProviders(v ...*RegisteredProvider) *RegisteredContractCreate {
+	ids := make([]uuid.UUID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return rcc.AddProviderIDs(ids...)
+	return _c.AddProviderIDs(ids...)
 }
 
 // AddCompatibilityResultsAsRequirementIDs adds the "compatibility_results_as_requirement" edge to the CompatibilityResult entity by IDs.
-func (rcc *RegisteredContractCreate) AddCompatibilityResultsAsRequirementIDs(ids ...int) *RegisteredContractCreate {
-	rcc.mutation.AddCompatibilityResultsAsRequirementIDs(ids...)
-	return rcc
+func (_c *RegisteredContractCreate) AddCompatibilityResultsAsRequirementIDs(ids ...int) *RegisteredContractCreate {
+	_c.mutation.AddCompatibilityResultsAsRequirementIDs(ids...)
+	return _c
 }
 
 // AddCompatibilityResultsAsRequirement adds the "compatibility_results_as_requirement" edges to the CompatibilityResult entity.
-func (rcc *RegisteredContractCreate) AddCompatibilityResultsAsRequirement(c ...*CompatibilityResult) *RegisteredContractCreate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+func (_c *RegisteredContractCreate) AddCompatibilityResultsAsRequirement(v ...*CompatibilityResult) *RegisteredContractCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return rcc.AddCompatibilityResultsAsRequirementIDs(ids...)
+	return _c.AddCompatibilityResultsAsRequirementIDs(ids...)
 }
 
 // AddCompatibilityResultsAsProviderIDs adds the "compatibility_results_as_provider" edge to the CompatibilityResult entity by IDs.
-func (rcc *RegisteredContractCreate) AddCompatibilityResultsAsProviderIDs(ids ...int) *RegisteredContractCreate {
-	rcc.mutation.AddCompatibilityResultsAsProviderIDs(ids...)
-	return rcc
+func (_c *RegisteredContractCreate) AddCompatibilityResultsAsProviderIDs(ids ...int) *RegisteredContractCreate {
+	_c.mutation.AddCompatibilityResultsAsProviderIDs(ids...)
+	return _c
 }
 
 // AddCompatibilityResultsAsProvider adds the "compatibility_results_as_provider" edges to the CompatibilityResult entity.
-func (rcc *RegisteredContractCreate) AddCompatibilityResultsAsProvider(c ...*CompatibilityResult) *RegisteredContractCreate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
+func (_c *RegisteredContractCreate) AddCompatibilityResultsAsProvider(v ...*CompatibilityResult) *RegisteredContractCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return rcc.AddCompatibilityResultsAsProviderIDs(ids...)
+	return _c.AddCompatibilityResultsAsProviderIDs(ids...)
 }
 
 // Mutation returns the RegisteredContractMutation object of the builder.
-func (rcc *RegisteredContractCreate) Mutation() *RegisteredContractMutation {
-	return rcc.mutation
+func (_c *RegisteredContractCreate) Mutation() *RegisteredContractMutation {
+	return _c.mutation
 }
 
 // Save creates the RegisteredContract in the database.
-func (rcc *RegisteredContractCreate) Save(ctx context.Context) (*RegisteredContract, error) {
-	rcc.defaults()
-	return withHooks(ctx, rcc.sqlSave, rcc.mutation, rcc.hooks)
+func (_c *RegisteredContractCreate) Save(ctx context.Context) (*RegisteredContract, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (rcc *RegisteredContractCreate) SaveX(ctx context.Context) *RegisteredContract {
-	v, err := rcc.Save(ctx)
+func (_c *RegisteredContractCreate) SaveX(ctx context.Context) *RegisteredContract {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -121,43 +121,43 @@ func (rcc *RegisteredContractCreate) SaveX(ctx context.Context) *RegisteredContr
 }
 
 // Exec executes the query.
-func (rcc *RegisteredContractCreate) Exec(ctx context.Context) error {
-	_, err := rcc.Save(ctx)
+func (_c *RegisteredContractCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rcc *RegisteredContractCreate) ExecX(ctx context.Context) {
-	if err := rcc.Exec(ctx); err != nil {
+func (_c *RegisteredContractCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (rcc *RegisteredContractCreate) defaults() {
-	if _, ok := rcc.mutation.CreatedAt(); !ok {
+func (_c *RegisteredContractCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := registeredcontract.DefaultCreatedAt()
-		rcc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (rcc *RegisteredContractCreate) check() error {
-	if _, ok := rcc.mutation.Format(); !ok {
+func (_c *RegisteredContractCreate) check() error {
+	if _, ok := _c.mutation.Format(); !ok {
 		return &ValidationError{Name: "format", err: errors.New(`ent: missing required field "RegisteredContract.format"`)}
 	}
-	if _, ok := rcc.mutation.Contract(); !ok {
+	if _, ok := _c.mutation.Contract(); !ok {
 		return &ValidationError{Name: "contract", err: errors.New(`ent: missing required field "RegisteredContract.contract"`)}
 	}
-	if v, ok := rcc.mutation.Contract(); ok {
+	if v, ok := _c.mutation.Contract(); ok {
 		if err := registeredcontract.ContractValidator(v); err != nil {
 			return &ValidationError{Name: "contract", err: fmt.Errorf(`ent: validator failed for field "RegisteredContract.contract": %w`, err)}
 		}
 	}
-	if _, ok := rcc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "RegisteredContract.created_at"`)}
 	}
-	if v, ok := rcc.mutation.ID(); ok {
+	if v, ok := _c.mutation.ID(); ok {
 		if err := registeredcontract.IDValidator(v); err != nil {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "RegisteredContract.id": %w`, err)}
 		}
@@ -165,12 +165,12 @@ func (rcc *RegisteredContractCreate) check() error {
 	return nil
 }
 
-func (rcc *RegisteredContractCreate) sqlSave(ctx context.Context) (*RegisteredContract, error) {
-	if err := rcc.check(); err != nil {
+func (_c *RegisteredContractCreate) sqlSave(ctx context.Context) (*RegisteredContract, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := rcc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, rcc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -183,33 +183,33 @@ func (rcc *RegisteredContractCreate) sqlSave(ctx context.Context) (*RegisteredCo
 			return nil, fmt.Errorf("unexpected RegisteredContract.ID type: %T", _spec.ID.Value)
 		}
 	}
-	rcc.mutation.id = &_node.ID
-	rcc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (rcc *RegisteredContractCreate) createSpec() (*RegisteredContract, *sqlgraph.CreateSpec) {
+func (_c *RegisteredContractCreate) createSpec() (*RegisteredContract, *sqlgraph.CreateSpec) {
 	var (
-		_node = &RegisteredContract{config: rcc.config}
+		_node = &RegisteredContract{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(registeredcontract.Table, sqlgraph.NewFieldSpec(registeredcontract.FieldID, field.TypeString))
 	)
-	if id, ok := rcc.mutation.ID(); ok {
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := rcc.mutation.Format(); ok {
+	if value, ok := _c.mutation.Format(); ok {
 		_spec.SetField(registeredcontract.FieldFormat, field.TypeInt, value)
 		_node.Format = value
 	}
-	if value, ok := rcc.mutation.Contract(); ok {
+	if value, ok := _c.mutation.Contract(); ok {
 		_spec.SetField(registeredcontract.FieldContract, field.TypeBytes, value)
 		_node.Contract = value
 	}
-	if value, ok := rcc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(registeredcontract.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := rcc.mutation.ProvidersIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ProvidersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -225,7 +225,7 @@ func (rcc *RegisteredContractCreate) createSpec() (*RegisteredContract, *sqlgrap
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := rcc.mutation.CompatibilityResultsAsRequirementIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.CompatibilityResultsAsRequirementIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -241,7 +241,7 @@ func (rcc *RegisteredContractCreate) createSpec() (*RegisteredContract, *sqlgrap
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := rcc.mutation.CompatibilityResultsAsProviderIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.CompatibilityResultsAsProviderIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -268,16 +268,16 @@ type RegisteredContractCreateBulk struct {
 }
 
 // Save creates the RegisteredContract entities in the database.
-func (rccb *RegisteredContractCreateBulk) Save(ctx context.Context) ([]*RegisteredContract, error) {
-	if rccb.err != nil {
-		return nil, rccb.err
+func (_c *RegisteredContractCreateBulk) Save(ctx context.Context) ([]*RegisteredContract, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(rccb.builders))
-	nodes := make([]*RegisteredContract, len(rccb.builders))
-	mutators := make([]Mutator, len(rccb.builders))
-	for i := range rccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*RegisteredContract, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := rccb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*RegisteredContractMutation)
@@ -291,11 +291,11 @@ func (rccb *RegisteredContractCreateBulk) Save(ctx context.Context) ([]*Register
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, rccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, rccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -315,7 +315,7 @@ func (rccb *RegisteredContractCreateBulk) Save(ctx context.Context) ([]*Register
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, rccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -323,8 +323,8 @@ func (rccb *RegisteredContractCreateBulk) Save(ctx context.Context) ([]*Register
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (rccb *RegisteredContractCreateBulk) SaveX(ctx context.Context) []*RegisteredContract {
-	v, err := rccb.Save(ctx)
+func (_c *RegisteredContractCreateBulk) SaveX(ctx context.Context) []*RegisteredContract {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -332,14 +332,14 @@ func (rccb *RegisteredContractCreateBulk) SaveX(ctx context.Context) []*Register
 }
 
 // Exec executes the query.
-func (rccb *RegisteredContractCreateBulk) Exec(ctx context.Context) error {
-	_, err := rccb.Save(ctx)
+func (_c *RegisteredContractCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rccb *RegisteredContractCreateBulk) ExecX(ctx context.Context) {
-	if err := rccb.Exec(ctx); err != nil {
+func (_c *RegisteredContractCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

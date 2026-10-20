@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -33,44 +34,44 @@ type RegisteredContractQuery struct {
 }
 
 // Where adds a new predicate for the RegisteredContractQuery builder.
-func (rcq *RegisteredContractQuery) Where(ps ...predicate.RegisteredContract) *RegisteredContractQuery {
-	rcq.predicates = append(rcq.predicates, ps...)
-	return rcq
+func (_q *RegisteredContractQuery) Where(ps ...predicate.RegisteredContract) *RegisteredContractQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (rcq *RegisteredContractQuery) Limit(limit int) *RegisteredContractQuery {
-	rcq.ctx.Limit = &limit
-	return rcq
+func (_q *RegisteredContractQuery) Limit(limit int) *RegisteredContractQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (rcq *RegisteredContractQuery) Offset(offset int) *RegisteredContractQuery {
-	rcq.ctx.Offset = &offset
-	return rcq
+func (_q *RegisteredContractQuery) Offset(offset int) *RegisteredContractQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (rcq *RegisteredContractQuery) Unique(unique bool) *RegisteredContractQuery {
-	rcq.ctx.Unique = &unique
-	return rcq
+func (_q *RegisteredContractQuery) Unique(unique bool) *RegisteredContractQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (rcq *RegisteredContractQuery) Order(o ...registeredcontract.OrderOption) *RegisteredContractQuery {
-	rcq.order = append(rcq.order, o...)
-	return rcq
+func (_q *RegisteredContractQuery) Order(o ...registeredcontract.OrderOption) *RegisteredContractQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryProviders chains the current query on the "providers" edge.
-func (rcq *RegisteredContractQuery) QueryProviders() *RegisteredProviderQuery {
-	query := (&RegisteredProviderClient{config: rcq.config}).Query()
+func (_q *RegisteredContractQuery) QueryProviders() *RegisteredProviderQuery {
+	query := (&RegisteredProviderClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := rcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := rcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,20 +80,20 @@ func (rcq *RegisteredContractQuery) QueryProviders() *RegisteredProviderQuery {
 			sqlgraph.To(registeredprovider.Table, registeredprovider.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, registeredcontract.ProvidersTable, registeredcontract.ProvidersColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(rcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryCompatibilityResultsAsRequirement chains the current query on the "compatibility_results_as_requirement" edge.
-func (rcq *RegisteredContractQuery) QueryCompatibilityResultsAsRequirement() *CompatibilityResultQuery {
-	query := (&CompatibilityResultClient{config: rcq.config}).Query()
+func (_q *RegisteredContractQuery) QueryCompatibilityResultsAsRequirement() *CompatibilityResultQuery {
+	query := (&CompatibilityResultClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := rcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := rcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -101,20 +102,20 @@ func (rcq *RegisteredContractQuery) QueryCompatibilityResultsAsRequirement() *Co
 			sqlgraph.To(compatibilityresult.Table, compatibilityresult.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, registeredcontract.CompatibilityResultsAsRequirementTable, registeredcontract.CompatibilityResultsAsRequirementColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(rcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryCompatibilityResultsAsProvider chains the current query on the "compatibility_results_as_provider" edge.
-func (rcq *RegisteredContractQuery) QueryCompatibilityResultsAsProvider() *CompatibilityResultQuery {
-	query := (&CompatibilityResultClient{config: rcq.config}).Query()
+func (_q *RegisteredContractQuery) QueryCompatibilityResultsAsProvider() *CompatibilityResultQuery {
+	query := (&CompatibilityResultClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := rcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := rcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -123,7 +124,7 @@ func (rcq *RegisteredContractQuery) QueryCompatibilityResultsAsProvider() *Compa
 			sqlgraph.To(compatibilityresult.Table, compatibilityresult.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, registeredcontract.CompatibilityResultsAsProviderTable, registeredcontract.CompatibilityResultsAsProviderColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(rcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -131,8 +132,8 @@ func (rcq *RegisteredContractQuery) QueryCompatibilityResultsAsProvider() *Compa
 
 // First returns the first RegisteredContract entity from the query.
 // Returns a *NotFoundError when no RegisteredContract was found.
-func (rcq *RegisteredContractQuery) First(ctx context.Context) (*RegisteredContract, error) {
-	nodes, err := rcq.Limit(1).All(setContextOp(ctx, rcq.ctx, "First"))
+func (_q *RegisteredContractQuery) First(ctx context.Context) (*RegisteredContract, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -143,8 +144,8 @@ func (rcq *RegisteredContractQuery) First(ctx context.Context) (*RegisteredContr
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (rcq *RegisteredContractQuery) FirstX(ctx context.Context) *RegisteredContract {
-	node, err := rcq.First(ctx)
+func (_q *RegisteredContractQuery) FirstX(ctx context.Context) *RegisteredContract {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -153,9 +154,9 @@ func (rcq *RegisteredContractQuery) FirstX(ctx context.Context) *RegisteredContr
 
 // FirstID returns the first RegisteredContract ID from the query.
 // Returns a *NotFoundError when no RegisteredContract ID was found.
-func (rcq *RegisteredContractQuery) FirstID(ctx context.Context) (id string, err error) {
+func (_q *RegisteredContractQuery) FirstID(ctx context.Context) (id string, err error) {
 	var ids []string
-	if ids, err = rcq.Limit(1).IDs(setContextOp(ctx, rcq.ctx, "FirstID")); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -166,8 +167,8 @@ func (rcq *RegisteredContractQuery) FirstID(ctx context.Context) (id string, err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (rcq *RegisteredContractQuery) FirstIDX(ctx context.Context) string {
-	id, err := rcq.FirstID(ctx)
+func (_q *RegisteredContractQuery) FirstIDX(ctx context.Context) string {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -177,8 +178,8 @@ func (rcq *RegisteredContractQuery) FirstIDX(ctx context.Context) string {
 // Only returns a single RegisteredContract entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one RegisteredContract entity is found.
 // Returns a *NotFoundError when no RegisteredContract entities are found.
-func (rcq *RegisteredContractQuery) Only(ctx context.Context) (*RegisteredContract, error) {
-	nodes, err := rcq.Limit(2).All(setContextOp(ctx, rcq.ctx, "Only"))
+func (_q *RegisteredContractQuery) Only(ctx context.Context) (*RegisteredContract, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -193,8 +194,8 @@ func (rcq *RegisteredContractQuery) Only(ctx context.Context) (*RegisteredContra
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (rcq *RegisteredContractQuery) OnlyX(ctx context.Context) *RegisteredContract {
-	node, err := rcq.Only(ctx)
+func (_q *RegisteredContractQuery) OnlyX(ctx context.Context) *RegisteredContract {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -204,9 +205,9 @@ func (rcq *RegisteredContractQuery) OnlyX(ctx context.Context) *RegisteredContra
 // OnlyID is like Only, but returns the only RegisteredContract ID in the query.
 // Returns a *NotSingularError when more than one RegisteredContract ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (rcq *RegisteredContractQuery) OnlyID(ctx context.Context) (id string, err error) {
+func (_q *RegisteredContractQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
-	if ids, err = rcq.Limit(2).IDs(setContextOp(ctx, rcq.ctx, "OnlyID")); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -221,8 +222,8 @@ func (rcq *RegisteredContractQuery) OnlyID(ctx context.Context) (id string, err 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (rcq *RegisteredContractQuery) OnlyIDX(ctx context.Context) string {
-	id, err := rcq.OnlyID(ctx)
+func (_q *RegisteredContractQuery) OnlyIDX(ctx context.Context) string {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -230,18 +231,18 @@ func (rcq *RegisteredContractQuery) OnlyIDX(ctx context.Context) string {
 }
 
 // All executes the query and returns a list of RegisteredContracts.
-func (rcq *RegisteredContractQuery) All(ctx context.Context) ([]*RegisteredContract, error) {
-	ctx = setContextOp(ctx, rcq.ctx, "All")
-	if err := rcq.prepareQuery(ctx); err != nil {
+func (_q *RegisteredContractQuery) All(ctx context.Context) ([]*RegisteredContract, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*RegisteredContract, *RegisteredContractQuery]()
-	return withInterceptors[[]*RegisteredContract](ctx, rcq, qr, rcq.inters)
+	return withInterceptors[[]*RegisteredContract](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (rcq *RegisteredContractQuery) AllX(ctx context.Context) []*RegisteredContract {
-	nodes, err := rcq.All(ctx)
+func (_q *RegisteredContractQuery) AllX(ctx context.Context) []*RegisteredContract {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -249,20 +250,20 @@ func (rcq *RegisteredContractQuery) AllX(ctx context.Context) []*RegisteredContr
 }
 
 // IDs executes the query and returns a list of RegisteredContract IDs.
-func (rcq *RegisteredContractQuery) IDs(ctx context.Context) (ids []string, err error) {
-	if rcq.ctx.Unique == nil && rcq.path != nil {
-		rcq.Unique(true)
+func (_q *RegisteredContractQuery) IDs(ctx context.Context) (ids []string, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, rcq.ctx, "IDs")
-	if err = rcq.Select(registeredcontract.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(registeredcontract.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (rcq *RegisteredContractQuery) IDsX(ctx context.Context) []string {
-	ids, err := rcq.IDs(ctx)
+func (_q *RegisteredContractQuery) IDsX(ctx context.Context) []string {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -270,17 +271,17 @@ func (rcq *RegisteredContractQuery) IDsX(ctx context.Context) []string {
 }
 
 // Count returns the count of the given query.
-func (rcq *RegisteredContractQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, rcq.ctx, "Count")
-	if err := rcq.prepareQuery(ctx); err != nil {
+func (_q *RegisteredContractQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, rcq, querierCount[*RegisteredContractQuery](), rcq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*RegisteredContractQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (rcq *RegisteredContractQuery) CountX(ctx context.Context) int {
-	count, err := rcq.Count(ctx)
+func (_q *RegisteredContractQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -288,9 +289,9 @@ func (rcq *RegisteredContractQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (rcq *RegisteredContractQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, rcq.ctx, "Exist")
-	switch _, err := rcq.FirstID(ctx); {
+func (_q *RegisteredContractQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -301,8 +302,8 @@ func (rcq *RegisteredContractQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (rcq *RegisteredContractQuery) ExistX(ctx context.Context) bool {
-	exist, err := rcq.Exist(ctx)
+func (_q *RegisteredContractQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -311,56 +312,56 @@ func (rcq *RegisteredContractQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the RegisteredContractQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (rcq *RegisteredContractQuery) Clone() *RegisteredContractQuery {
-	if rcq == nil {
+func (_q *RegisteredContractQuery) Clone() *RegisteredContractQuery {
+	if _q == nil {
 		return nil
 	}
 	return &RegisteredContractQuery{
-		config:                                rcq.config,
-		ctx:                                   rcq.ctx.Clone(),
-		order:                                 append([]registeredcontract.OrderOption{}, rcq.order...),
-		inters:                                append([]Interceptor{}, rcq.inters...),
-		predicates:                            append([]predicate.RegisteredContract{}, rcq.predicates...),
-		withProviders:                         rcq.withProviders.Clone(),
-		withCompatibilityResultsAsRequirement: rcq.withCompatibilityResultsAsRequirement.Clone(),
-		withCompatibilityResultsAsProvider:    rcq.withCompatibilityResultsAsProvider.Clone(),
+		config:                                _q.config,
+		ctx:                                   _q.ctx.Clone(),
+		order:                                 append([]registeredcontract.OrderOption{}, _q.order...),
+		inters:                                append([]Interceptor{}, _q.inters...),
+		predicates:                            append([]predicate.RegisteredContract{}, _q.predicates...),
+		withProviders:                         _q.withProviders.Clone(),
+		withCompatibilityResultsAsRequirement: _q.withCompatibilityResultsAsRequirement.Clone(),
+		withCompatibilityResultsAsProvider:    _q.withCompatibilityResultsAsProvider.Clone(),
 		// clone intermediate query.
-		sql:  rcq.sql.Clone(),
-		path: rcq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithProviders tells the query-builder to eager-load the nodes that are connected to
 // the "providers" edge. The optional arguments are used to configure the query builder of the edge.
-func (rcq *RegisteredContractQuery) WithProviders(opts ...func(*RegisteredProviderQuery)) *RegisteredContractQuery {
-	query := (&RegisteredProviderClient{config: rcq.config}).Query()
+func (_q *RegisteredContractQuery) WithProviders(opts ...func(*RegisteredProviderQuery)) *RegisteredContractQuery {
+	query := (&RegisteredProviderClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	rcq.withProviders = query
-	return rcq
+	_q.withProviders = query
+	return _q
 }
 
 // WithCompatibilityResultsAsRequirement tells the query-builder to eager-load the nodes that are connected to
 // the "compatibility_results_as_requirement" edge. The optional arguments are used to configure the query builder of the edge.
-func (rcq *RegisteredContractQuery) WithCompatibilityResultsAsRequirement(opts ...func(*CompatibilityResultQuery)) *RegisteredContractQuery {
-	query := (&CompatibilityResultClient{config: rcq.config}).Query()
+func (_q *RegisteredContractQuery) WithCompatibilityResultsAsRequirement(opts ...func(*CompatibilityResultQuery)) *RegisteredContractQuery {
+	query := (&CompatibilityResultClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	rcq.withCompatibilityResultsAsRequirement = query
-	return rcq
+	_q.withCompatibilityResultsAsRequirement = query
+	return _q
 }
 
 // WithCompatibilityResultsAsProvider tells the query-builder to eager-load the nodes that are connected to
 // the "compatibility_results_as_provider" edge. The optional arguments are used to configure the query builder of the edge.
-func (rcq *RegisteredContractQuery) WithCompatibilityResultsAsProvider(opts ...func(*CompatibilityResultQuery)) *RegisteredContractQuery {
-	query := (&CompatibilityResultClient{config: rcq.config}).Query()
+func (_q *RegisteredContractQuery) WithCompatibilityResultsAsProvider(opts ...func(*CompatibilityResultQuery)) *RegisteredContractQuery {
+	query := (&CompatibilityResultClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	rcq.withCompatibilityResultsAsProvider = query
-	return rcq
+	_q.withCompatibilityResultsAsProvider = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -377,10 +378,10 @@ func (rcq *RegisteredContractQuery) WithCompatibilityResultsAsProvider(opts ...f
 //		GroupBy(registeredcontract.FieldFormat).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (rcq *RegisteredContractQuery) GroupBy(field string, fields ...string) *RegisteredContractGroupBy {
-	rcq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &RegisteredContractGroupBy{build: rcq}
-	grbuild.flds = &rcq.ctx.Fields
+func (_q *RegisteredContractQuery) GroupBy(field string, fields ...string) *RegisteredContractGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &RegisteredContractGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = registeredcontract.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -398,60 +399,60 @@ func (rcq *RegisteredContractQuery) GroupBy(field string, fields ...string) *Reg
 //	client.RegisteredContract.Query().
 //		Select(registeredcontract.FieldFormat).
 //		Scan(ctx, &v)
-func (rcq *RegisteredContractQuery) Select(fields ...string) *RegisteredContractSelect {
-	rcq.ctx.Fields = append(rcq.ctx.Fields, fields...)
-	sbuild := &RegisteredContractSelect{RegisteredContractQuery: rcq}
+func (_q *RegisteredContractQuery) Select(fields ...string) *RegisteredContractSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &RegisteredContractSelect{RegisteredContractQuery: _q}
 	sbuild.label = registeredcontract.Label
-	sbuild.flds, sbuild.scan = &rcq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a RegisteredContractSelect configured with the given aggregations.
-func (rcq *RegisteredContractQuery) Aggregate(fns ...AggregateFunc) *RegisteredContractSelect {
-	return rcq.Select().Aggregate(fns...)
+func (_q *RegisteredContractQuery) Aggregate(fns ...AggregateFunc) *RegisteredContractSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (rcq *RegisteredContractQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range rcq.inters {
+func (_q *RegisteredContractQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, rcq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range rcq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !registeredcontract.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if rcq.path != nil {
-		prev, err := rcq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		rcq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (rcq *RegisteredContractQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RegisteredContract, error) {
+func (_q *RegisteredContractQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RegisteredContract, error) {
 	var (
 		nodes       = []*RegisteredContract{}
-		_spec       = rcq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [3]bool{
-			rcq.withProviders != nil,
-			rcq.withCompatibilityResultsAsRequirement != nil,
-			rcq.withCompatibilityResultsAsProvider != nil,
+			_q.withProviders != nil,
+			_q.withCompatibilityResultsAsRequirement != nil,
+			_q.withCompatibilityResultsAsProvider != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*RegisteredContract).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &RegisteredContract{config: rcq.config}
+		node := &RegisteredContract{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -459,21 +460,21 @@ func (rcq *RegisteredContractQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, rcq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := rcq.withProviders; query != nil {
-		if err := rcq.loadProviders(ctx, query, nodes,
+	if query := _q.withProviders; query != nil {
+		if err := _q.loadProviders(ctx, query, nodes,
 			func(n *RegisteredContract) { n.Edges.Providers = []*RegisteredProvider{} },
 			func(n *RegisteredContract, e *RegisteredProvider) { n.Edges.Providers = append(n.Edges.Providers, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := rcq.withCompatibilityResultsAsRequirement; query != nil {
-		if err := rcq.loadCompatibilityResultsAsRequirement(ctx, query, nodes,
+	if query := _q.withCompatibilityResultsAsRequirement; query != nil {
+		if err := _q.loadCompatibilityResultsAsRequirement(ctx, query, nodes,
 			func(n *RegisteredContract) { n.Edges.CompatibilityResultsAsRequirement = []*CompatibilityResult{} },
 			func(n *RegisteredContract, e *CompatibilityResult) {
 				n.Edges.CompatibilityResultsAsRequirement = append(n.Edges.CompatibilityResultsAsRequirement, e)
@@ -481,8 +482,8 @@ func (rcq *RegisteredContractQuery) sqlAll(ctx context.Context, hooks ...queryHo
 			return nil, err
 		}
 	}
-	if query := rcq.withCompatibilityResultsAsProvider; query != nil {
-		if err := rcq.loadCompatibilityResultsAsProvider(ctx, query, nodes,
+	if query := _q.withCompatibilityResultsAsProvider; query != nil {
+		if err := _q.loadCompatibilityResultsAsProvider(ctx, query, nodes,
 			func(n *RegisteredContract) { n.Edges.CompatibilityResultsAsProvider = []*CompatibilityResult{} },
 			func(n *RegisteredContract, e *CompatibilityResult) {
 				n.Edges.CompatibilityResultsAsProvider = append(n.Edges.CompatibilityResultsAsProvider, e)
@@ -493,7 +494,7 @@ func (rcq *RegisteredContractQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	return nodes, nil
 }
 
-func (rcq *RegisteredContractQuery) loadProviders(ctx context.Context, query *RegisteredProviderQuery, nodes []*RegisteredContract, init func(*RegisteredContract), assign func(*RegisteredContract, *RegisteredProvider)) error {
+func (_q *RegisteredContractQuery) loadProviders(ctx context.Context, query *RegisteredProviderQuery, nodes []*RegisteredContract, init func(*RegisteredContract), assign func(*RegisteredContract, *RegisteredProvider)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[string]*RegisteredContract)
 	for i := range nodes {
@@ -523,7 +524,7 @@ func (rcq *RegisteredContractQuery) loadProviders(ctx context.Context, query *Re
 	}
 	return nil
 }
-func (rcq *RegisteredContractQuery) loadCompatibilityResultsAsRequirement(ctx context.Context, query *CompatibilityResultQuery, nodes []*RegisteredContract, init func(*RegisteredContract), assign func(*RegisteredContract, *CompatibilityResult)) error {
+func (_q *RegisteredContractQuery) loadCompatibilityResultsAsRequirement(ctx context.Context, query *CompatibilityResultQuery, nodes []*RegisteredContract, init func(*RegisteredContract), assign func(*RegisteredContract, *CompatibilityResult)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[string]*RegisteredContract)
 	for i := range nodes {
@@ -553,7 +554,7 @@ func (rcq *RegisteredContractQuery) loadCompatibilityResultsAsRequirement(ctx co
 	}
 	return nil
 }
-func (rcq *RegisteredContractQuery) loadCompatibilityResultsAsProvider(ctx context.Context, query *CompatibilityResultQuery, nodes []*RegisteredContract, init func(*RegisteredContract), assign func(*RegisteredContract, *CompatibilityResult)) error {
+func (_q *RegisteredContractQuery) loadCompatibilityResultsAsProvider(ctx context.Context, query *CompatibilityResultQuery, nodes []*RegisteredContract, init func(*RegisteredContract), assign func(*RegisteredContract, *CompatibilityResult)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[string]*RegisteredContract)
 	for i := range nodes {
@@ -584,24 +585,24 @@ func (rcq *RegisteredContractQuery) loadCompatibilityResultsAsProvider(ctx conte
 	return nil
 }
 
-func (rcq *RegisteredContractQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := rcq.querySpec()
-	_spec.Node.Columns = rcq.ctx.Fields
-	if len(rcq.ctx.Fields) > 0 {
-		_spec.Unique = rcq.ctx.Unique != nil && *rcq.ctx.Unique
+func (_q *RegisteredContractQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, rcq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (rcq *RegisteredContractQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *RegisteredContractQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(registeredcontract.Table, registeredcontract.Columns, sqlgraph.NewFieldSpec(registeredcontract.FieldID, field.TypeString))
-	_spec.From = rcq.sql
-	if unique := rcq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if rcq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := rcq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, registeredcontract.FieldID)
 		for i := range fields {
@@ -610,20 +611,20 @@ func (rcq *RegisteredContractQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := rcq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := rcq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := rcq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := rcq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -633,33 +634,33 @@ func (rcq *RegisteredContractQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (rcq *RegisteredContractQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(rcq.driver.Dialect())
+func (_q *RegisteredContractQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(registeredcontract.Table)
-	columns := rcq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = registeredcontract.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if rcq.sql != nil {
-		selector = rcq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if rcq.ctx.Unique != nil && *rcq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range rcq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range rcq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := rcq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := rcq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -672,41 +673,41 @@ type RegisteredContractGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (rcgb *RegisteredContractGroupBy) Aggregate(fns ...AggregateFunc) *RegisteredContractGroupBy {
-	rcgb.fns = append(rcgb.fns, fns...)
-	return rcgb
+func (_g *RegisteredContractGroupBy) Aggregate(fns ...AggregateFunc) *RegisteredContractGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (rcgb *RegisteredContractGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rcgb.build.ctx, "GroupBy")
-	if err := rcgb.build.prepareQuery(ctx); err != nil {
+func (_g *RegisteredContractGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*RegisteredContractQuery, *RegisteredContractGroupBy](ctx, rcgb.build, rcgb, rcgb.build.inters, v)
+	return scanWithInterceptors[*RegisteredContractQuery, *RegisteredContractGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (rcgb *RegisteredContractGroupBy) sqlScan(ctx context.Context, root *RegisteredContractQuery, v any) error {
+func (_g *RegisteredContractGroupBy) sqlScan(ctx context.Context, root *RegisteredContractQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(rcgb.fns))
-	for _, fn := range rcgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*rcgb.flds)+len(rcgb.fns))
-		for _, f := range *rcgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*rcgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := rcgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -720,27 +721,27 @@ type RegisteredContractSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (rcs *RegisteredContractSelect) Aggregate(fns ...AggregateFunc) *RegisteredContractSelect {
-	rcs.fns = append(rcs.fns, fns...)
-	return rcs
+func (_s *RegisteredContractSelect) Aggregate(fns ...AggregateFunc) *RegisteredContractSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (rcs *RegisteredContractSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rcs.ctx, "Select")
-	if err := rcs.prepareQuery(ctx); err != nil {
+func (_s *RegisteredContractSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*RegisteredContractQuery, *RegisteredContractSelect](ctx, rcs.RegisteredContractQuery, rcs, rcs.inters, v)
+	return scanWithInterceptors[*RegisteredContractQuery, *RegisteredContractSelect](ctx, _s.RegisteredContractQuery, _s, _s.inters, v)
 }
 
-func (rcs *RegisteredContractSelect) sqlScan(ctx context.Context, root *RegisteredContractQuery, v any) error {
+func (_s *RegisteredContractSelect) sqlScan(ctx context.Context, root *RegisteredContractQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(rcs.fns))
-	for _, fn := range rcs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*rcs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -748,7 +749,7 @@ func (rcs *RegisteredContractSelect) sqlScan(ctx context.Context, root *Register
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := rcs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

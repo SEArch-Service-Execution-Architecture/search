@@ -11,9 +11,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
+	"github.com/google/uuid"
 )
 
 // RegisteredProviderCreate is the builder for creating a RegisteredProvider entity.
@@ -24,78 +24,78 @@ type RegisteredProviderCreate struct {
 }
 
 // SetURL sets the "url" field.
-func (rpc *RegisteredProviderCreate) SetURL(u *url.URL) *RegisteredProviderCreate {
-	rpc.mutation.SetURL(u)
-	return rpc
+func (_c *RegisteredProviderCreate) SetURL(v *url.URL) *RegisteredProviderCreate {
+	_c.mutation.SetURL(v)
+	return _c
 }
 
 // SetContractID sets the "contract_id" field.
-func (rpc *RegisteredProviderCreate) SetContractID(s string) *RegisteredProviderCreate {
-	rpc.mutation.SetContractID(s)
-	return rpc
+func (_c *RegisteredProviderCreate) SetContractID(v string) *RegisteredProviderCreate {
+	_c.mutation.SetContractID(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (rpc *RegisteredProviderCreate) SetCreatedAt(t time.Time) *RegisteredProviderCreate {
-	rpc.mutation.SetCreatedAt(t)
-	return rpc
+func (_c *RegisteredProviderCreate) SetCreatedAt(v time.Time) *RegisteredProviderCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (rpc *RegisteredProviderCreate) SetNillableCreatedAt(t *time.Time) *RegisteredProviderCreate {
-	if t != nil {
-		rpc.SetCreatedAt(*t)
+func (_c *RegisteredProviderCreate) SetNillableCreatedAt(v *time.Time) *RegisteredProviderCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return rpc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (rpc *RegisteredProviderCreate) SetUpdatedAt(t time.Time) *RegisteredProviderCreate {
-	rpc.mutation.SetUpdatedAt(t)
-	return rpc
+func (_c *RegisteredProviderCreate) SetUpdatedAt(v time.Time) *RegisteredProviderCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (rpc *RegisteredProviderCreate) SetNillableUpdatedAt(t *time.Time) *RegisteredProviderCreate {
-	if t != nil {
-		rpc.SetUpdatedAt(*t)
+func (_c *RegisteredProviderCreate) SetNillableUpdatedAt(v *time.Time) *RegisteredProviderCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return rpc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (rpc *RegisteredProviderCreate) SetID(u uuid.UUID) *RegisteredProviderCreate {
-	rpc.mutation.SetID(u)
-	return rpc
+func (_c *RegisteredProviderCreate) SetID(v uuid.UUID) *RegisteredProviderCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (rpc *RegisteredProviderCreate) SetNillableID(u *uuid.UUID) *RegisteredProviderCreate {
-	if u != nil {
-		rpc.SetID(*u)
+func (_c *RegisteredProviderCreate) SetNillableID(v *uuid.UUID) *RegisteredProviderCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return rpc
+	return _c
 }
 
 // SetContract sets the "contract" edge to the RegisteredContract entity.
-func (rpc *RegisteredProviderCreate) SetContract(r *RegisteredContract) *RegisteredProviderCreate {
-	return rpc.SetContractID(r.ID)
+func (_c *RegisteredProviderCreate) SetContract(v *RegisteredContract) *RegisteredProviderCreate {
+	return _c.SetContractID(v.ID)
 }
 
 // Mutation returns the RegisteredProviderMutation object of the builder.
-func (rpc *RegisteredProviderCreate) Mutation() *RegisteredProviderMutation {
-	return rpc.mutation
+func (_c *RegisteredProviderCreate) Mutation() *RegisteredProviderMutation {
+	return _c.mutation
 }
 
 // Save creates the RegisteredProvider in the database.
-func (rpc *RegisteredProviderCreate) Save(ctx context.Context) (*RegisteredProvider, error) {
-	rpc.defaults()
-	return withHooks(ctx, rpc.sqlSave, rpc.mutation, rpc.hooks)
+func (_c *RegisteredProviderCreate) Save(ctx context.Context) (*RegisteredProvider, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (rpc *RegisteredProviderCreate) SaveX(ctx context.Context) *RegisteredProvider {
-	v, err := rpc.Save(ctx)
+func (_c *RegisteredProviderCreate) SaveX(ctx context.Context) *RegisteredProvider {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -103,65 +103,65 @@ func (rpc *RegisteredProviderCreate) SaveX(ctx context.Context) *RegisteredProvi
 }
 
 // Exec executes the query.
-func (rpc *RegisteredProviderCreate) Exec(ctx context.Context) error {
-	_, err := rpc.Save(ctx)
+func (_c *RegisteredProviderCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rpc *RegisteredProviderCreate) ExecX(ctx context.Context) {
-	if err := rpc.Exec(ctx); err != nil {
+func (_c *RegisteredProviderCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (rpc *RegisteredProviderCreate) defaults() {
-	if _, ok := rpc.mutation.CreatedAt(); !ok {
+func (_c *RegisteredProviderCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := registeredprovider.DefaultCreatedAt()
-		rpc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := rpc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := registeredprovider.DefaultUpdatedAt()
-		rpc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := rpc.mutation.ID(); !ok {
+	if _, ok := _c.mutation.ID(); !ok {
 		v := registeredprovider.DefaultID()
-		rpc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (rpc *RegisteredProviderCreate) check() error {
-	if _, ok := rpc.mutation.URL(); !ok {
+func (_c *RegisteredProviderCreate) check() error {
+	if _, ok := _c.mutation.URL(); !ok {
 		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "RegisteredProvider.url"`)}
 	}
-	if _, ok := rpc.mutation.ContractID(); !ok {
+	if _, ok := _c.mutation.ContractID(); !ok {
 		return &ValidationError{Name: "contract_id", err: errors.New(`ent: missing required field "RegisteredProvider.contract_id"`)}
 	}
-	if v, ok := rpc.mutation.ContractID(); ok {
+	if v, ok := _c.mutation.ContractID(); ok {
 		if err := registeredprovider.ContractIDValidator(v); err != nil {
 			return &ValidationError{Name: "contract_id", err: fmt.Errorf(`ent: validator failed for field "RegisteredProvider.contract_id": %w`, err)}
 		}
 	}
-	if _, ok := rpc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "RegisteredProvider.created_at"`)}
 	}
-	if _, ok := rpc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "RegisteredProvider.updated_at"`)}
 	}
-	if _, ok := rpc.mutation.ContractID(); !ok {
+	if len(_c.mutation.ContractIDs()) == 0 {
 		return &ValidationError{Name: "contract", err: errors.New(`ent: missing required edge "RegisteredProvider.contract"`)}
 	}
 	return nil
 }
 
-func (rpc *RegisteredProviderCreate) sqlSave(ctx context.Context) (*RegisteredProvider, error) {
-	if err := rpc.check(); err != nil {
+func (_c *RegisteredProviderCreate) sqlSave(ctx context.Context) (*RegisteredProvider, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := rpc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, rpc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -174,33 +174,33 @@ func (rpc *RegisteredProviderCreate) sqlSave(ctx context.Context) (*RegisteredPr
 			return nil, err
 		}
 	}
-	rpc.mutation.id = &_node.ID
-	rpc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (rpc *RegisteredProviderCreate) createSpec() (*RegisteredProvider, *sqlgraph.CreateSpec) {
+func (_c *RegisteredProviderCreate) createSpec() (*RegisteredProvider, *sqlgraph.CreateSpec) {
 	var (
-		_node = &RegisteredProvider{config: rpc.config}
+		_node = &RegisteredProvider{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(registeredprovider.Table, sqlgraph.NewFieldSpec(registeredprovider.FieldID, field.TypeUUID))
 	)
-	if id, ok := rpc.mutation.ID(); ok {
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := rpc.mutation.URL(); ok {
+	if value, ok := _c.mutation.URL(); ok {
 		_spec.SetField(registeredprovider.FieldURL, field.TypeJSON, value)
 		_node.URL = value
 	}
-	if value, ok := rpc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(registeredprovider.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := rpc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(registeredprovider.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if nodes := rpc.mutation.ContractIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ContractIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -228,16 +228,16 @@ type RegisteredProviderCreateBulk struct {
 }
 
 // Save creates the RegisteredProvider entities in the database.
-func (rpcb *RegisteredProviderCreateBulk) Save(ctx context.Context) ([]*RegisteredProvider, error) {
-	if rpcb.err != nil {
-		return nil, rpcb.err
+func (_c *RegisteredProviderCreateBulk) Save(ctx context.Context) ([]*RegisteredProvider, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(rpcb.builders))
-	nodes := make([]*RegisteredProvider, len(rpcb.builders))
-	mutators := make([]Mutator, len(rpcb.builders))
-	for i := range rpcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*RegisteredProvider, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := rpcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*RegisteredProviderMutation)
@@ -251,11 +251,11 @@ func (rpcb *RegisteredProviderCreateBulk) Save(ctx context.Context) ([]*Register
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, rpcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, rpcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -275,7 +275,7 @@ func (rpcb *RegisteredProviderCreateBulk) Save(ctx context.Context) ([]*Register
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, rpcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -283,8 +283,8 @@ func (rpcb *RegisteredProviderCreateBulk) Save(ctx context.Context) ([]*Register
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (rpcb *RegisteredProviderCreateBulk) SaveX(ctx context.Context) []*RegisteredProvider {
-	v, err := rpcb.Save(ctx)
+func (_c *RegisteredProviderCreateBulk) SaveX(ctx context.Context) []*RegisteredProvider {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -292,14 +292,14 @@ func (rpcb *RegisteredProviderCreateBulk) SaveX(ctx context.Context) []*Register
 }
 
 // Exec executes the query.
-func (rpcb *RegisteredProviderCreateBulk) Exec(ctx context.Context) error {
-	_, err := rpcb.Save(ctx)
+func (_c *RegisteredProviderCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rpcb *RegisteredProviderCreateBulk) ExecX(ctx context.Context) {
-	if err := rpcb.Exec(ctx); err != nil {
+func (_c *RegisteredProviderCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

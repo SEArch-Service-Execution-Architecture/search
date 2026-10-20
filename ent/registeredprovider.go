@@ -11,9 +11,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/google/uuid"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
+	"github.com/google/uuid"
 )
 
 // RegisteredProvider is the model entity for the RegisteredProvider schema.
@@ -47,12 +47,10 @@ type RegisteredProviderEdges struct {
 // ContractOrErr returns the Contract value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e RegisteredProviderEdges) ContractOrErr() (*RegisteredContract, error) {
-	if e.loadedTypes[0] {
-		if e.Contract == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: registeredcontract.Label}
-		}
+	if e.Contract != nil {
 		return e.Contract, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: registeredcontract.Label}
 	}
 	return nil, &NotLoadedError{edge: "contract"}
 }
@@ -79,7 +77,7 @@ func (*RegisteredProvider) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the RegisteredProvider fields.
-func (rp *RegisteredProvider) assignValues(columns []string, values []any) error {
+func (_m *RegisteredProvider) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -89,13 +87,13 @@ func (rp *RegisteredProvider) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				rp.ID = *value
+				_m.ID = *value
 			}
 		case registeredprovider.FieldURL:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field url", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &rp.URL); err != nil {
+				if err := json.Unmarshal(*value, &_m.URL); err != nil {
 					return fmt.Errorf("unmarshal field url: %w", err)
 				}
 			}
@@ -103,22 +101,22 @@ func (rp *RegisteredProvider) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field contract_id", values[i])
 			} else if value.Valid {
-				rp.ContractID = value.String
+				_m.ContractID = value.String
 			}
 		case registeredprovider.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				rp.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case registeredprovider.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				rp.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		default:
-			rp.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -126,49 +124,49 @@ func (rp *RegisteredProvider) assignValues(columns []string, values []any) error
 
 // Value returns the ent.Value that was dynamically selected and assigned to the RegisteredProvider.
 // This includes values selected through modifiers, order, etc.
-func (rp *RegisteredProvider) Value(name string) (ent.Value, error) {
-	return rp.selectValues.Get(name)
+func (_m *RegisteredProvider) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryContract queries the "contract" edge of the RegisteredProvider entity.
-func (rp *RegisteredProvider) QueryContract() *RegisteredContractQuery {
-	return NewRegisteredProviderClient(rp.config).QueryContract(rp)
+func (_m *RegisteredProvider) QueryContract() *RegisteredContractQuery {
+	return NewRegisteredProviderClient(_m.config).QueryContract(_m)
 }
 
 // Update returns a builder for updating this RegisteredProvider.
 // Note that you need to call RegisteredProvider.Unwrap() before calling this method if this RegisteredProvider
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (rp *RegisteredProvider) Update() *RegisteredProviderUpdateOne {
-	return NewRegisteredProviderClient(rp.config).UpdateOne(rp)
+func (_m *RegisteredProvider) Update() *RegisteredProviderUpdateOne {
+	return NewRegisteredProviderClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the RegisteredProvider entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (rp *RegisteredProvider) Unwrap() *RegisteredProvider {
-	_tx, ok := rp.config.driver.(*txDriver)
+func (_m *RegisteredProvider) Unwrap() *RegisteredProvider {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: RegisteredProvider is not a transactional entity")
 	}
-	rp.config.driver = _tx.drv
-	return rp
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (rp *RegisteredProvider) String() string {
+func (_m *RegisteredProvider) String() string {
 	var builder strings.Builder
 	builder.WriteString("RegisteredProvider(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", rp.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("url=")
-	builder.WriteString(fmt.Sprintf("%v", rp.URL))
+	builder.WriteString(fmt.Sprintf("%v", _m.URL))
 	builder.WriteString(", ")
 	builder.WriteString("contract_id=")
-	builder.WriteString(rp.ContractID)
+	builder.WriteString(_m.ContractID)
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(rp.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(rp.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

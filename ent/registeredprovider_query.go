@@ -7,13 +7,14 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/predicate"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredcontract"
 	"github.com/SEArch-Service-Execution-Architecture/search/ent/registeredprovider"
+	"github.com/google/uuid"
 )
 
 // RegisteredProviderQuery is the builder for querying RegisteredProvider entities.
@@ -30,44 +31,44 @@ type RegisteredProviderQuery struct {
 }
 
 // Where adds a new predicate for the RegisteredProviderQuery builder.
-func (rpq *RegisteredProviderQuery) Where(ps ...predicate.RegisteredProvider) *RegisteredProviderQuery {
-	rpq.predicates = append(rpq.predicates, ps...)
-	return rpq
+func (_q *RegisteredProviderQuery) Where(ps ...predicate.RegisteredProvider) *RegisteredProviderQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (rpq *RegisteredProviderQuery) Limit(limit int) *RegisteredProviderQuery {
-	rpq.ctx.Limit = &limit
-	return rpq
+func (_q *RegisteredProviderQuery) Limit(limit int) *RegisteredProviderQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (rpq *RegisteredProviderQuery) Offset(offset int) *RegisteredProviderQuery {
-	rpq.ctx.Offset = &offset
-	return rpq
+func (_q *RegisteredProviderQuery) Offset(offset int) *RegisteredProviderQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (rpq *RegisteredProviderQuery) Unique(unique bool) *RegisteredProviderQuery {
-	rpq.ctx.Unique = &unique
-	return rpq
+func (_q *RegisteredProviderQuery) Unique(unique bool) *RegisteredProviderQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (rpq *RegisteredProviderQuery) Order(o ...registeredprovider.OrderOption) *RegisteredProviderQuery {
-	rpq.order = append(rpq.order, o...)
-	return rpq
+func (_q *RegisteredProviderQuery) Order(o ...registeredprovider.OrderOption) *RegisteredProviderQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryContract chains the current query on the "contract" edge.
-func (rpq *RegisteredProviderQuery) QueryContract() *RegisteredContractQuery {
-	query := (&RegisteredContractClient{config: rpq.config}).Query()
+func (_q *RegisteredProviderQuery) QueryContract() *RegisteredContractQuery {
+	query := (&RegisteredContractClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := rpq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := rpq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -76,7 +77,7 @@ func (rpq *RegisteredProviderQuery) QueryContract() *RegisteredContractQuery {
 			sqlgraph.To(registeredcontract.Table, registeredcontract.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, registeredprovider.ContractTable, registeredprovider.ContractColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(rpq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -84,8 +85,8 @@ func (rpq *RegisteredProviderQuery) QueryContract() *RegisteredContractQuery {
 
 // First returns the first RegisteredProvider entity from the query.
 // Returns a *NotFoundError when no RegisteredProvider was found.
-func (rpq *RegisteredProviderQuery) First(ctx context.Context) (*RegisteredProvider, error) {
-	nodes, err := rpq.Limit(1).All(setContextOp(ctx, rpq.ctx, "First"))
+func (_q *RegisteredProviderQuery) First(ctx context.Context) (*RegisteredProvider, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -96,8 +97,8 @@ func (rpq *RegisteredProviderQuery) First(ctx context.Context) (*RegisteredProvi
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (rpq *RegisteredProviderQuery) FirstX(ctx context.Context) *RegisteredProvider {
-	node, err := rpq.First(ctx)
+func (_q *RegisteredProviderQuery) FirstX(ctx context.Context) *RegisteredProvider {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -106,9 +107,9 @@ func (rpq *RegisteredProviderQuery) FirstX(ctx context.Context) *RegisteredProvi
 
 // FirstID returns the first RegisteredProvider ID from the query.
 // Returns a *NotFoundError when no RegisteredProvider ID was found.
-func (rpq *RegisteredProviderQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
+func (_q *RegisteredProviderQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = rpq.Limit(1).IDs(setContextOp(ctx, rpq.ctx, "FirstID")); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -119,8 +120,8 @@ func (rpq *RegisteredProviderQuery) FirstID(ctx context.Context) (id uuid.UUID, 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (rpq *RegisteredProviderQuery) FirstIDX(ctx context.Context) uuid.UUID {
-	id, err := rpq.FirstID(ctx)
+func (_q *RegisteredProviderQuery) FirstIDX(ctx context.Context) uuid.UUID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -130,8 +131,8 @@ func (rpq *RegisteredProviderQuery) FirstIDX(ctx context.Context) uuid.UUID {
 // Only returns a single RegisteredProvider entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one RegisteredProvider entity is found.
 // Returns a *NotFoundError when no RegisteredProvider entities are found.
-func (rpq *RegisteredProviderQuery) Only(ctx context.Context) (*RegisteredProvider, error) {
-	nodes, err := rpq.Limit(2).All(setContextOp(ctx, rpq.ctx, "Only"))
+func (_q *RegisteredProviderQuery) Only(ctx context.Context) (*RegisteredProvider, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -146,8 +147,8 @@ func (rpq *RegisteredProviderQuery) Only(ctx context.Context) (*RegisteredProvid
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (rpq *RegisteredProviderQuery) OnlyX(ctx context.Context) *RegisteredProvider {
-	node, err := rpq.Only(ctx)
+func (_q *RegisteredProviderQuery) OnlyX(ctx context.Context) *RegisteredProvider {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -157,9 +158,9 @@ func (rpq *RegisteredProviderQuery) OnlyX(ctx context.Context) *RegisteredProvid
 // OnlyID is like Only, but returns the only RegisteredProvider ID in the query.
 // Returns a *NotSingularError when more than one RegisteredProvider ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (rpq *RegisteredProviderQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
+func (_q *RegisteredProviderQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = rpq.Limit(2).IDs(setContextOp(ctx, rpq.ctx, "OnlyID")); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -174,8 +175,8 @@ func (rpq *RegisteredProviderQuery) OnlyID(ctx context.Context) (id uuid.UUID, e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (rpq *RegisteredProviderQuery) OnlyIDX(ctx context.Context) uuid.UUID {
-	id, err := rpq.OnlyID(ctx)
+func (_q *RegisteredProviderQuery) OnlyIDX(ctx context.Context) uuid.UUID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -183,18 +184,18 @@ func (rpq *RegisteredProviderQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 }
 
 // All executes the query and returns a list of RegisteredProviders.
-func (rpq *RegisteredProviderQuery) All(ctx context.Context) ([]*RegisteredProvider, error) {
-	ctx = setContextOp(ctx, rpq.ctx, "All")
-	if err := rpq.prepareQuery(ctx); err != nil {
+func (_q *RegisteredProviderQuery) All(ctx context.Context) ([]*RegisteredProvider, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*RegisteredProvider, *RegisteredProviderQuery]()
-	return withInterceptors[[]*RegisteredProvider](ctx, rpq, qr, rpq.inters)
+	return withInterceptors[[]*RegisteredProvider](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (rpq *RegisteredProviderQuery) AllX(ctx context.Context) []*RegisteredProvider {
-	nodes, err := rpq.All(ctx)
+func (_q *RegisteredProviderQuery) AllX(ctx context.Context) []*RegisteredProvider {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -202,20 +203,20 @@ func (rpq *RegisteredProviderQuery) AllX(ctx context.Context) []*RegisteredProvi
 }
 
 // IDs executes the query and returns a list of RegisteredProvider IDs.
-func (rpq *RegisteredProviderQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
-	if rpq.ctx.Unique == nil && rpq.path != nil {
-		rpq.Unique(true)
+func (_q *RegisteredProviderQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, rpq.ctx, "IDs")
-	if err = rpq.Select(registeredprovider.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(registeredprovider.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (rpq *RegisteredProviderQuery) IDsX(ctx context.Context) []uuid.UUID {
-	ids, err := rpq.IDs(ctx)
+func (_q *RegisteredProviderQuery) IDsX(ctx context.Context) []uuid.UUID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -223,17 +224,17 @@ func (rpq *RegisteredProviderQuery) IDsX(ctx context.Context) []uuid.UUID {
 }
 
 // Count returns the count of the given query.
-func (rpq *RegisteredProviderQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, rpq.ctx, "Count")
-	if err := rpq.prepareQuery(ctx); err != nil {
+func (_q *RegisteredProviderQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, rpq, querierCount[*RegisteredProviderQuery](), rpq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*RegisteredProviderQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (rpq *RegisteredProviderQuery) CountX(ctx context.Context) int {
-	count, err := rpq.Count(ctx)
+func (_q *RegisteredProviderQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -241,9 +242,9 @@ func (rpq *RegisteredProviderQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (rpq *RegisteredProviderQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, rpq.ctx, "Exist")
-	switch _, err := rpq.FirstID(ctx); {
+func (_q *RegisteredProviderQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -254,8 +255,8 @@ func (rpq *RegisteredProviderQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (rpq *RegisteredProviderQuery) ExistX(ctx context.Context) bool {
-	exist, err := rpq.Exist(ctx)
+func (_q *RegisteredProviderQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -264,32 +265,32 @@ func (rpq *RegisteredProviderQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the RegisteredProviderQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (rpq *RegisteredProviderQuery) Clone() *RegisteredProviderQuery {
-	if rpq == nil {
+func (_q *RegisteredProviderQuery) Clone() *RegisteredProviderQuery {
+	if _q == nil {
 		return nil
 	}
 	return &RegisteredProviderQuery{
-		config:       rpq.config,
-		ctx:          rpq.ctx.Clone(),
-		order:        append([]registeredprovider.OrderOption{}, rpq.order...),
-		inters:       append([]Interceptor{}, rpq.inters...),
-		predicates:   append([]predicate.RegisteredProvider{}, rpq.predicates...),
-		withContract: rpq.withContract.Clone(),
+		config:       _q.config,
+		ctx:          _q.ctx.Clone(),
+		order:        append([]registeredprovider.OrderOption{}, _q.order...),
+		inters:       append([]Interceptor{}, _q.inters...),
+		predicates:   append([]predicate.RegisteredProvider{}, _q.predicates...),
+		withContract: _q.withContract.Clone(),
 		// clone intermediate query.
-		sql:  rpq.sql.Clone(),
-		path: rpq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithContract tells the query-builder to eager-load the nodes that are connected to
 // the "contract" edge. The optional arguments are used to configure the query builder of the edge.
-func (rpq *RegisteredProviderQuery) WithContract(opts ...func(*RegisteredContractQuery)) *RegisteredProviderQuery {
-	query := (&RegisteredContractClient{config: rpq.config}).Query()
+func (_q *RegisteredProviderQuery) WithContract(opts ...func(*RegisteredContractQuery)) *RegisteredProviderQuery {
+	query := (&RegisteredContractClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	rpq.withContract = query
-	return rpq
+	_q.withContract = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -306,10 +307,10 @@ func (rpq *RegisteredProviderQuery) WithContract(opts ...func(*RegisteredContrac
 //		GroupBy(registeredprovider.FieldURL).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (rpq *RegisteredProviderQuery) GroupBy(field string, fields ...string) *RegisteredProviderGroupBy {
-	rpq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &RegisteredProviderGroupBy{build: rpq}
-	grbuild.flds = &rpq.ctx.Fields
+func (_q *RegisteredProviderQuery) GroupBy(field string, fields ...string) *RegisteredProviderGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &RegisteredProviderGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = registeredprovider.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -327,58 +328,58 @@ func (rpq *RegisteredProviderQuery) GroupBy(field string, fields ...string) *Reg
 //	client.RegisteredProvider.Query().
 //		Select(registeredprovider.FieldURL).
 //		Scan(ctx, &v)
-func (rpq *RegisteredProviderQuery) Select(fields ...string) *RegisteredProviderSelect {
-	rpq.ctx.Fields = append(rpq.ctx.Fields, fields...)
-	sbuild := &RegisteredProviderSelect{RegisteredProviderQuery: rpq}
+func (_q *RegisteredProviderQuery) Select(fields ...string) *RegisteredProviderSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &RegisteredProviderSelect{RegisteredProviderQuery: _q}
 	sbuild.label = registeredprovider.Label
-	sbuild.flds, sbuild.scan = &rpq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a RegisteredProviderSelect configured with the given aggregations.
-func (rpq *RegisteredProviderQuery) Aggregate(fns ...AggregateFunc) *RegisteredProviderSelect {
-	return rpq.Select().Aggregate(fns...)
+func (_q *RegisteredProviderQuery) Aggregate(fns ...AggregateFunc) *RegisteredProviderSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (rpq *RegisteredProviderQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range rpq.inters {
+func (_q *RegisteredProviderQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, rpq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range rpq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !registeredprovider.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if rpq.path != nil {
-		prev, err := rpq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		rpq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (rpq *RegisteredProviderQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RegisteredProvider, error) {
+func (_q *RegisteredProviderQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RegisteredProvider, error) {
 	var (
 		nodes       = []*RegisteredProvider{}
-		_spec       = rpq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			rpq.withContract != nil,
+			_q.withContract != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*RegisteredProvider).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &RegisteredProvider{config: rpq.config}
+		node := &RegisteredProvider{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -386,14 +387,14 @@ func (rpq *RegisteredProviderQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, rpq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := rpq.withContract; query != nil {
-		if err := rpq.loadContract(ctx, query, nodes, nil,
+	if query := _q.withContract; query != nil {
+		if err := _q.loadContract(ctx, query, nodes, nil,
 			func(n *RegisteredProvider, e *RegisteredContract) { n.Edges.Contract = e }); err != nil {
 			return nil, err
 		}
@@ -401,7 +402,7 @@ func (rpq *RegisteredProviderQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	return nodes, nil
 }
 
-func (rpq *RegisteredProviderQuery) loadContract(ctx context.Context, query *RegisteredContractQuery, nodes []*RegisteredProvider, init func(*RegisteredProvider), assign func(*RegisteredProvider, *RegisteredContract)) error {
+func (_q *RegisteredProviderQuery) loadContract(ctx context.Context, query *RegisteredContractQuery, nodes []*RegisteredProvider, init func(*RegisteredProvider), assign func(*RegisteredProvider, *RegisteredContract)) error {
 	ids := make([]string, 0, len(nodes))
 	nodeids := make(map[string][]*RegisteredProvider)
 	for i := range nodes {
@@ -431,24 +432,24 @@ func (rpq *RegisteredProviderQuery) loadContract(ctx context.Context, query *Reg
 	return nil
 }
 
-func (rpq *RegisteredProviderQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := rpq.querySpec()
-	_spec.Node.Columns = rpq.ctx.Fields
-	if len(rpq.ctx.Fields) > 0 {
-		_spec.Unique = rpq.ctx.Unique != nil && *rpq.ctx.Unique
+func (_q *RegisteredProviderQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, rpq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (rpq *RegisteredProviderQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *RegisteredProviderQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(registeredprovider.Table, registeredprovider.Columns, sqlgraph.NewFieldSpec(registeredprovider.FieldID, field.TypeUUID))
-	_spec.From = rpq.sql
-	if unique := rpq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if rpq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := rpq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, registeredprovider.FieldID)
 		for i := range fields {
@@ -456,24 +457,24 @@ func (rpq *RegisteredProviderQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if rpq.withContract != nil {
+		if _q.withContract != nil {
 			_spec.Node.AddColumnOnce(registeredprovider.FieldContractID)
 		}
 	}
-	if ps := rpq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := rpq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := rpq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := rpq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -483,33 +484,33 @@ func (rpq *RegisteredProviderQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (rpq *RegisteredProviderQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(rpq.driver.Dialect())
+func (_q *RegisteredProviderQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(registeredprovider.Table)
-	columns := rpq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = registeredprovider.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if rpq.sql != nil {
-		selector = rpq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if rpq.ctx.Unique != nil && *rpq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range rpq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range rpq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := rpq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := rpq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -522,41 +523,41 @@ type RegisteredProviderGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (rpgb *RegisteredProviderGroupBy) Aggregate(fns ...AggregateFunc) *RegisteredProviderGroupBy {
-	rpgb.fns = append(rpgb.fns, fns...)
-	return rpgb
+func (_g *RegisteredProviderGroupBy) Aggregate(fns ...AggregateFunc) *RegisteredProviderGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (rpgb *RegisteredProviderGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rpgb.build.ctx, "GroupBy")
-	if err := rpgb.build.prepareQuery(ctx); err != nil {
+func (_g *RegisteredProviderGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*RegisteredProviderQuery, *RegisteredProviderGroupBy](ctx, rpgb.build, rpgb, rpgb.build.inters, v)
+	return scanWithInterceptors[*RegisteredProviderQuery, *RegisteredProviderGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (rpgb *RegisteredProviderGroupBy) sqlScan(ctx context.Context, root *RegisteredProviderQuery, v any) error {
+func (_g *RegisteredProviderGroupBy) sqlScan(ctx context.Context, root *RegisteredProviderQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(rpgb.fns))
-	for _, fn := range rpgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*rpgb.flds)+len(rpgb.fns))
-		for _, f := range *rpgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*rpgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := rpgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -570,27 +571,27 @@ type RegisteredProviderSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (rps *RegisteredProviderSelect) Aggregate(fns ...AggregateFunc) *RegisteredProviderSelect {
-	rps.fns = append(rps.fns, fns...)
-	return rps
+func (_s *RegisteredProviderSelect) Aggregate(fns ...AggregateFunc) *RegisteredProviderSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (rps *RegisteredProviderSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rps.ctx, "Select")
-	if err := rps.prepareQuery(ctx); err != nil {
+func (_s *RegisteredProviderSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*RegisteredProviderQuery, *RegisteredProviderSelect](ctx, rps.RegisteredProviderQuery, rps, rps.inters, v)
+	return scanWithInterceptors[*RegisteredProviderQuery, *RegisteredProviderSelect](ctx, _s.RegisteredProviderQuery, _s, _s.inters, v)
 }
 
-func (rps *RegisteredProviderSelect) sqlScan(ctx context.Context, root *RegisteredProviderQuery, v any) error {
+func (_s *RegisteredProviderSelect) sqlScan(ctx context.Context, root *RegisteredProviderQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(rps.fns))
-	for _, fn := range rps.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*rps.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -598,7 +599,7 @@ func (rps *RegisteredProviderSelect) sqlScan(ctx context.Context, root *Register
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := rps.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
