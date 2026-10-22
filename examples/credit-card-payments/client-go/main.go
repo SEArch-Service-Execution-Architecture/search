@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -11,46 +10,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/SEArch-Service-Execution-Architecture/search/examples/credit-card-payments/creditcard"
 	searchv1 "github.com/SEArch-Service-Execution-Architecture/search/gen/go/search/v1"
 )
-
-type Client struct {
-	client searchv1.PrivateMiddlewareServiceClient
-}
-
-func NewClient(conn *grpc.ClientConn) *Client {
-	return &Client{
-		client: searchv1.NewPrivateMiddlewareServiceClient(conn),
-	}
-}
-
-func (c *Client) RegisterChannel(ctx context.Context, contract *searchv1.GlobalContract) (string, error) {
-	req := &searchv1.RegisterChannelRequest{
-		RequirementsContract: contract,
-	}
-	resp, err := c.client.RegisterChannel(ctx, req)
-	if err != nil {
-		return "", err
-	}
-	return resp.GetChannelId(), nil
-}
-
-func (c *Client) SendMessage(ctx context.Context, channelID, recipient string, message *searchv1.AppMessage) (*searchv1.AppSendResponse, error) {
-	req := &searchv1.AppSendRequest{
-		ChannelId: channelID,
-		Recipient: recipient,
-		Message:   message,
-	}
-	return c.client.AppSend(ctx, req)
-}
-
-func (c *Client) AppRecv(ctx context.Context, channelID, participant string) (*searchv1.AppRecvResponse, error) {
-	req := &searchv1.AppRecvRequest{
-		ChannelId:   channelID,
-		Participant: participant,
-	}
-	return c.client.AppRecv(ctx, req)
-}
 
 func main() {
 	middlewareURL := "middleware-client:11000"
@@ -102,15 +64,9 @@ func main() {
 	fmt.Printf("Shipping Address: %s\n", shippingAddress)
 
 	// Load contract.fsa
-	contractBytes, err := os.ReadFile("contract.fsa")
+	contract, err := os.ReadFile("contract.fsa")
 	if err != nil {
 		log.Fatalf("Failed to read contract file: %v", err)
-	}
-
-	contract := &searchv1.GlobalContract{
-		Contract:      contractBytes,
-		Format:        searchv1.GlobalContractFormat_GLOBAL_CONTRACT_FORMAT_FSA,
-		InitiatorName: "ClientApp",
 	}
 
 	// Connect to middleware
@@ -120,111 +76,35 @@ func main() {
 	}
 	defer conn.Close()
 
-	client := NewClient(conn)
-	ctx := context.Background()
-
-	channelID, err := client.RegisterChannel(ctx, contract)
-	if err != nil {
-		log.Fatalf("Failed to register channel: %v", err)
-	}
-
-	// Send PurchaseRequest
-	items := make(map[string]int)
+	order := creditcard.Order{Items: make(map[string]int), ShippingAddress: shippingAddress}
 	for _, selectedBook := range selectedBooks {
-		bookTitle := bookTitles[selectedBook-1]
-		items[bookTitle]++
+		order.Items[bookTitles[selectedBook-1]]++
 	}
 
-	itemsJSON, err := json.Marshal(items)
+	purchase, err := creditcard.StartPurchase(context.Background(), searchv1.NewPrivateMiddlewareServiceClient(conn), contract, order)
 	if err != nil {
-		log.Fatalf("Failed to marshal items: %v", err)
+		log.Fatalf("Purchase failed: %v", err)
 	}
-
-	body := fmt.Sprintf(`{"items": %s, "shippingAddress": "%s"}`, string(itemsJSON), shippingAddress)
-	msg := &searchv1.AppMessage{
-		Type: "PurchaseRequest",
-		Body: []byte(body),
-	}
-
-	sendResp, err := client.SendMessage(ctx, channelID, "Srv", msg)
-	if err != nil || sendResp.GetResult() != searchv1.AppSendResponse_RESULT_OK {
-		log.Fatal("Error sending PurchaseRequest")
-	}
-
-	// Receive TotalAmount
-	recvResp, err := client.AppRecv(ctx, channelID, "Srv")
-	if err != nil || recvResp.GetMessage().GetType() != "TotalAmount" {
-		log.Fatal("Error receiving TotalAmount")
-	}
-
-	var totalAmount float64
-	if err := json.Unmarshal(recvResp.GetMessage().GetBody(), &totalAmount); err != nil {
-		log.Fatalf("Failed to unmarshal total amount: %v", err)
-	}
-	fmt.Printf("Total amount: %.2f\n", totalAmount)
+	fmt.Printf("Total amount: %.2f\n", purchase.TotalAmount)
 
 	// Get credit card details
+	var card creditcard.Card
 	fmt.Print("Enter the credit card number: ")
-	var cardNumber string
-	fmt.Scanln(&cardNumber)
-
+	fmt.Scanln(&card.Number)
 	fmt.Print("Enter the credit card expiration date: ")
-	var cardExpirationDate string
-	fmt.Scanln(&cardExpirationDate)
-
+	fmt.Scanln(&card.ExpirationDate)
 	fmt.Print("Enter the credit card security code: ")
-	var cardSecurityCode string
-	fmt.Scanln(&cardSecurityCode)
+	fmt.Scanln(&card.SecurityCode)
 
-	// Send CardDetailsWithTotalAmount
-	body = fmt.Sprintf(`{"card_number": "%s", "card_expirationDate": "%s", "card_cvv": "%s", "total_amount": %.2f}`,
-		cardNumber, cardExpirationDate, cardSecurityCode, totalAmount)
-	msg = &searchv1.AppMessage{
-		Type: "CardDetailsWithTotalAmount",
-		Body: []byte(body),
-	}
-
-	sendResp, err = client.SendMessage(ctx, channelID, "PPS", msg)
-	if err != nil || sendResp.GetResult() != searchv1.AppSendResponse_RESULT_OK {
-		log.Fatal("Error sending CardDetailsWithTotalAmount")
-	}
-
-	// Receive PaymentNonce
-	recvResp, err = client.AppRecv(ctx, channelID, "PPS")
-	if err != nil || recvResp.GetMessage().GetType() != "PaymentNonce" {
-		log.Fatal("Error receiving PaymentNonce")
-	}
-
-	rawJSON := recvResp.GetMessage().GetBody()
-	fmt.Printf("Raw JSON: %s\n", rawJSON) // crucial for debugging
-	var paymentNonce = string(rawJSON)
-	fmt.Printf("Payment nonce: %s\n", paymentNonce)
-
-	// Send PurchaseWithPaymentNonce
-	body = fmt.Sprintf(`{"items": %s, "shippingAddress": "%s", "nonce": "%s"}`,
-		string(itemsJSON), shippingAddress, paymentNonce)
-	msg = &searchv1.AppMessage{
-		Type: "PurchaseWithPaymentNonce",
-		Body: []byte(body),
-	}
-
-	sendResp, err = client.SendMessage(ctx, channelID, "Srv", msg)
-	if err != nil || sendResp.GetResult() != searchv1.AppSendResponse_RESULT_OK {
-		log.Fatal("Error sending PurchaseWithPaymentNonce")
-	}
-
-	// Receive final response
-	recvResp, err = client.AppRecv(ctx, channelID, "Srv")
+	receipt, err := purchase.Pay(card)
 	if err != nil {
-		log.Fatalf("Error receiving final response: %v", err)
+		log.Fatalf("Purchase failed: %v", err)
 	}
+	fmt.Printf("Payment nonce: %s\n", receipt.Nonce)
 
-	switch recvResp.GetMessage().GetType() {
-	case "PurchaseOK":
+	if receipt.Approved {
 		fmt.Println("Purchase successful!")
-	case "PurchaseFail":
+	} else {
 		fmt.Println("Purchase failed!")
-	default:
-		log.Fatal("Error: Unexpected message type received")
 	}
 }
