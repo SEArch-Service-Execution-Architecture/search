@@ -24,8 +24,10 @@ jobs:
       with:
         python-version: '3.14'
         activate-environment: true
-    - name: Install cfsm_bisimulation
-      run: uv pip install -r requirements.txt
+    - name: Install Python dependencies
+      # cfsm_bisimulation for the broker, and the example backend's packages for the
+      # credit card end-to-end test.
+      run: uv pip install -r requirements.txt -r examples/credit-card-payments/backend/requirements.txt
     - name: Test
       env:
         SEARCH_REQUIRE_PYTHON: "1"
