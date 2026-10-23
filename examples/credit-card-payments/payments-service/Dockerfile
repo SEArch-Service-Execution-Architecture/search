@@ -18,8 +18,9 @@ COPY mocks ./mocks
 COPY gen/go ./gen/go
 COPY cmd ./cmd
 COPY internal ./internal
-COPY examples/credit-card-payments/payments-service ./
+COPY examples/credit-card-payments/creditcard ./examples/credit-card-payments/creditcard
+COPY examples/credit-card-payments/payments-service ./examples/credit-card-payments/payments-service
 
-RUN go build -v -o /usr/local/bin/payments-service main.go
+RUN go build -v -o /usr/local/bin/payments-service ./examples/credit-card-payments/payments-service
 
 CMD ["/usr/local/bin/payments-service"]

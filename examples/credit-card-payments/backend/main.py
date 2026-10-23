@@ -38,7 +38,7 @@ PRICE_PER_BOOK = decimal.Decimal("100.00")
 SHIPPING_COST = decimal.Decimal("10.00")
 
 
-async def main(grpc_channel):
+async def main(grpc_channel, registered_file):
     stub = search.PrivateMiddlewareServiceStub(grpc_channel)
     registered = False
     logger.info("Connected to middleware. Waiting for registration...")
@@ -59,7 +59,7 @@ async def main(grpc_channel):
             registered = True
             logger.info(f"App registered with id {r.app_id}")
             # Create temp file for Docker Compose healthcheck.
-            with open("/tmp/registered", "w") as f:
+            with open(registered_file, "w") as f:
                 f.write("OK")
         else:
             logger.error(f"Unexpected response: {r}. Exiting.")
@@ -208,6 +208,12 @@ if __name__ == "__main__":
     )
     parser.add_argument("--middleware-host", type=str, default="middleware-backend")
     parser.add_argument("--middleware-port", type=int, default=11000)
+    parser.add_argument(
+        "--registered-file",
+        type=str,
+        default="/tmp/registered",
+        help="File created once the app is registered (used as a readiness check).",
+    )
     args = parser.parse_args()
 
     logger.debug("Starting backend service...")
@@ -221,7 +227,9 @@ if __name__ == "__main__":
     grpc_channel = Channel(host=args.middleware_host, port=args.middleware_port)
 
     try:
-        loop.run_until_complete(main(grpc_channel=grpc_channel))
+        loop.run_until_complete(
+            main(grpc_channel=grpc_channel, registered_file=args.registered_file)
+        )
     finally:
         loop.close()
         grpc_channel.close()

@@ -18,9 +18,10 @@ COPY mocks ./mocks
 COPY gen/go ./gen/go
 COPY cmd ./cmd
 COPY internal ./internal
-COPY examples/credit-card-payments/client-go ./
+COPY examples/credit-card-payments/creditcard ./examples/credit-card-payments/creditcard
+COPY examples/credit-card-payments/client-go ./examples/credit-card-payments/client-go
 
-RUN go build -v -o /usr/local/bin/client-go main.go
+RUN go build -v -o /usr/local/bin/client-go ./examples/credit-card-payments/client-go
 COPY examples/credit-card-payments/contract.fsa .
 
 CMD ["/usr/local/bin/client-go"]
